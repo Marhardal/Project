@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/.Data/Migrations
+/Migrations
+/bin/
+/bin/Debug
+/bin/Debug/net10.0
+/obj/
+/obj/Debug
+

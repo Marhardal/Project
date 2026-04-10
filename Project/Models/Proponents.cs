@@ -13,9 +13,9 @@
 
         public DateTime updatedOn { get; set; }
 
-        //public ICollection<ContactPerson>? Contacts { get; set; }
-        //public ContactPerson? Contact { get; set; }
-        //public ICollection<ProjectModel>? Projects { get; set; }
-        //public ProjectModel? Project { get; set; }
+        public ICollection<ContactPerson>? Contacts { get; set; }
+        public ContactPerson? Contact { get; set; }
+        public ICollection<ProjectModel>? Projects { get; set; }
+        public ProjectModel? Project { get; set; }
     }
 }

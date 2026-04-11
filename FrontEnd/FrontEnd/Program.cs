@@ -1,3 +1,4 @@
+using FrontEnd;
 using FrontEnd.Client.Pages;
 using FrontEnd.Components;
 
@@ -6,6 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
+
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri("https://localhost:7120/") // your API URL
+});
+
+builder.Services.AddScoped<ProjectService>();
 
 var app = builder.Build();
 
@@ -29,5 +37,7 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(FrontEnd.Client._Imports).Assembly);
+
+app.UseCors("AllowBlazor");
 
 app.Run();

@@ -15,6 +15,19 @@ builder.Services.AddScoped(sp => new HttpClient
 
 builder.Services.AddScoped<ProjectService>();
 
+// Register CORS and a named policy used by the middleware later in the pipeline.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazor", policy =>
+    {
+        // Allow the Blazor WebAssembly client origin and enable credentials
+        policy.WithOrigins("https://localhost:7120")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -1,0 +1,32 @@
+﻿@page "/Settings"
+
+<PageTitle>MEPA | Settings</PageTitle>
+
+<div class="container">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details-tab-pane" type="button" role="tab" aria-controls="details-tab-pane" aria-selected="true">Account</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="projects-tab" data-bs-toggle="tab" data-bs-target="#projects-tab-pane" type="button" role="tab" aria-controls="projects-tab-pane" aria-selected="false">Status</button>
+        </li>
+        @* <li class="nav-item" role="presentation">
+            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Contact</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="disabled-tab" data-bs-toggle="tab" data-bs-target="#disabled-tab-pane" type="button" role="tab" aria-controls="disabled-tab-pane" aria-selected="false" disabled>Disabled</button>
+        </li> *@
+    </ul>
+    <div class="py-2 bg-white tab-content border-start border-bottom rounded-bottom border-end mt--1" id="myTabContent">
+        <div class="tab-pane fade show active " id="details-tab-pane" role="tabpanel" aria-labelledby="details-tab" tabindex="0">
+            <ManageLayout/>
+        </div>
+        <div class="tab-pane fade" id="projects-tab-pane" role="tabpanel" aria-labelledby="projects-tab" tabindex="0">
+            <Statuses/>
+        </div>
+        </div>
+    </div>
+
+@code {
+
+}

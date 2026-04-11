@@ -1,0 +1,242 @@
+﻿@page "/Proposals"
+
+
+<PageTitle>MEPA | Proposals</PageTitle>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Proposals</h3>
+    </div>
+    <div class="col-md-2">
+        <div class="mb-3 input-group rounded-pill justify-content-end">
+  <span class="input-group-text" id="basic-addon1">Show</span>
+            <select class="form-control-sm" aria-label="Username" aria-describedby="basic-addon1">
+                <option>10</option>
+                <option>20</option>
+                <option>30</option>
+                <option>40</option>
+                <option>50</option>
+            </select>
+</div>
+    </div>
+    <div class="col-md-2 text-end">
+        <div class="dropdown-center">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Export
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">PDF</a></li>
+                <li><a class="dropdown-item" href="#">Excel</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-2 text-end">
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="bi bi-plus-square me-2"></i>Add</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="mb-3 input-group">
+            <span class="input-group-text" id="basic-addon1">Search</span>
+            <input type="text" class="form-control" placeholder="Search" aria-label="Username" aria-describedby="basic-addon1">
+        </div>
+    </div>
+</div>
+
+<div class="border rounded bg-body-tertiary">
+    <table class="table p-2 mt-2 rounded-pill table-hover">
+        <thead class="text-white bg-dark">
+            <tr class="">
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Proponent</th>
+                <th scope="col">Location</th>
+                <th scope="col">Status</th>
+                <th scope="col">Created On</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td class="py-2">
+                    @TruncateToWords("Revised ESMP for Dumisan Borrow Pit in Kasungu District", 6)
+                </td>
+                <td class="py-2">Kasungu</td>
+                <td class="py-2">Mota-Engil</td>
+                <td class="py-2">Started</td>
+                <td class="py-2">@DateTime.Now.AddMonths(-1).ToString("yyyy-MMM, dd")</td>
+                <td class="py-2">
+                    <div class="flex-row d-flex justify-content-end ">
+                        <div class="p-1">
+                            <NavLink class="rounded btn p-2 btn-outline-warning" href="Project/View">
+                                <i class="bi bi-eye-fill"></i>
+                            </NavLink>
+                        </div>
+                        <div class="p-1">
+                            <NavLink class="rounded btn p-2 btn-outline-success">
+                                <i class="bi bi-pencil-square"></i>
+                            </NavLink>
+                        </div>
+                        <div class="p-1">
+                            <NavLink class="rounded btn p-2 btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                            </NavLink>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">1</th>
+                <td class="py-2">
+                    @TruncateToWords("Revised ESMP for Dumisan Borrow Pit in Kasungu District", 6)
+                </td>
+                <td class="py-2">Kasungu</td>
+                <td class="py-2">Mota-Engil</td>
+                <td class="py-2">Started</td>
+                <td class="py-2">@DateTime.Now.AddMonths(-1).ToString("yyyy-MMM, dd")</td>
+                <td class="py-2">
+                    <div class="flex-row d-flex justify-content-end ">
+                        <div class="p-1">
+                            <NavLink class="rounded btn p-2 btn-outline-warning" href="Project/View">
+                                <i class="bi bi-eye-fill"></i>
+                            </NavLink>
+                        </div>
+                        <div class="p-1">
+                            <NavLink class="rounded btn p-2 btn-outline-success">
+                                <i class="bi bi-pencil-square"></i>
+                            </NavLink>
+                        </div>
+                        <div class="p-1">
+                            <NavLink class="rounded btn p-2 btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                            </NavLink>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">1</th>
+                <td class="py-2">
+                    @TruncateToWords("Revised ESMP for Dumisan Borrow Pit in Kasungu District", 6)
+                </td>
+                <td class="py-2">Kasungu</td>
+                <td class="py-2">Mota-Engil</td>
+                <td class="py-2">Started</td>
+                <td class="py-2">@DateTime.Now.AddMonths(-1).ToString("yyyy-MMM, dd")</td>
+                <td class="py-2">
+                    <div class="flex-row d-flex justify-content-end ">
+                        <div class="p-1">
+                            <NavLink class="rounded btn p-2 btn-outline-warning" href="Project/View">
+                                <i class="bi bi-eye-fill"></i>
+                            </NavLink>
+                        </div>
+                        <div class="p-1">
+                            <NavLink class="rounded btn p-2 btn-outline-success">
+                                <i class="bi bi-pencil-square"></i>
+                            </NavLink>
+                        </div>
+                        <div class="p-1">
+                            <NavLink class="rounded btn p-2 btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                            </NavLink>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">1</th>
+                <td class="py-2">
+                    @TruncateToWords("Revised ESMP for Dumisan Borrow Pit in Kasungu District", 6)
+                </td>
+                <td class="py-2">Kasungu</td>
+                <td class="py-2">Mota-Engil</td>
+                <td class="py-2">Started</td>
+                <td class="py-2">@DateTime.Now.AddMonths(-1).ToString("yyyy-MMM, dd")</td>
+                <td class="py-2">
+                    <div class="flex-row d-flex justify-content-end ">
+                        <div class="p-1">
+                            <NavLink class="rounded btn p-2 btn-outline-warning" href="Project/View">
+                                <i class="bi bi-eye-fill"></i>
+                            </NavLink>
+                        </div>
+                        <div class="p-1">
+                            <NavLink class="rounded btn p-2 btn-outline-success">
+                                <i class="bi bi-pencil-square"></i>
+                            </NavLink>
+                        </div>
+                        <div class="p-1">
+                            <NavLink class="rounded btn p-2 btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                            </NavLink>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            
+        </tbody>
+    </table>
+    <div class="justify-content-center d-flex">
+        <nav aria-label="...">
+            <ul class="pagination">
+                <li class="page-item"><a href="#" class="page-link">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item active">
+                    <a class="page-link" href="#" aria-current="page">2</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Project</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Project Name</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Project Name." required>
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Project Proponent</label>
+                    <select class="form-select" aria-label="Default select example">
+                        <option selected>Select Project Proponent</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Submission Date</label>
+                    <input type="date" class="form-control" id="exampleFormControlInput1" required>
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Description</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" required></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string TruncateToWords(string text, int wordLimit)
+    {
+        if (string.IsNullOrEmpty(text)) return text;
+        
+        var words = text.Split(' ');
+        if (words.Length <= wordLimit) return text;
+        
+        return string.Join(" ", words.Take(wordLimit)) + "...";
+    }
+}

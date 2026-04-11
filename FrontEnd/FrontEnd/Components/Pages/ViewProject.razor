@@ -1,0 +1,350 @@
+﻿@page "/Project/View"
+
+<PageTitle>MEPA | Project Details</PageTitle>
+
+<div class="container">
+    <div class="my-2 row">
+        <div class="col-md-5">
+            <h3>Project Details</h3>
+        </div>
+    </div>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details-tab-pane" type="button" role="tab" aria-controls="details-tab-pane" aria-selected="true">Details</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="projects-tab" data-bs-toggle="tab" data-bs-target="#projects-tab-pane" type="button" role="tab" aria-controls="projects-tab-pane" aria-selected="false">Timelines</button>
+        </li>
+        @* <li class="nav-item" role="presentation">
+            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Contact</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="disabled-tab" data-bs-toggle="tab" data-bs-target="#disabled-tab-pane" type="button" role="tab" aria-controls="disabled-tab-pane" aria-selected="false" disabled>Disabled</button>
+        </li> *@
+    </ul>
+    <div class="tab-content bg-white border-start border-end border-bottom mt--1" id="myTabContent">
+        <div class="tab-pane fade show active " id="details-tab-pane" role="tabpanel" aria-labelledby="details-tab" tabindex="0">
+            <div class="mb-2 row px-2">
+                <div class="my-2 row">
+                    <div class="col-md-4 my-2">
+                        <div class="d-flex gap-4">
+                            @* <i class="bi bi-building-fill fs-5 me-2"></i> *@
+                            <i class="bi bi-file-earmark-pdf-fill fs-5 me-2"></i>
+                            <div>
+                                <h6 class="mb-1">Project Name</h6>
+                                <div><span>Revised ESMP for Dumisan Borrow Pit in Kasungu District</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 my-2 border-start border-end">
+                        <div class="d-flex gap-4">
+                            @* <i class="bi bi-building-fill"></i> *@
+                            <i class="bi bi-geo-alt-fill fs-5 me-2"></i>
+                            <div>
+                                <h6 class="mb-1">Proponent Location</h6>
+                                <div><span>Location</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 my-2 ">
+                        <div class="d-flex gap-4">
+                            @* <i class="bi bi-building-fill"></i> *@
+                            @* <i class="bi bi-geo-alt-fill fs-5 me-2"></i> *@
+                            <i class="bi bi-stars fs-5 me-2"></i>
+                            @* <i class="bi bi-mailbox2-flag fs-5 me-2"></i> *@
+                            <div>
+                                <h6 class="mb-1">Project Status</h6>
+                                <div><span>In Progress</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 my-2">
+                        <div class="d-flex gap-4">
+                            @* <i class="bi bi-building-fill"></i> *@
+                            @* <i class="bi bi-geo-alt-fill fs-5 me-2"></i> *@
+                            <i class="bi bi-person-badge fs-5 me-2"></i>
+                            <div>
+                                <h6 class="mb-1">Reviewer Name</h6>
+                                <div><span>John Doe</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 my-2  border-start border-end">
+                        <div class="d-flex gap-4">
+                            @* <i class="bi bi-building-fill"></i> *@
+                            <i class="bi bi-calendar-check-fill fs-5 me-2"></i>
+                            <div>
+                                <h6 class="mb-1">Submission Date</h6>
+                                <div><span>Mota-Engil</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 my-2">
+                        <div class="d-flex gap-4">
+                            @* <i class="bi bi-building-fill"></i> *@
+                            @* <i class="bi bi-geo-alt-fill fs-5 me-2"></i> *@
+                            @* <i class="bi bi-mailbox2-flag"></i> *@
+                            <i class="bi bi-calendar-x-fill fs-5 me-2"></i>
+                            <div>
+                                <h6 class="mb-1">Date Completed</h6>
+                                <div><span>Address</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 my-2">
+                        <div class="d-flex gap-4">
+                            @* <i class="bi bi-calendar-x-fill"></i> *@
+                            <i class="bi bi-card-text fs-5 me-2"></i>
+                            <div>
+                                <h6 class="mb-1">Description</h6>
+                                <div><p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                </div>
+            <div class="border-top px-2">
+                <div class="my-2 row">
+                    <div class="col-md-12">
+                        <h5>Proponent Details</h5>
+                    </div>
+                    <div class="col-md-4 my-2">
+                        <div class="d-flex gap-4">
+                            <i class="bi bi-building-fill fs-5 me-2"></i>
+                            <div>
+                                <h6 class="mb-1">Proponent Name</h6>
+                                <div><span>Mota-Engil</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 my-2 border-start border-end">
+                        <div class="d-flex gap-4">
+                            @* <i class="bi bi-building-fill"></i> *@
+                            @* <i class="bi bi-geo-alt-fill fs-5 me-2"></i> *@
+                            <i class="bi bi-mailbox2-flag fs-5 me-2"></i>
+                            <div>
+                                <h6 class="mb-1">Proponent Address</h6>
+                                <div><span>Address</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 my-2">
+                        <div class="d-flex gap-4">
+                            @* <i class="bi bi-building-fill"></i> *@
+                            <i class="bi bi-geo-alt-fill fs-5 me-2"></i>
+                            <div>
+                                <h6 class="mb-1">Proponent Location</h6>
+                                <div><span>Location</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+</div>
+
+        </div>
+        <div class="tab-pane fade" id="projects-tab-pane" role="tabpanel" aria-labelledby="projects-tab" tabindex="0">
+            @* <div class="mb-2 row px-2 pt-2">
+                <div class="col-md-3">
+                    <h3>Proponent Projects</h3>
+                </div>
+                <div class="col-md-2">
+                    <div class="mb-3 input-group rounded-pill">
+                        <span class="input-group-text" id="basic-addon1">Show</span>
+                        <select class="form-control-sm" aria-label="Username" aria-describedby="basic-addon1">
+                            <option>10</option>
+                            <option>20</option>
+                            <option>30</option>
+                            <option>40</option>
+                            <option>50</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="mb-3 input-group">
+                        <span class="input-group-text" id="basic-addon1">Search</span>
+                        <input type="text" class="form-control" placeholder="Search" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="dropdown-center text-end">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Export
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">PDF</a></li>
+                            <li><a class="dropdown-item" href="#">Excel</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div> *@
+            @* <div class="border rounded mb-2 mx-2 px-2"> *@
+                <div class="container py-4">
+    <h5 class="fw-semibold mb-4">Project Timelines</h5>
+
+    <div class="planning-timeline">
+
+        <div class="timeline-item pb-4 pt-2">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="text-muted small mb-2">
+                    <i class="bi bi-calendar-event-fill me-1"></i> 12 Oct 2023
+                    <span class="ms-2"><i class="bi bi-clock-fill me-1"></i> 10:30 AM</span>
+                </div>
+
+                <div class="card border-0 bg-body-tertiary">
+                    <div class="card-body">
+                                    <span class="fw-semibold text-primary d-inline-block mb-3">
+                                        Status Update | Review Update
+                                    </span>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                            <div class="text-muted small"><i class="bi bi-stars me-1"></i>Status</div>
+                                <div class="fw-medium">Review</div>
+                            </div>
+                            <div class="col-md-4">
+                                            <div class="text-muted small"><i class="bi bi-person-badge-fill me-1"></i>Reviewer Name</div>
+                                <div class="fw-medium">Maria Kitty</div>
+                            </div>
+                            <div class="col-md-4">
+                                            <div class="text-muted small"><i class="bi bi-chat-square-dots-fill me-1"></i>Review</div>
+                                <div class="fw-medium">@TruncateToWords("Please change the header", 3)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                    <div class="timeline-item pb-4 pt-2">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="text-muted small mb-2">
+                                <i class="bi bi-calendar-event-fill me-1"></i> 12 Oct 2023
+                                <span class="ms-2"><i class="bi bi-clock-fill me-1"></i> 10:30 AM</span>
+                            </div>
+
+                            <div class="card border-0 bg-body-tertiary">
+                                <div class="card-body">
+                                    <span class="fw-semibold text-primary d-inline-block mb-3">
+                                        Status Update | Review Update
+                                    </span>
+
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <div class="text-muted small"><i class="bi bi-stars me-1"></i>Status</div>
+                                            <div class="fw-medium">Completed</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="text-muted small"><i class="bi bi-person-badge-fill me-1"></i>Reviewer Name</div>
+                                            <div class="fw-medium">Maria Kitty</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="text-muted small"><i class="bi bi-chat-square-dots-fill me-1"></i>Review</div>
+                                            <div class="fw-medium">@TruncateToWords("Please change the header", 3)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    </div>
+</div>
+
+
+            @* </div> *@
+
+        </div>
+        @* <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">...</div>
+        <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">...</div> *@
+    </div>
+    <div class="p-2 bg-white rounded-bottom  border-start border-end border-bottom">
+        <NavLink class="btn btn-outline-primary btn-sm" href="Projects">Back</NavLink>
+        <NavLink type="button" class="btn btn-outline-secondary btn-sm" href="Proponent/view">Proponent</NavLink>
+    </div>
+</div>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Proponent</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Proponent Name</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Proponent Name." required>
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Postal Address</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Proponent Postal Address." required>
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Proponet Location</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Proponent Location." required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .planning-timeline {
+        position: relative;
+        margin-left: 0.5rem;
+    }
+
+    .timeline-item {
+        position: relative;
+        padding-left: 2rem;
+    }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: 0.47rem;
+            top: 0.9rem;
+            bottom: -0.5rem;
+            width: 2px;
+            background: #cfe2ff;
+        }
+
+        .timeline-item:last-child::before {
+            bottom: 1.5rem;
+        }
+
+    .timeline-dot {
+        position: absolute;
+        left: 0;
+        top: 0.7rem;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        background: #fff;
+        border: 2px solid #0d6efd;
+        box-shadow: 0 0 0 3px #e7f1ff;
+    }
+
+    .timeline-content .card {
+        border-radius: 0.5rem;
+    }
+
+</style>
+
+@code {
+    private string TruncateToWords(string text, int wordLimit)
+    {
+        if (string.IsNullOrEmpty(text)) return text;
+
+        var words = text.Split(' ');
+        if (words.Length <= wordLimit) return text;
+
+        return string.Join(" ", words.Take(wordLimit)) + "...";
+    }
+}

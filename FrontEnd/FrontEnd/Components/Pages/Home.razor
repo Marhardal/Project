@@ -1,7 +1,223 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<div class="flex-wrap pt-3 pb-2 mb-3 d-flex justify-content-between flex-md-nowrap align-items-center border-bottom">
+    <h1 class="h2">Dashboard</h1>
+    <div class="mb-2 btn-toolbar mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button"
+                    class="btn btn-sm btn-outline-secondary">
+                Share
+            </button> <button type="button"
+                              class="btn btn-sm btn-outline-secondary">
+                Export
+            </button>
+        </div> <button type="button"
+                       class="gap-1 btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center">
+            <svg class="bi" aria-hidden="true">
+                <use xlink:href="#calendar3"></use>
+            </svg>
+            This week
+        </button>
+    </div>
+</div>
+<div class="gap-2 my-2 row gap-lg-0">   
+    <div class="col-md-6 col-sm-12 col-lg-3">
+        @* <div class="card mb-sm-2 ">
+            <div class="row g-2">
+                <div class="mx-auto col-md-3 col-sm-6 col-lg-3 border-end align-content-between">
+                    <i class="bi bi-list fs-1"></i>
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h6 class="">Total Projects</h6>
+                        <p class="card-text">500 Projects</p>
+                    </div>
+                </div>
+            </div>
+        </div> *@
+        <DashCard Icon="bi bi-list fs-1" Title="Total Projects" Info="500" />
+    </div>
+    <div class="col-md-6 col-sm-12 col-lg-3">
+        <DashCard Icon="bi bi-clipboard2-minus fs-1" Title="Proponents" Info="10" />
+@*         <div class="card">
+            <div class="row g-2">
+                <div class="mx-auto col-md-4 border-end bg-info rounded-start-2 d-flex justify-content-center align-items-center">
+    <i class="bi bi-clipboard2-minus fs-1"></i>
+</div>
 
-<h1>Hello, world!</h1>
+                <div class="col-md-8">
+                    <div class="card-body">
+                         <h6 class="card-title">Pending Projects</h6> 
+                        <p class="card-text">5 Projects still pending.</p>
+                    </div>
+                </div>
+            </div>
+        </div> *@
+    </div>
+    <div class="col-md-6 col-sm-12 col-lg-3">
+        @* <div class="card">
+            <div class="row">
+                <div class="mx-auto col-md-4 align-content-between justify-content-center border-end">
+                    <i class="bi bi-clipboard2-pulse fs-1"></i>
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">In-Progress Projects</h5>
+                        <p class="card-text"></p>
+                    </div>
+                </div>
+            </div>
+        </div> *@
+        <DashCard Icon="bi bi-clipboard2-pulse fs-1" Title="In Progress" Info="5" />
+    </div>
+    <div class="col-md-6 col-sm-12 col-lg-3">
+        @* <div class="card">
+            <div class="row g-2">
+                <div class="mx-auto col-md-4 border-end align-content-between">
+                   
+                    <i class="bi bi-clipboard2-x fs-1"></i>
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">Canceled Projects</h5>
+                        <p class="card-text"></p>
+                    </div>
+                </div>
+            </div>
+        </div> *@
 
-Welcome to your new app.
+        <DashCard Icon="bi bi-clipboard2-pulse fs-1" Title="Completed" Info="5" />
+    </div>
+</div>
+<div class="my-2 row">
+    <div class="col-md-8 col-sm-12 mt-sm-2">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-8">
+                <div class="card-title">Projects Submitted per Month</div>
+                        @* <div class="card-title">Projects Status</div> *@
+                    </div>
+                    <div class="col-4 text-end">
+                        <NavLink class="btn btn-outline-primary" href="Month/Project">View</NavLink>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <StackedChart/>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-12 mt-sm-2">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="card-title">Projects Status</div>
+                    </div>
+                    <div class="col-4 text-end">
+                        <NavLink class="btn btn-outline-primary" href="Project/Status">View</NavLink>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <PieStatusChart/>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-12 mt-sm-2">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-8">
+                <div class="card-title">Projects by Proponent</div>
+                        @* <div class="card-title">Projects Status</div> *@
+                    </div>
+                    <div class="col-4 text-end">
+                        <NavLink class="btn btn-outline-primary" href="Proponent/Projects">View</NavLink>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table p-2 rounded-pill table-hover">
+                    <thead class="text-white bg-dark">
+                        <tr class="">
+                            <th scope="col">#</th>
+                            <th scope="col">Proponent</th>
+                            <th scope="col">Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td class="py-2">Mota-Engil</td>
+                            <td class="py-2">20</td>
+                            </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>MMC Limited</td>
+                            <td>5</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>HDL Mining LTD </td>
+                            <td>10
+                            </td>
+                            
+                        </tr>
+                    </tbody>
+                </table>
+
+                @* <canvas id="pie" width="400" height="400"></canvas> *@
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8 col-sm-12 mt-sm-2">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-8">
+                <div class="card-title">Recent Projects</div>
+                        @* <div class="card-title">Projects Status</div> *@
+                    </div>
+                    <div class="col-4 text-end">
+                        <NavLink class="btn btn-outline-primary" href="/Projects">View</NavLink>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table p-2 rounded-pill table-hover">
+                    <thead class="text-white bg-dark">
+                        <tr class="">
+                            <th scope="col">#</th>
+                            <th scope="col">Project</th>
+                            <th scope="col">Proponent</th>
+                            <th scope="col">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td class="py-2">Mota-Engil</td>
+                            <td class="py-2">Mota-Engil</td>
+                            <td class="py-2">@DateTime.Now</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>MMC Limited</td>
+                            <td>MMC Limited</td>
+                            <td>@DateTime.Now</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>HDL Mining LTD </td>
+                            <td>HDL Mining LTD </td>
+                            <td>@DateTime.Now</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>

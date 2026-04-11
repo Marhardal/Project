@@ -1,0 +1,241 @@
+﻿@page "/Proponents"
+
+<PageTitle>MEPA | Proponents</PageTitle>
+
+<div class="my-4 row g-0 align-items-center ">
+    <div class="col-md-4 my-2">
+        <div class="d-flex flex-wrap gap-2">
+            <div class="flex-grow-1 flex-md-grow-0 my-2">
+
+            <h3>Proponents</h3>
+            </div>
+            <div class="flex-grow-1 flex-md-grow-0">
+            <div class="my-2 input-group rounded-pill small">
+                <span class="input-group-text" id="basic-addon1">Show</span>
+                <select class="form-control-sm" aria-label="Username" aria-describedby="basic-addon1">
+                    <option>10</option>
+                    <option>20</option>
+                    <option>30</option>
+                    <option>40</option>
+                    <option>50</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    <div class="col-md-5">
+        <div class="my-2 input-group">
+            <span class="input-group-text" id="basic-addon1">Search</span>
+            <input type="text" class="form-control" placeholder="Search" aria-label="Username" aria-describedby="basic-addon1">
+        </div>
+    </div>
+
+    <div class="col-md-3 col-12">
+        <div class="d-flex flex-wrap gap-2 justify-content-end">
+            <div class="dropdown-center small flex-grow-1 flex-md-grow-0">
+                <!-- Grows to fill space on mobile -->
+                <button class="btn btn-secondary dropdown-toggle w-100 w-md-auto" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Export
+                </button>
+                <ul class="dropdown-menu dropdown-menu-sm">
+                    <li><a class="dropdown-item" href="#">PDF</a></li>
+                    <li><a class="dropdown-item" href="#">Excel</a></li>
+                </ul>
+            </div>
+            <div class="flex-grow-1 flex-md-grow-0">
+                <!-- Grows to fill space on mobile -->
+                <button type="button" class="btn btn-primary w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    <i class="bi bi-plus-square me-2"></i>Add
+                </button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+
+<div class="border rounded bg-body-tertiary">
+    <table class="table p-2 mt-2 rounded-pill table-hover">
+        <thead class="text-white bg-dark">
+            <tr class="">
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Postal Address</th>
+                <th scope="col">Location</th>
+                <th scope="col">Created On</th>
+                <th scope="col" >
+                   <span class="text-center">
+                        Action
+                   </span>
+                    </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td class="">
+                    Mota-Engil
+                </td>
+                <td class="">P.O. Box 12</td>
+                <td class="">Kasungu</td>
+                <td class="">
+                    <div class="py-3">
+                        <span class="">@DateTime.Now.AddMonths(-1)</span>
+                    </div>
+                </td>
+                <td class="">
+                    <div class="flex-row d-flex justify-content-center">
+                        <div class="p-1">
+                            <NavLink class="btn p-2 btn-outline-warning" href="Proponent/View">
+                                <i class="bi bi-eye"></i>
+                            </NavLink>
+                        </div>
+                        <div class="p-1">
+                            <NavLink class="btn p-2 btn-outline-success">
+                                <i class="bi bi-pencil-square"></i>
+                            </NavLink>
+                        </div>
+                        <div class="p-1">
+                            <NavLink class="btn p-2 btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </NavLink>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td class="py-2">MMC Limited</td>
+                <td class="py-2">P.O. Box 12</td>
+                <td class="py-2">Lilongwe</td>
+                <td class="py-2">@DateTime.Now.AddMonths(-1)</td>
+                <td class="py-2">
+                    <div class="flex-row d-flex">
+                        <div class="p-1">
+<NavLink class="p-2 text-white rounded bg-warning eye-hover-btn">
+                                <i class="bi bi-eye-fill"></i>
+                            </NavLink>
+                        </div>
+                        <div class="p-1">
+                            <NavLink class="p-2 text-white rounded bg-success">
+                                <i class="bi bi-pencil-square"></i>
+                            </NavLink>
+                        </div>
+                        <div class="p-1">
+                            <NavLink class="p-2 text-white rounded bg-danger">
+                                <i class="bi bi-trash"></i>
+                            </NavLink>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td class="py-2">Escom</td>
+                <td class="py-2">P.O. Box 12</td>
+                <td class="py-2">Lilongwe</td>
+                <td class="py-2">@DateTime.Now.AddMonths(-1)</td>
+                <td class="py-2">
+                    <div class="flex-row d-flex">
+                        <div class="p-1">
+                            <NavLink class="p-2 text-white rounded bg-warning eye-hover-btn">
+                                <i class="bi bi-eye-fill"></i>
+                            </NavLink>
+                        </div>
+                        <div class="p-1">
+                            <NavLink class="p-2 text-white rounded bg-success">
+                                <i class="bi bi-pencil-square"></i>
+                            </NavLink>
+                        </div>
+                        <div class="p-1">
+                            <NavLink class="p-2 text-white rounded bg-danger">
+                                <i class="bi bi-trash"></i>
+                            </NavLink>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">4</th>
+                <td class="py-2">Gwabala Mining LTD</td>
+                <td class="py-2">P.O. Box 12</td>
+                <td class="py-2">Lilongwe</td>
+                <td class="py-2">@DateTime.Now.AddMonths(-1)</td>
+                <td class="py-2">
+                    <div class="flex-row d-flex">
+                        <div class="p-1">
+                            <NavLink class="p-2 text-white rounded bg-warning eye-hover-btn">
+                                <i class="bi bi-eye-fill"></i>
+                            </NavLink>
+                        </div>
+                        <div class="p-1">
+                            <NavLink class="p-2 text-white rounded bg-success">
+                                <i class="bi bi-pencil-square"></i>
+                            </NavLink>
+                        </div>
+                        <div class="p-1">
+                            <NavLink class="p-2 text-white rounded bg-danger">
+                                <i class="bi bi-trash"></i>
+                            </NavLink>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="justify-content-center d-flex">
+        <nav aria-label="...">
+            <ul class="pagination">
+                <li class="page-item"><a href="#" class="page-link">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item active">
+                    <a class="page-link" href="#" aria-current="page">2</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Proponent</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Proponent Name</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Proponent Name." required>
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Postal Address</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Proponent Postal Address." required>
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Proponet Location</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1"  placeholder="Enter Proponent Location." required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string TruncateToWords(string text, int wordLimit)
+    {
+        if (string.IsNullOrEmpty(text)) return text;
+
+        var words = text.Split(' ');
+        if (words.Length <= wordLimit) return text;
+
+        return string.Join(" ", words.Take(wordLimit)) + "...";
+    }
+}

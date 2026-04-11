@@ -1,0 +1,112 @@
+﻿@page "/Month/Project"
+
+<div class="my-4 row">
+    <div class="col-md-4">
+        <h3>Project per Month</h3>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3 input-group">
+            <span class="input-group-text" id="basic-addon1">From</span>
+            <input type="month" class="form-control" placeholder="Search" aria-label="Username" aria-describedby="basic-addon1">
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3 input-group">
+            <span class="input-group-text" id="basic-addon1">To</span>
+            <input type="month" class="form-control" placeholder="Search" aria-label="Username" aria-describedby="basic-addon1">
+        </div>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-sm-8">
+        <div class="border rounded bg-body-tertiary mb-2 p-2">
+            <p>Total Projects from @DateTime.Now.AddYears(-1).ToString("MM-yyyy") to @DateTime.Now.ToString("MM-yyyy") are 50</p>
+        </div>
+        <div class="border rounded bg-body-tertiary">
+            <table class="table p-2 mt-2 rounded-pill table-hover">
+                <thead class="text-white bg-dark">
+                    <tr class="">
+                        <th scope="col">#</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Duration</th>
+                        <th scope="col">Project Count</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td class="py-2">Approved</td>
+                        <td class="py-2">@DateTime.Now.AddYears(-1).ToString("MM-yyyy") - @DateTime.Now.ToString("MM-yyyy")</td>
+                        <td class="py-2">20</td>
+                        <td>
+                            <div class="p-1 text-center">
+                                <NavLink class="btn p-2 btn-outline-warning" href="/Tracking">
+                                    <i class="bi bi-eye-fill"></i>
+                                </NavLink>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td class="py-2">Review</td>
+                        <td class="py-2">@DateTime.Now.AddYears(-1).ToString("MM-yyyy") - @DateTime.Now.ToString("MM-yyyy")</td>
+                        <td class="py-2">20</td>
+                        <td>
+                            <div class="p-1 text-center">
+                                <NavLink class="p-2 rounded border-warning border bg-outline-warning text-warning" href="/Tracking">
+                                    <i class="bi bi-eye-fill"></i>
+                                </NavLink>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                        <td class="py-2">In-Progress</td>
+                        <td class="py-2">@DateTime.Now.AddYears(-1).ToString("MM-yyyy") - @DateTime.Now.ToString("MM-yyyy")</td>
+                        <td class="py-2">20</td>
+                        <td>
+                            <div class="p-1 text-center">
+                                <NavLink class="p-2 rounded border-warning border bg-outline-warning text-warning" href="/Tracking">
+                                    <i class="bi bi-eye-fill"></i>
+                                </NavLink>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">4</th>
+                        <td class="py-2">Submitted</td>
+                        <td class="py-2">@DateTime.Now.AddYears(-1).ToString("MM-yyyy") - @DateTime.Now.ToString("MM-yyyy")</td>
+                        <td class="py-2">20</td>
+                        <td>
+                            <div class="p-1 text-center">
+                                <NavLink class="p-2 rounded border-warning border bg-outline-warning text-warning" href="/Tracking">
+                                    <i class="bi bi-eye-fill"></i>
+                                </NavLink>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="card-title">Status</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <canvas id="pie" width="400" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    </div>
+
+@code {
+
+}

@@ -1,0 +1,9 @@
+.eye-hover-btn {
+    transition: all 0.2s ease;
+}
+
+.eye-hover-btn:hover {
+    background-color: #f59e0b !important; /* darker orange */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transform: scale(1.05);
+}

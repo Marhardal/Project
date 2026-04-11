@@ -1,0 +1,24 @@
+﻿<canvas id="statusChart" width="400" height="200"></canvas>
+
+
+<script>
+
+    const ctx = document.getElementById('statusChart');
+
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Approved','Returned','Under Review','Submitted'],
+            datasets: [{
+                data: [12,4,6,8],
+                backgroundColor: [
+                    '#198754',
+                    '#dc3545',
+                    '#ffc107',
+                    '#0dcaf0'
+                ]
+            }]
+        }
+    });
+
+</script>

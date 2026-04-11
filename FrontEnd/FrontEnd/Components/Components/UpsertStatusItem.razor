@@ -1,0 +1,25 @@
+﻿<button type="button"
+        class="btn btn-sm btn-outline-@Colour.Replace("bg-", "") @(IsSelected ? "bg-opacity-10" : "") d-flex align-items-center gap-2"
+        @onclick="SelectColor">
+
+    <span class="@Colour rounded" style="width: 15px; height: 15px; display: inline-block;"></span>
+
+    <span>@Name</span>
+</button>
+
+@code {
+    [Parameter] public string Name { get; set; }
+    [Parameter] public string Colour { get; set; }
+    [Parameter] public string id { get; set; }
+
+    // This tells the child if it's selected
+    [Parameter] public bool IsSelected { get; set; }
+
+    // This is the callback to parent
+    [Parameter] public EventCallback<string> OnSelected { get; set; }
+
+    private async Task SelectColor()
+    {
+        await OnSelected.InvokeAsync(Colour);
+    }
+}

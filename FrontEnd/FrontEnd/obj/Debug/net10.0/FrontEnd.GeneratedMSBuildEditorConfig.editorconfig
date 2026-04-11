@@ -26,6 +26,26 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBcHAucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Components/DashCard.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXERhc2hDYXJkLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Components/PieStatusChart.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXFBpZVN0YXR1c0NoYXJ0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Components/StackedChart.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXFN0YWNrZWRDaGFydC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Components/Statuses.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXFN0YXR1c2VzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Components/UpsertStatusItem.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXFVwc2VydFN0YXR1c0l0ZW0ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Pages/Auth.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBdXRoLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 

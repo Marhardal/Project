@@ -1,0 +1,237 @@
+﻿@page "/status"
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+<div class="px-2 py-2 mb-2 row">
+    <div class="col-md-6">
+        <h5>Proponent Projects</h5>
+    </div>
+    <div class="col-md-6 text-end">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#statusModal"
+                >
+            <span class="pr-2"><i class="bi bi-plus-square"></i></span>&nbsp;Add
+        </button>
+    </div>
+</div>
+
+<div class="border rounded bg-body-tertiary">
+    <table class="table table-hover">
+        <thead class="text-white bg-dark">
+            <tr>
+                <th>#</th>
+                <th>Status</th>
+                <th>Color</th>
+                <th>Created On</th>
+                <th>Updated On</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @* @if (allStatuses == null)
+            {
+                <tr>
+                    <td colspan="6" class="py-4 text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </td>
+                </tr>
+            }
+            else if (allStatuses.Count == 0)
+            {
+                <tr>
+                    <td colspan="6" class="py-4 text-center">No statuses found.</td>
+                </tr>
+            }
+            else
+            {
+                @for (int i = 0; i < allStatuses.Count; i++)
+                {
+                    <tr @key="allStatuses[i].ID">
+                        <th scope="row"><span class="d-flex align-items-center py-2">@(@i + 1)</span></th>
+                        <td><span class="d-flex align-items-center py-2">@allStatuses[i].Name</span></td>
+                        <td>
+                            <span class="d-flex align-items-center py-2">
+                            <span class="rounded border @allStatuses[i].Color" style="width:20px;height:20px;display:inline-block;"></span></span>
+                        </td>
+                        <td><span class="d-flex align-items-center py-2">@allStatuses[i].createdOn.ToString("yyyy-MM-dd HH:mm")</span></td>
+                        <td><span class="d-flex align-items-center py-2">@allStatuses[i].updatedOn.ToString("yyyy-MM-dd HH:mm")</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-outline-success p-2" data-bs-toggle="modal" data-bs-target="#statusModal"
+                                    @onclick="() => ShowModal(true, allStatuses[i].ID)">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <button class="btn btn-outline-danger p-2" @onclick="async () => await DeleteStatusAsync(allStatuses[i].ID)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            } *@
+        
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal -->
+@* <div class="modal fade" id="statusModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <EditForm Model="@Status" OnValidSubmit="@SaveStatusAsync" FormName="statusForm">
+                <DataAnnotationsValidator />
+                <ValidationSummary class="text-danger" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="statusModalLabel">Create Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Status Name</label>
+                        <InputText @bind-Value="@Status.Name" id="name" class="form-control" placeholder="Enter Status Name." />
+                        <ValidationMessage For="() => Status.Name" class="text-danger" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Select Color</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            @foreach (var item in Colors)
+                            {
+                                <UpsertStatusItem Name="@item.Name" Colour="@item.Class" IsSelected="Status.Color == item.Class" id="color" OnSelected="OnColorSelected" />
+                            }
+                        </div>
+                    </div>
+                </div>
+<div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" disabled="@isSaving">Create @(isSaving ? "..." : "")</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div> *@
+
+@code {
+    // private List<Status> allStatuses;
+    // private Status Status;
+    private bool isSaving = false;
+    // private HubConnection connection;
+
+    private void OnColorSelected(string color)
+    {
+        // Status.Color = color;
+    }
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     allStatuses = await _context.Statuses.ToListAsync();
+
+    //     SignalR setup
+    //     connection = new HubConnectionBuilder()
+    //         .WithUrl(Navigation.ToAbsoluteUri("/statushub"))
+    //         .WithAutomaticReconnect()
+    //         .Build();
+
+    //     connection.On("StatusUpdated", async () =>
+    //     {
+    //         allStatuses = await _context.Statuses.ToListAsync();
+    //         StateHasChanged();
+    //     });
+
+    //     await connection.StartAsync();
+    // }
+
+    // private async Task ShowModal(bool isEdit, Guid? id = null)
+    // {
+    //     if (isEdit && id.HasValue)
+    //     {
+    //         Status = await _context.Statuses.FirstOrDefaultAsync(s => s.ID == id.Value) ?? new Status();
+    //     }
+    //     else
+    //     {
+    //         Status = new Status();
+    //     }
+    // }
+
+    // private async Task SaveStatusAsync()
+    // {
+    //     try
+    //     {
+    //         isSaving = true;
+    //         StateHasChanged();
+            
+    //         Console.WriteLine($"Saving Status: Name='{Status.Name}', Color='{Status.Color}'");
+            
+    //         Validate required fields
+    //         if (string.IsNullOrWhiteSpace(Status.Name))
+    //         {
+    //             Console.WriteLine("ERROR: Name is empty!");
+    //             isSaving = false;
+    //             StateHasChanged();
+    //             return;
+    //         }
+            
+    //         Status.ID = Guid.NewGuid();
+    //         Remove manual timestamps - DbContext handles now
+    //         Status.createdOn = DateTime.Now;
+    //         Status.updatedOn = DateTime.Now;
+            
+    //         _context.Statuses.Add(Status);
+    //         await _context.SaveChangesAsync();
+            
+    //         Console.WriteLine("SUCCESS: Status saved!");
+            
+    //         Refresh list
+    //         allStatuses = await _context.Statuses.ToListAsync();
+            
+    //         Close modal + reset
+    //         await JSRuntime.InvokeVoidAsync("eval", "bootstrap.Modal.getInstance(document.getElementById('statusModal')).hide()");
+    //         Status = new Status();
+    //         isSaving = false;
+    //         StateHasChanged();
+
+    //         SignalR broadcast
+    //         if (connection != null)
+    //             await connection.SendAsync("StatusUpdated");
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Console.WriteLine($"Save error: {ex.Message}");
+    //         Console.WriteLine($"Stack: {ex.StackTrace}");
+    //         isSaving = false;
+    //         StateHasChanged();
+    //     }
+    // }
+
+    // private async Task DeleteStatusAsync(Guid id)
+    // {
+    //     var status = await _context.Statuses.FindAsync(id);
+    //     if (status != null)
+    //     {
+    //         _context.Statuses.Remove(status);
+    //         allStatuses.Remove(status);
+    //         await _context.SaveChangesAsync();
+
+    //         StateHasChanged();
+
+    //         if (connection != null)
+    //             await connection.SendAsync("StatusUpdated");
+    //     }
+    // }
+
+    // private List<ColorOption> Colors = new()
+    // {
+    //     new ColorOption("Blue","bg-primary"),
+    //     new ColorOption("Green","bg-success"),
+    //     new ColorOption("Yellow","bg-warning"),
+    //     new ColorOption("Light Blue","bg-info"),
+    //     new ColorOption("Red","bg-danger"),
+    //     new ColorOption("Black","bg-dark"),
+    //     new ColorOption("Gray","bg-secondary")
+    // };
+
+    // public class ColorOption
+    // {
+    //     public string Name { get; set; }
+    //     public string Class { get; set; }
+    //     public ColorOption(string name, string cssClass) { Name = name; Class = cssClass; }
+    // }
+}

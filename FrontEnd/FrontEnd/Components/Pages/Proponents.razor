@@ -1,4 +1,9 @@
-﻿@page "/Proponents"
+﻿@page "/proponents"
+@using FrontEnd.DTOs
+@inject HttpClient http
+@inject ProponentService ProponentService
+@* @inject IJSRuntime JSRuntime *@
+@* @rendermode InteractiveWebAssembly *@
 
 <PageTitle>MEPA | Proponents</PageTitle>
 
@@ -6,22 +11,21 @@
     <div class="col-md-4 my-2">
         <div class="d-flex flex-wrap gap-2">
             <div class="flex-grow-1 flex-md-grow-0 my-2">
-
-            <h3>Proponents</h3>
+                <h3>Proponents</h3>
             </div>
             <div class="flex-grow-1 flex-md-grow-0">
-            <div class="my-2 input-group rounded-pill small">
-                <span class="input-group-text" id="basic-addon1">Show</span>
-                <select class="form-control-sm" aria-label="Username" aria-describedby="basic-addon1">
-                    <option>10</option>
-                    <option>20</option>
-                    <option>30</option>
-                    <option>40</option>
-                    <option>50</option>
-                </select>
+                <div class="my-2 input-group rounded-pill small">
+                    <span class="input-group-text" id="basic-addon1">Show</span>
+                    <select class="form-control-sm" aria-label="Username" aria-describedby="basic-addon1">
+                        <option>10</option>
+                        <option>20</option>
+                        <option>30</option>
+                        <option>40</option>
+                        <option>50</option>
+                    </select>
+                </div>
             </div>
         </div>
-    </div>
 
     </div>
     <div class="col-md-5">
@@ -51,191 +55,180 @@
             </div>
         </div>
     </div>
-    </div>
-
-
-
-<div class="border rounded bg-body-tertiary">
-    <table class="table p-2 mt-2 rounded-pill table-hover">
-        <thead class="text-white bg-dark">
-            <tr class="">
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Postal Address</th>
-                <th scope="col">Location</th>
-                <th scope="col">Created On</th>
-                <th scope="col" >
-                   <span class="text-center">
-                        Action
-                   </span>
-                    </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td class="">
-                    Mota-Engil
-                </td>
-                <td class="">P.O. Box 12</td>
-                <td class="">Kasungu</td>
-                <td class="">
-                    <div class="py-3">
-                        <span class="">@DateTime.Now.AddMonths(-1)</span>
-                    </div>
-                </td>
-                <td class="">
-                    <div class="flex-row d-flex justify-content-center">
-                        <div class="p-1">
-                            <NavLink class="btn p-2 btn-outline-warning" href="Proponent/View">
-                                <i class="bi bi-eye"></i>
-                            </NavLink>
-                        </div>
-                        <div class="p-1">
-                            <NavLink class="btn p-2 btn-outline-success">
-                                <i class="bi bi-pencil-square"></i>
-                            </NavLink>
-                        </div>
-                        <div class="p-1">
-                            <NavLink class="btn p-2 btn-outline-danger">
-                                <i class="bi bi-trash"></i>
-                            </NavLink>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td class="py-2">MMC Limited</td>
-                <td class="py-2">P.O. Box 12</td>
-                <td class="py-2">Lilongwe</td>
-                <td class="py-2">@DateTime.Now.AddMonths(-1)</td>
-                <td class="py-2">
-                    <div class="flex-row d-flex">
-                        <div class="p-1">
-<NavLink class="p-2 text-white rounded bg-warning eye-hover-btn">
-                                <i class="bi bi-eye-fill"></i>
-                            </NavLink>
-                        </div>
-                        <div class="p-1">
-                            <NavLink class="p-2 text-white rounded bg-success">
-                                <i class="bi bi-pencil-square"></i>
-                            </NavLink>
-                        </div>
-                        <div class="p-1">
-                            <NavLink class="p-2 text-white rounded bg-danger">
-                                <i class="bi bi-trash"></i>
-                            </NavLink>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td class="py-2">Escom</td>
-                <td class="py-2">P.O. Box 12</td>
-                <td class="py-2">Lilongwe</td>
-                <td class="py-2">@DateTime.Now.AddMonths(-1)</td>
-                <td class="py-2">
-                    <div class="flex-row d-flex">
-                        <div class="p-1">
-                            <NavLink class="p-2 text-white rounded bg-warning eye-hover-btn">
-                                <i class="bi bi-eye-fill"></i>
-                            </NavLink>
-                        </div>
-                        <div class="p-1">
-                            <NavLink class="p-2 text-white rounded bg-success">
-                                <i class="bi bi-pencil-square"></i>
-                            </NavLink>
-                        </div>
-                        <div class="p-1">
-                            <NavLink class="p-2 text-white rounded bg-danger">
-                                <i class="bi bi-trash"></i>
-                            </NavLink>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">4</th>
-                <td class="py-2">Gwabala Mining LTD</td>
-                <td class="py-2">P.O. Box 12</td>
-                <td class="py-2">Lilongwe</td>
-                <td class="py-2">@DateTime.Now.AddMonths(-1)</td>
-                <td class="py-2">
-                    <div class="flex-row d-flex">
-                        <div class="p-1">
-                            <NavLink class="p-2 text-white rounded bg-warning eye-hover-btn">
-                                <i class="bi bi-eye-fill"></i>
-                            </NavLink>
-                        </div>
-                        <div class="p-1">
-                            <NavLink class="p-2 text-white rounded bg-success">
-                                <i class="bi bi-pencil-square"></i>
-                            </NavLink>
-                        </div>
-                        <div class="p-1">
-                            <NavLink class="p-2 text-white rounded bg-danger">
-                                <i class="bi bi-trash"></i>
-                            </NavLink>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <div class="justify-content-center d-flex">
-        <nav aria-label="...">
-            <ul class="pagination">
-                <li class="page-item"><a href="#" class="page-link">Previous</a></li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item active">
-                    <a class="page-link" href="#" aria-current="page">2</a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">Next</a></li>
-            </ul>
-        </nav>
-    </div>
 </div>
 
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+@if (proponents?.Count > 0)
+{
+    <div class="border rounded bg-body-tertiary">
+        <table class="table p-2 mt-2 rounded-pill table-hover">
+            <thead class="text-white bg-dark">
+                <tr class="">
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Postal Address</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Created On</th>
+                    <th scope="col">
+                        <span class="text-center">
+                            Action
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+
+    @foreach (var prop in proponents!)
+    {
+        int index = proponents.IndexOf(prop) + 1;
+        <tr>
+            <th scope="row">@index</th>
+            <td>@prop.Name</td>
+            <td>@prop.Address</td>
+            <td>@prop.Location</td>
+            <td>@prop.createdOn.ToString("MMM dd, yyyy")</td>
+            <td>
+                <div class="d-flex gap-1 justify-content-center">
+                                <NavLink class="btn btn-sm btn-outline-primary" href="@($"/Proponent/View/{prop.ID}")">
+                        <i class="bi bi-eye"></i>
+                    </NavLink>
+                    <button class="btn btn-sm btn-outline-warning" title="Edit">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" title="Delete">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    }
+
+            </tbody>
+        </table>
+        <div class="justify-content-center d-flex">
+            <nav aria-label="...">
+                <ul class="pagination">
+                    <li class="page-item"><a href="#" class="page-link">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#" aria-current="page">2</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+}
+else
+{
+    <p class="text-center my-5 py-5">No proponents found. Adjust your search criteria or Create a new Proponent.</p>
+}
+
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Proponent</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Proponent Name</label>
-                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Proponent Name." required>
+            <EditForm method="post" Model="Proponent" OnValidSubmit="HandleSubmission" FormName="create" Enhance>
+                <DataAnnotationsValidator />
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Proponent</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Postal Address</label>
-                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Proponent Postal Address." required>
+
+                <div class="modal-body">
+                    <DataAnnotationsValidator />
+                    @* <ValidationSummary /> *@
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Proponent Name</label>
+                        <InputText id="Name" @bind-Value="Proponent.Name" class="form-control" placeholder="Enter Proponent Name."></InputText>
+                        <ValidationMessage For="@(() => Proponent.Name)" class="text-danger" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Address" class="form-label">Postal Address</label>
+                        <InputText id="Address" @bind-Value="Proponent.Address" class="form-control" placeholder="Enter Proponent Address."></InputText>
+                        <ValidationMessage For="@(() => Proponent.Address)" class="text-danger" />
+                    </div>
+    <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Proponent Location</label>
+        <InputText id="Location" @bind-Value="Proponent.Location" class="form-control" placeholder="Enter Proponent Location." />
+        <ValidationMessage For="@(() => Proponent.Location)" class="text-danger" />
+    </div>
+
+    @if (!string.IsNullOrEmpty(submitMessage))
+    {
+        <div class="alert @(submitMessage?.Contains("Error") == true ? "alert-danger" : "alert-success") alert-dismissible fade show" role="alert">
+            @submitMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
                 </div>
-                <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Proponet Location</label>
-                    <input type="text" class="form-control" id="exampleFormControlInput1"  placeholder="Enter Proponent Location." required>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary" disabled="@isSubmitting">
+        @(isSubmitting ? "Creating..." : "Create")
+    </button>
+
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Create</button>
-            </div>
+            </EditForm>
+
         </div>
     </div>
 </div>
 
 @code {
-    private string TruncateToWords(string text, int wordLimit)
+    private List<ProponentsDTO>? proponents;
+    
+    [SupplyParameterFromForm]
+    private ProponentsDTO Proponent { get; set; } = new();
+
+    private ElementReference modalElement;
+
+    bool isSubmitting = false;
+    string? submitMessage;
+    private bool loaded = false;
+
+    protected override async Task OnInitializedAsync()
     {
-        if (string.IsNullOrEmpty(text)) return text;
-
-        var words = text.Split(' ');
-        if (words.Length <= wordLimit) return text;
-
-        return string.Join(" ", words.Take(wordLimit)) + "...";
+        if (!loaded)
+        {
+            proponents = await ProponentService.GetProponentsAsync();
+            loaded = true;
+        }
     }
-}
+
+    async Task HandleSubmission()
+    {
+        isSubmitting = true;
+        submitMessage = null;
+        try 
+        {
+            var response = await ProponentService.CreateProponentAsync(Proponent);
+            // if (response.IsSuccessStatusCode)
+            // {
+            //     // Refresh list
+            //     proponents = await ProponentService.GetProponentsAsync();
+            //     // Reset form
+            //     Proponent = new();
+            //     // Close modal
+            //     await JSRuntime.InvokeVoidAsync("bootstrap.Modal.getInstance", modalElement).AsTask();
+            //     submitMessage = "Proponent created successfully!";
+            // }
+            // else
+            // {
+            //     submitMessage = $"Error {response.StatusCode}: {await response.Content.ReadAsStringAsync()}";
+            // }
+        }
+        catch (Exception ex)
+        {
+            submitMessage = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            isSubmitting = false;
+            StateHasChanged();
+        }
+    }
+    }
+

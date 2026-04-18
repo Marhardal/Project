@@ -1811,6 +1811,11 @@
         "type": "integer"
       },
       "Proponent": {
+        "required": [
+          "name",
+          "location",
+          "address"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -1824,6 +1829,12 @@
             ]
           },
           "location": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "address": {
             "type": [
               "null",
               "string"

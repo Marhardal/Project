@@ -1,6 +1,7 @@
+using System;
 using FrontEnd;
-using FrontEnd.Client.Pages;
 using FrontEnd.Components;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,9 +9,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddScoped(sp => new HttpClient
+// Register a named HttpClient for general API use
+builder.Services.AddHttpClient("ApiClient", client =>
 {
-    BaseAddress = new Uri("https://localhost:7120/") // your API URL
+    client.BaseAddress = new Uri("https://localhost:7120/");
+    client.Timeout = TimeSpan.FromSeconds(100);
+});
+
+// Register ProponentService with a typed HttpClient so it receives a configured HttpClient instance
+builder.Services.AddHttpClient<ProponentService>((sp, client) =>
+{
+    client.BaseAddress = new Uri("https://localhost:7120/");
+    client.Timeout = TimeSpan.FromSeconds(100);
 });
 
 builder.Services.AddScoped<ProjectService>();
@@ -27,6 +37,13 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
+
+// ProponentService is provided via AddHttpClient<ProponentService>() above, which registers
+// a typed client and ensures HttpClient is configured with BaseAddress. Do not re-register
+// as a plain scoped service — that would bypass the typed client and provide an HttpClient
+// with no BaseAddress (causing relative URI errors).
+
+// builder.Services.AddScoped<ProponentService>(); // removed to use typed client
 
 var app = builder.Build();
 
@@ -47,10 +64,12 @@ app.UseHttpsRedirection();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
+
+// Ensure CORS middleware runs before mapping endpoints so the policy is applied
+app.UseCors("AllowBlazor");
+
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(FrontEnd.Client._Imports).Assembly);
-
-app.UseCors("AllowBlazor");
 
 app.Run();

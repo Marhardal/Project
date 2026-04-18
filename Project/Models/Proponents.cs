@@ -1,13 +1,20 @@
-﻿namespace Project.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Project.Models
 {
 
     public class Proponent
     {
         public Guid ID { get; set; } = Guid.NewGuid();
-
+        
+        [Required]
         public string? Name { get; set; }
-
+        
+        [Required]
         public string? Location { get; set; }
+        
+        [Required]
+        public string? Address { get; set; }
 
         public DateTime createdOn { get; set; } = DateTime.Now;
 

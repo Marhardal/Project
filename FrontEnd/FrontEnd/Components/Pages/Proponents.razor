@@ -1,4 +1,5 @@
 ﻿@page "/proponents"
+@using FrontEnd.Components.Components
 @using FrontEnd.DTOs
 @inject HttpClient http
 @inject ProponentService ProponentService
@@ -59,52 +60,49 @@
 
 @if (proponents?.Count > 0)
 {
+
     <div class="border rounded bg-body-tertiary">
-        <table class="table p-2 mt-2 rounded-pill table-hover">
-            <thead class="text-white bg-dark">
-                <tr class="">
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Postal Address</th>
-                    <th scope="col">Location</th>
-                    <th scope="col">Created On</th>
-                    <th scope="col">
-                        <span class="text-center">
-                            Action
-                        </span>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
+        <div class="p-2 mt-2">
 
-    @foreach (var prop in proponents!)
-    {
-        int index = proponents.IndexOf(prop) + 1;
-        <tr>
-            <th scope="row">@index</th>
-            <td>@prop.Name</td>
-            <td>@prop.Address</td>
-            <td>@prop.Location</td>
-            <td>@prop.createdOn.ToString("MMM dd, yyyy")</td>
-            <td>
-                <div class="d-flex gap-1 justify-content-center">
-                                <NavLink class="btn btn-sm btn-outline-primary" href="@($"/Proponent/View/{prop.ID}")">
-                        <i class="bi bi-eye"></i>
-                    </NavLink>
-                    <button class="btn btn-sm btn-outline-warning" title="Edit">
-                        <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger" title="Delete">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
-    }
+<TableTemplate Items="proponents" Context="proponent">
 
-            </tbody>
-        </table>
+    <TableHeader>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Postal Address</th>
+        <th scope="col">Location</th>
+        <th scope="col">Created On</th>
+        <th scope="col"></th>
+    </TableHeader>
+    <RowTemplate Context="proponent">
+        @{
+            int index = proponents.IndexOf(proponent) + 1;
+        }
+        <td>@index</td>
+        <td>@proponent.Name</td>
+        <td>@proponent.Address</td>
+        <td>@proponent.Location</td>
+        <td>@proponent.createdOn.ToString("MMM dd, yyyy")</td>
+        <td>
+            <div class="d-flex gap-1 justify-content-center">
+                <NavLink class="btn btn-sm btn-outline-primary" href="@($"/Proponent/View/{proponent.ID}")">
+                    <i class="bi bi-eye"></i>
+                </NavLink>
+                <button class="btn btn-sm btn-outline-warning" title="Edit">
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" title="Delete">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        </td>
+    </RowTemplate>
+
+    </TableTemplate>
+        </div>
+
         <div class="justify-content-center d-flex">
+
             <nav aria-label="...">
                 <ul class="pagination">
                     <li class="page-item"><a href="#" class="page-link">Previous</a></li>
@@ -130,7 +128,7 @@ else
     <div class="modal-dialog">
         <div class="modal-content">
             <EditForm method="post" Model="Proponent" OnValidSubmit="HandleSubmission" FormName="create" Enhance>
-                <DataAnnotationsValidator />
+                @* <DataAnnotationsValidator /> *@
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Proponent</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -205,20 +203,20 @@ else
         try 
         {
             var response = await ProponentService.CreateProponentAsync(Proponent);
-            // if (response.IsSuccessStatusCode)
-            // {
-            //     // Refresh list
-            //     proponents = await ProponentService.GetProponentsAsync();
-            //     // Reset form
-            //     Proponent = new();
-            //     // Close modal
-            //     await JSRuntime.InvokeVoidAsync("bootstrap.Modal.getInstance", modalElement).AsTask();
-            //     submitMessage = "Proponent created successfully!";
-            // }
-            // else
-            // {
-            //     submitMessage = $"Error {response.StatusCode}: {await response.Content.ReadAsStringAsync()}";
-            // }
+            if (response.IsSuccessStatusCode)
+            {
+                // Refresh list
+                proponents = await ProponentService.GetProponentsAsync();
+                // Reset form
+                Proponent = new();
+                // Close modal
+                // await JSRuntime.InvokeVoidAsync("bootstrap.Modal.getInstance", modalElement).AsTask();
+                submitMessage = "Proponent created successfully!";
+            }
+            else
+            {
+                submitMessage = $"Error {response.StatusCode}: {await response.Content.ReadAsStringAsync()}";
+            }
         }
         catch (Exception ex)
         {

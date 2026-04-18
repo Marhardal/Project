@@ -1,26 +1,6 @@
 [
   {
     "ContainingType": "Project.Controllers.ContactPersonsController",
-    "Method": "GetContacts",
-    "RelativePath": "api/ContactPersons",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Project.Models.ContactPerson, Project, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "Project.Controllers.ContactPersonsController",
     "Method": "PostContactPerson",
     "RelativePath": "api/ContactPersons",
     "HttpMethod": "POST",
@@ -47,7 +27,7 @@
   },
   {
     "ContainingType": "Project.Controllers.ContactPersonsController",
-    "Method": "GetContactPerson",
+    "Method": "GetContacts",
     "RelativePath": "api/ContactPersons/{id}",
     "HttpMethod": "GET",
     "IsController": true,
@@ -61,7 +41,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Project.Models.ContactPerson",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Project.Models.ContactPerson, Project, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -107,6 +87,37 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Project.Controllers.ContactPersonsController",
+    "Method": "GetContactPerson",
+    "RelativePath": "api/ContactPersons/{Proponentid}/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "Proponentid",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Project.Models.ContactPerson",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "Project.Controllers.ProjectsController",

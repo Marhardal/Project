@@ -1,6 +1,7 @@
 using System;
 using FrontEnd;
 using FrontEnd.Components;
+using FrontEnd.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +25,11 @@ builder.Services.AddHttpClient<ProponentService>((sp, client) =>
 });
 
 builder.Services.AddScoped<ProjectService>();
+builder.Services.AddHttpClient<ContactPersonService>((sp, client) =>
+{
+    client.BaseAddress = new Uri("https://localhost:7120/");
+    client.Timeout = TimeSpan.FromSeconds(100);
+});
 
 // Register CORS and a named policy used by the middleware later in the pipeline.
 builder.Services.AddCors(options =>

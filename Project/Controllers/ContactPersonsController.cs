@@ -22,14 +22,14 @@ namespace Project.Controllers
         }
 
         // GET: api/ContactPersons
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ContactPerson>>> GetContacts()
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<ContactPerson>>> GetContacts(Guid id)
         {
-            return await _context.Contacts.ToListAsync();
+            return await _context.Contacts.Where(c => c.ProponentID == id).ToListAsync();
         }
 
         // GET: api/ContactPersons/5
-        [HttpGet("{id}")]
+        [HttpGet("{Proponentid}/{id}")]
         public async Task<ActionResult<ContactPerson>> GetContactPerson(Guid id)
         {
             var contactPerson = await _context.Contacts.FindAsync(id);

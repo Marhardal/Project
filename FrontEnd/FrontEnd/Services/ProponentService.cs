@@ -18,7 +18,7 @@ public class ProponentService
         _logger = logger;
     }
 
-    // ✅ Get all projects
+    // Get all proponents
     public async Task<List<ProponentsDTO>> GetProponentsAsync()
     {
         try
@@ -28,7 +28,6 @@ public class ProponentService
         }
         catch (Exception ex)
         {
-            // Log full exception including inner exceptions to help root-cause analysis
             _logger.LogError(ex, "Failed to GET proponents from {BaseAddress}{Endpoint}", _http.BaseAddress, "api/proponents");
             if (ex is TaskCanceledException)
             {
@@ -38,13 +37,10 @@ public class ProponentService
             {
                 _logger.LogError("Inner exception: {Inner}", ex.InnerException.Message);
             }
-
-            // Return empty list to avoid bubbling exceptions to the UI lifecycle.
             return new List<ProponentsDTO>();
         }
     }
 
-    // ✅ Get all projects
     public async Task<ProponentsDTO> GetProponentAsync(Guid id)
     {
         try
@@ -54,18 +50,7 @@ public class ProponentService
         }
         catch (Exception ex)
         {
-            // Log full exception including inner exceptions to help root-cause analysis
-            _logger.LogError(ex, "Failed to GET proponent from {BaseAddress}{Endpoint}", _http.BaseAddress, "api/proponents");
-            if (ex is TaskCanceledException)
-            {
-                _logger.LogWarning("Request was canceled - possible timeout or abort.");
-            }
-            if (ex.InnerException != null)
-            {
-                _logger.LogError("Inner exception: {Inner}", ex.InnerException.Message);
-            }
-
-            // Return empty list to avoid bubbling exceptions to the UI lifecycle.
+            _logger.LogError(ex, "Failed to GET proponent from {BaseAddress}{Endpoint}", _http.BaseAddress, $"api/proponents/{id}");
             return new ProponentsDTO();
         }
     }
@@ -74,12 +59,29 @@ public class ProponentService
     {
         try
         {
-            return await _http.PostAsJsonAsync("api/Proponents", dto);
+            return await _http.PostAsJsonAsync("api/proponents", dto);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to create proponent via POST {Endpoint}", "api/Proponents");
-            // Return a synthetic failure response so callers can handle gracefully
+            _logger.LogError(ex, "Failed to create proponent via POST {Endpoint}", "api/proponents");
+            var resp = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+            {
+                Content = new StringContent(ex.Message)
+            };
+            return resp;
+        }
+    }
+
+    // NEW: Update method for Edit
+    public async Task<HttpResponseMessage> UpdateProponentAsync(Guid id, ProponentsDTO dto)
+    {
+        try
+        {
+            return await _http.PutAsJsonAsync($"api/proponents/{id}", dto);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to update proponent {Id} via PUT {Endpoint}", id, $"api/proponents/{id}");
             var resp = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
             {
                 Content = new StringContent(ex.Message)
@@ -88,4 +90,3 @@ public class ProponentService
         }
     }
 }
-

@@ -50,7 +50,7 @@
             </div>
             <div class="flex-grow-1 flex-md-grow-0">
                 <!-- Grows to fill space on mobile -->
-                <button type="button" class="btn btn-primary w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                <button type="button" @onclick="OpenCreateModal" class="btn btn-primary w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                     <i class="bi bi-plus-square me-2"></i>Add
                 </button>
             </div>
@@ -88,7 +88,8 @@
                 <NavLink class="btn btn-sm btn-outline-primary" href="@($"/Proponent/View/{proponent.ID}")">
                     <i class="bi bi-eye"></i>
                 </NavLink>
-                <button class="btn btn-sm btn-outline-warning" title="Edit">
+                            <button class="btn btn-sm btn-outline-warning" @onclick="() => EditProponent(proponent)" title="Edit" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop">
                     <i class="bi bi-pencil"></i>
                 </button>
                 <button class="btn btn-sm btn-outline-danger" title="Delete">
@@ -130,7 +131,7 @@ else
             <EditForm method="post" Model="Proponent" OnValidSubmit="HandleSubmission" FormName="create" Enhance>
                 @* <DataAnnotationsValidator /> *@
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Proponent</h1>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">@* Create Proponent *@ @(isEditMode ? "Edit Proponent" : "Create Proponent")</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
@@ -177,7 +178,7 @@ else
 
 @code {
     private List<ProponentsDTO>? proponents;
-    
+
     [SupplyParameterFromForm]
     private ProponentsDTO Proponent { get; set; } = new();
 
@@ -186,7 +187,19 @@ else
     bool isSubmitting = false;
     string? submitMessage;
     private bool loaded = false;
+    private bool isEditMode = false;
 
+    void OpenCreateModal()
+    {
+        isEditMode = false;
+        Proponent = new ProponentsDTO(); // reset form
+    }
+    
+    void EditProponent(ProponentsDTO prop)
+    {
+        isEditMode = true;
+        Proponent = prop;
+    }
     protected override async Task OnInitializedAsync()
     {
         if (!loaded)
@@ -228,5 +241,5 @@ else
             StateHasChanged();
         }
     }
-    }
+}
 

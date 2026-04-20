@@ -1,4 +1,6 @@
-﻿namespace Project.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Project.Models
 {
     namespace ProjectManager.Data.Model
     {
@@ -6,8 +8,10 @@
         {
             public Guid ID { get; set; } = Guid.NewGuid();
 
+            [Required]
             public string? Name { get; set; }
 
+            [Required]
             public string? Color { get; set; }
 
             public DateTime createdOn { get; set; }

@@ -24,7 +24,12 @@ builder.Services.AddHttpClient<ProponentService>((sp, client) =>
     client.Timeout = TimeSpan.FromSeconds(100);
 });
 
-builder.Services.AddScoped<ProjectService>();
+builder.Services.AddHttpClient<StatusService>((sp, client) =>
+{
+    client.BaseAddress = new Uri("https://localhost:7120/");
+    client.Timeout = TimeSpan.FromSeconds(100);
+});
+
 builder.Services.AddHttpClient<ContactPersonService>((sp, client) =>
 {
     client.BaseAddress = new Uri("https://localhost:7120/");

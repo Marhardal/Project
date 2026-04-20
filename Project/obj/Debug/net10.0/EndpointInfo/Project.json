@@ -1970,6 +1970,10 @@
       },
       "ReviewModel": { },
       "Status": {
+        "required": [
+          "name",
+          "color"
+        ],
         "type": "object",
         "properties": {
           "id": {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FrontEnd.DTOs
+namespace FrontEnd.Client.DTOs
 {
     public class ProponentsDTO
     {
@@ -19,9 +19,10 @@ namespace FrontEnd.DTOs
 
         public DateTime updatedOn { get; set; }
 
-        public ICollection<ContactPersonDTO>? Contacts { get; set; }
-        public ContactPersonDTO? Contact { get; set; }
+        //public ICollection<ContactPersonDTO>? Contacts { get; set; }
+        //public ContactPersonDTO? Contact { get; set; }
         //public ICollection<ProjectModel>? Projects { get; set; }
         //public ProjectModel? Project { get; set; }
     }
+
 }

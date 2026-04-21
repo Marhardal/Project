@@ -1,5 +1,6 @@
 using System;
 using FrontEnd;
+using FrontEnd.Client.Services;
 using FrontEnd.Components;
 using FrontEnd.Services;
 

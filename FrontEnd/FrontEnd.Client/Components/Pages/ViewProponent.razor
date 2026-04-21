@@ -1,5 +1,7 @@
 ﻿@page "/Proponent/View/{PropID}"
-@using FrontEnd.Components.Components
+@using FrontEnd.Client.Components.Components
+@using FrontEnd.Client.DTOs
+@using FrontEnd.Client.Services
 @inject ProponentService ProponentService
 @inject ContactPersonService ContactPersonService
 
@@ -436,12 +438,12 @@ else
     protected override async Task OnInitializedAsync()
     {
         // var proponentID = Guid.
-        if (!string.IsNullOrEmpty(PropID))
-        {
+        // if (!string.IsNullOrEmpty(PropID))
+        // {
             Proponent = await ProponentService.GetProponentAsync(
             Guid.Parse(PropID));
             contactPeople = await ContactPersonService.GetContactPersonsAsync(Guid.Parse(PropID));
-        }
+        // }
     }
 
     protected async Task HandleSubmission()

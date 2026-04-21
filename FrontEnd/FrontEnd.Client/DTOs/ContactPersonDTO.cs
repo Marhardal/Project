@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FrontEnd.DTOs
+namespace FrontEnd.Client.DTOs
 {
     public class ContactPersonDTO
     {

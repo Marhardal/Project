@@ -1,7 +1,8 @@
-﻿using FrontEnd.DTOs;
+﻿using FrontEnd.Client.DTOs;
 using System.Net;
+using System.Net.Http.Json;
 
-namespace FrontEnd.Services
+namespace FrontEnd.Client.Services
 {
     public class ContactPersonService
     {

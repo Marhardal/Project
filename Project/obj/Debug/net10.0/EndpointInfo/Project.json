@@ -1754,6 +1754,13 @@
         }
       },
       "ProjectModel": {
+        "required": [
+          "proponentID",
+          "name",
+          "location",
+          "description",
+          "projectType"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -1770,11 +1777,31 @@
               "string"
             ]
           },
+          "location": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "description": {
             "type": [
               "null",
               "string"
             ]
+          },
+          "projectType": {
+            "$ref": "#/components/schemas/ProjectType"
+          },
+          "assignedDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "closingDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
           },
           "submissionDate": {
             "type": "string",
@@ -1788,24 +1815,6 @@
             "type": "string",
             "format": "date-time"
           },
-          "proponents": {
-            "type": [
-              "null",
-              "array"
-            ],
-            "items": {
-              "$ref": "#/components/schemas/Proponent"
-            }
-          },
-          "trackings": {
-            "type": [
-              "null",
-              "array"
-            ],
-            "items": {
-              "$ref": "#/components/schemas/TrackingModel"
-            }
-          },
           "proponent": {
             "oneOf": [
               {
@@ -1816,16 +1825,7 @@
               }
             ]
           },
-          "tracking": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/TrackingModel"
-              }
-            ]
-          }
+          "trackings": { }
         }
       },
       "ProjectType": {
@@ -1909,9 +1909,6 @@
           }
         }
       },
-      "Proposal": {
-        "type": "integer"
-      },
       "RefreshRequest": {
         "required": [
           "refreshToken"
@@ -1968,7 +1965,53 @@
           }
         }
       },
-      "ReviewModel": { },
+      "ResolvedStatus": {
+        "type": "integer"
+      },
+      "ReviewModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "trackingID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "remarks": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ResolvedStatus"
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "tracking": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/TrackingModel"
+              }
+            ]
+          }
+        }
+      },
       "Status": {
         "required": [
           "name",
@@ -2010,7 +2053,15 @@
               }
             ]
           },
-          "trackings": { }
+          "trackings": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/TrackingModel"
+            }
+          }
         }
       },
       "TrackingModel": {
@@ -2031,12 +2082,6 @@
           "statusID": {
             "type": "string",
             "format": "uuid"
-          },
-          "proposal": {
-            "$ref": "#/components/schemas/Proposal"
-          },
-          "projectType": {
-            "$ref": "#/components/schemas/ProjectType"
           },
           "assignedDate": {
             "type": "string",
@@ -2059,24 +2104,6 @@
               "string"
             ],
             "format": "date-time"
-          },
-          "projects": {
-            "type": [
-              "null",
-              "array"
-            ],
-            "items": {
-              "$ref": "#/components/schemas/ProjectModel"
-            }
-          },
-          "statuses": {
-            "type": [
-              "null",
-              "array"
-            ],
-            "items": {
-              "$ref": "#/components/schemas/Status"
-            }
           },
           "project": {
             "oneOf": [

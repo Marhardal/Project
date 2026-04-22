@@ -9,19 +9,17 @@ namespace FrontEnd.Client.DTOs
         public Guid userID { get; set; }
         public Guid ProjectID { get; set; }
         public Guid StatusID { get; set; }
-        public Proposal Proposal { get; set; }
-        public ProjectType ProjectType { get; set; }
         public DateTime assignedDate { get; set; }
         public DateTime? closingDate { get; set; }
         public DateTime createdOn { get; set; } = DateTime.Now;
         public DateTime? updatedOn { get; set; }
-        public ICollection<ProjectDTO>? Projects { get; set; }
-        public ICollection<StatusDTO>? Statuses { get; set; }
+        //public ICollection<ProjectModel>? Projects { get; set; }
+        //public ICollection<Status>? Statuses { get; set; }
         [ForeignKey("ProjectID")]
         public ProjectDTO? Project { get; set; }
         [ForeignKey("StatusID")]
         public StatusDTO? Status { get; set; }
-        //public ReviewModel? Review { get; set; }
+        //public ReviewDTO? Review { get; set; }
 
     }
 

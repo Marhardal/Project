@@ -66,13 +66,12 @@
             }
             <td>@index</td>
             <td class="py-2">
-                @* @TruncateToWords("Revised ESMP for Dumisan Borrow Pit in Kasungu District", 6) *@
                 @proposal.Name
             </td>
             <td class="py-2">@proposal.Proponent?.Name</td>
-            <td class="py-2">@proposal.</td>
-            <td class="py-2">@proposal</td>
-            <td class="py-2">@proposal.CreatedOn.ToString("yyyy-MMM, dd")</td>
+            <td class="py-2">@proposal.Location</td>
+            <td class="py-2">@proposal.ProjectType</td>
+            <td class="py-2">@proposal.createdOn.ToString("yyyy-MMM, dd")</td>
             <td class="py-2">
                 <div class="flex-row d-flex justify-content-end ">
                     <div class="p-1">

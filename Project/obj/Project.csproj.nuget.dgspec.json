@@ -56,65 +56,65 @@
           "dependencies": {
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
-              "version": "[10.0.5, )",
+              "version": "[10.0.7, )",
               "noWarn": [
                 "NU1605"
               ]
             },
             "Microsoft.AspNetCore.Authentication.OpenIdConnect": {
               "target": "Package",
-              "version": "[10.0.5, )",
+              "version": "[10.0.7, )",
               "noWarn": [
                 "NU1605"
               ]
             },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[10.0.5, )"
+              "version": "[10.0.7, )"
             },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
-              "version": "[10.0.5, )"
+              "version": "[10.0.7, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[10.0.5, )"
+              "version": "[10.0.7, )"
             },
             "Microsoft.EntityFrameworkCore.Abstractions": {
               "target": "Package",
-              "version": "[10.0.5, )"
+              "version": "[10.0.7, )"
             },
             "Microsoft.EntityFrameworkCore.Analyzers": {
               "target": "Package",
-              "version": "[10.0.5, )"
+              "version": "[10.0.7, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[10.0.5, )"
+              "version": "[10.0.7, )"
             },
             "Microsoft.EntityFrameworkCore.Relational": {
               "target": "Package",
-              "version": "[10.0.5, )"
+              "version": "[10.0.7, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[10.0.5, )"
+              "version": "[10.0.7, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[10.0.5, )"
+              "version": "[10.0.7, )"
             },
             "Microsoft.Identity.Web": {
               "target": "Package",
-              "version": "[4.7.0, )"
+              "version": "[4.8.0, )"
             },
             "Microsoft.Identity.Web.DownstreamApi": {
               "target": "Package",
-              "version": "[4.7.0, )"
+              "version": "[4.8.0, )"
             },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
@@ -124,17 +124,21 @@
               "target": "Package",
               "version": "[13.0.4, )"
             },
+            "NuGet.Protocol": {
+              "target": "Package",
+              "version": "[7.3.1, )"
+            },
             "Scalar.AspNetCore": {
               "target": "Package",
-              "version": "[2.13.20, )"
+              "version": "[2.14.3, )"
             },
             "Scalar.AspNetCore.Microsoft": {
               "target": "Package",
-              "version": "[2.13.20, )"
+              "version": "[2.14.3, )"
             },
             "Scalar.AspNetCore.Swashbuckle": {
               "target": "Package",
-              "version": "[2.13.20, )"
+              "version": "[2.14.3, )"
             }
           },
           "imports": [

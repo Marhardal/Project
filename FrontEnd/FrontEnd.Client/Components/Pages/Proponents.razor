@@ -60,8 +60,12 @@
         </div>
     </div>
 </div>
+@if (!loaded)
+{
+    <p class="text-center my-5 py-5">Loading proponents...</p>
+}
 
-@if (proponents?.Count > 0)
+else if (proponents?.Count > 0)
 {
 
     <div class="border rounded bg-body-tertiary">
@@ -197,7 +201,7 @@ else
         isEditMode = false;
         Proponent = new ProponentsDTO(); // reset form
     }
-    
+
     void EditProponent(ProponentsDTO prop)
     {
         isEditMode = true;
@@ -207,6 +211,7 @@ else
     {
         if (!loaded)
         {
+            await Task.Delay(500);
             proponents = await ProponentService.GetProponentsAsync();
             loaded = true;
         }

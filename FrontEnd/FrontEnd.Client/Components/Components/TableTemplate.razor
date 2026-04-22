@@ -5,9 +5,16 @@
         <tr>@TableHeader</tr>
     </thead>
     <tbody>
-        @foreach (var item in Items)
+        @if (Items?.Count > 0)
         {
-            <tr @key="@item">@RowTemplate(item)</tr>
+            @foreach (var item in Items)
+            {
+                <tr @key="@item">@RowTemplate(item)</tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="100%">No items</td></tr>
         }
     </tbody>
 </table>
@@ -19,6 +26,7 @@
     [Parameter, EditorRequired]
     public RenderFragment<TItem> RowTemplate { get; set; } = default!;
 
+    // Safe default to avoid null refs
     [Parameter, EditorRequired]
-    public IReadOnlyList<TItem> Items { get; set; } = default!;
+    public IReadOnlyList<TItem> Items { get; set; } = Array.Empty<TItem>();
 }

@@ -1,9 +1,6 @@
-﻿using Project.Models.ProjectManager.Data.Model;
-
-namespace Project.Models
+﻿namespace FrontEnd.Client.DTOs
 {
-
-    public class ProjectModel
+    public class ProjectDTO
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public Guid ProponentID { get; set; }
@@ -13,10 +10,9 @@ namespace Project.Models
         public DateTime SubmissionDate { get; set; }
         public DateTime createdOn { get; set; } = DateTime.Now;
         public DateTime updatedOn { get; set; }
-        public ICollection<Proponent>? Proponents { get; set; }
-        public ICollection<TrackingModel>? Trackings { get; set; }
-        public Proponent? Proponent { get; set; }
-        public TrackingModel? Tracking { get; set; }
+        public ICollection<ProponentsDTO>? Proponents { get; set; }
+        //public ICollection<TrackingModel>? Trackings { get; set; }
+        public ProponentsDTO? Proponent { get; set; }
+        //public TrackingModel? Tracking { get; set; }
     }
-
 }

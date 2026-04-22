@@ -1,4 +1,9 @@
 ﻿@page "/Proposals"
+@using FrontEnd.Client.Components.Components
+@using FrontEnd.Client.DTOs
+@using Services
+@inject ProjectService ProjectService
+@inject HttpClient http
 
 
 <PageTitle>MEPA | Proposals</PageTitle>
@@ -44,16 +49,54 @@
 </div>
 
 <div class="border rounded bg-body-tertiary">
-    <table class="table p-2 mt-2 rounded-pill table-hover">
+    <TableTemplate Items="proposals" Context="proposal">
+
+        <TableHeader>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Proponent</th>
+            <th scope="col">Location</th>
+            <th scope="col">Status</th>
+            <th scope="col">Created On</th>
+            <th scope="col"></th>
+    </TableHeader>
+    <RowTemplate Context="proposal">
+            @{
+                int index = proposals.IndexOf(proposal) + 1;
+            }
+            <td>@index</td>
+            <td class="py-2">
+                @* @TruncateToWords("Revised ESMP for Dumisan Borrow Pit in Kasungu District", 6) *@
+                @proposal.Name
+            </td>
+            <td class="py-2">@proposal.Proponent?.Name</td>
+            <td class="py-2">@proposal.</td>
+            <td class="py-2">@proposal</td>
+            <td class="py-2">@proposal.CreatedOn.ToString("yyyy-MMM, dd")</td>
+            <td class="py-2">
+                <div class="flex-row d-flex justify-content-end ">
+                    <div class="p-1">
+                        <NavLink class="rounded btn p-2 btn-outline-warning" href="@($"Project/View/{proposal.Id}")">
+                            <i class="bi bi-eye-fill"></i>
+                        </NavLink>
+                    </div>
+                    <div class="p-1">
+                        <NavLink class="rounded btn p-2 btn-outline-success">
+                            <i class="bi bi-pencil-square"></i>
+                        </NavLink>
+                    </div>
+                    <div class="p-1">
+                        <NavLink class="rounded btn p-2 btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </NavLink>
+                    </div>
+                </div>
+            </td>
+    </RowTemplate>
+    </TableTemplate>
+    @* <table class="table p-2 mt-2 rounded-pill table-hover">
         <thead class="text-white bg-dark">
             <tr class="">
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Proponent</th>
-                <th scope="col">Location</th>
-                <th scope="col">Status</th>
-                <th scope="col">Created On</th>
-                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -175,7 +218,7 @@
             </tr>
             
         </tbody>
-    </table>
+    </table> *@
     <div class="justify-content-center d-flex">
         <nav aria-label="...">
             <ul class="pagination">
@@ -230,6 +273,10 @@
 </div>
 
 @code {
+    bool isloaded;
+
+    private List<ProjectDTO>? proposals;
+    private ProjectDTO? Proposal = new();
     private string TruncateToWords(string text, int wordLimit)
     {
         if (string.IsNullOrEmpty(text)) return text;
@@ -238,5 +285,15 @@
         if (words.Length <= wordLimit) return text;
         
         return string.Join(" ", words.Take(wordLimit)) + "...";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!isloaded)
+        {
+            // await Task.Delay(500);
+            proposals = await ProjectService.GetProjectAsync();
+            isloaded = true;
+        }
     }
 }

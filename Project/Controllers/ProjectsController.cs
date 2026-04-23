@@ -42,6 +42,7 @@ namespace Project.Controllers
                     p.Description,
                     Proponent = new Proponent
                     {
+                        ID = p.Proponent != null ? p.Proponent.ID : Guid.Empty,
                         Name = p.Proponent != null ? p.Proponent.Name : null,
                         Address = p.Proponent != null ? p.Proponent.Address : null,
                         Location = p.Proponent != null ? p.Proponent.Location : null
@@ -71,12 +72,13 @@ namespace Project.Controllers
          closingDate = p.closingDate,
          assignedDate = p.assignedDate,
          Description = p.Description,
-
+         ProponentID = p.ProponentID,
          Proponent = p.Proponent == null ? null : new Proponent
          {
-             Name = p.Proponent.Name,
-             Address = p.Proponent.Address,
-             Location = p.Proponent.Location
+            ID = p.Proponent.ID,
+            Name = p.Proponent.Name,
+            Address = p.Proponent.Address,
+            Location = p.Proponent.Location
          },
 
          Trackings = p.Trackings.Select(t => new TrackingModel

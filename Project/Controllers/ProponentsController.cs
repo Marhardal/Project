@@ -32,7 +32,33 @@ namespace Project.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Proponent>> GetProponent(Guid id)
         {
-            var proponent = await _context.Proponents.FindAsync(id);
+            var proponent = await _context.Proponents.Where(p => p.ID == id)
+                .Select
+                (
+                    p => new Proponent
+                    {
+                        ID = p.ID,
+                        Name = p.Name,
+                        Location = p.Location,
+                        Address = p.Address,
+                        createdOn = p.createdOn,
+                        Projects = p.Projects == null ? null : p.Projects.Select(pro => new ProjectModel
+                        {
+                            Id = pro.Id,
+                            Name = pro.Name,
+                            Location = pro.Location,
+                            createdOn = pro.createdOn,
+                        }).ToList(),
+                        Contacts = p.Contacts == null ? null : p.Contacts.Select(c => new ContactPerson
+                        {
+                            Id = c.Id,
+                            FullName = c.FullName,
+                            Email = c.Email,
+                            Phone = c.Phone,
+                            createdOn = c.createdOn,
+                        }).ToList()
+                    }
+                ).FirstOrDefaultAsync();
 
             if (proponent == null)
             {

@@ -19,9 +19,13 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details-tab-pane" type="button" role="tab" aria-controls="details-tab-pane" aria-selected="true">Details</button>
             </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="projects-tab" data-bs-toggle="tab" data-bs-target="#projects-tab-pane" type="button" role="tab" aria-controls="projects-tab-pane" aria-selected="false">Projects</button>
-            </li>
+            @if (Proponent?.Projects != null)
+            {
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="projects-tab" data-bs-toggle="tab" data-bs-target="#projects-tab-pane" type="button" role="tab" aria-controls="projects-tab-pane" aria-selected="false">Projects</button>
+                </li>
+            }
+            
             @* <li class="nav-item" role="presentation">
             <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Contact</button>
         </li>
@@ -243,108 +247,42 @@
                     </div>
                 </div>
                 <div class="border rounded bg-body-tertiary mb-2 mx-2 px-2">
-                    <table class="table p-2 mt-2 rounded-pill table-hover">
-                        <thead class="text-white bg-dark">
-                            <tr class="">
-                                <th scope="col">#</th>
+                    <TableTemplate Items="Projects" Context="Project">
+    <TableHeader>
+        <th scope="col">#</th>
                                 <th scope="col">Name</th>
-                                <th scope="col">Proponent</th>
                                 <th scope="col">Location</th>
-                                <th scope="col">Submission</th>
+                                <th scope="col">Status</th>
                                 <th scope="col">Created On</th>
-                                <th scope="col" class="justify-content-center text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td class="py-2">
-                                    @TruncateToWords("Revised ESMP for Dumisan Borrow Pit in Kasungu District", 6)
-                                </td>
-                                <td class="py-2">Kasungu</td>
-                                <td class="py-2">Mota-Engil</td>
-                                <td class="py-2">2025-08-05</td>
-                                <td class="py-2">@DateTime.Now.AddMonths(-1)</td>
-                                <td class="py-2">
-                                    <div class="flex-row d-flex justify-content-center">
-                                        <div class="p-1 jud">
-                                            <NavLink class="rounded btn p-2 btn-outline-warning" href="Project/View">
-                                                <i class="bi bi-eye-fill"></i>
-                                            </NavLink>
-                                        </div>
-                                        @* <div class="p-1">
-                                        <NavLink class="p-2 text-white rounded bg-success">
-                                            <i class="bi bi-pencil-square"></i>
+                                <th scope="col"></th>
+                            
+    </TableHeader>
+    <RowTemplate Context="project">
+                            @{
+                                int index = Projects.IndexOf(project) + 1;
+                            }
+                            <th scope="row">@index</th>
+                            <td>
+                                 <span class="d-inline-block text-truncate" style="max-width: 350px;" title="@project.Name">
+                                @project.Name </span>
+                            </td>
+                            <td class="py-2">@project?.Location</td>
+                            <td class="py-2">@{
+                                    var status = project?.Trackings?.LastOrDefault()?.Status?.Name ?? "No status";    
+                                }
+                                @status</td>
+                            <td class="py-2">@project?.createdOn.ToString("MMM-dd, yyyy")</td>
+                            <td class="py-2">
+                                <div class="flex-row d-flex justify-content-center">
+                                    
+                                        <NavLink class="rounded btn btn-sm btn-outline-warning" href="@{$"Project/View/{project.Id}"}">
+                                            <i class="bi bi-eye-fill"></i>
                                         </NavLink>
-                                    </div>
-                                    <div class="p-1">
-                                        <NavLink class="p-2 text-white rounded bg-danger">
-                                            <i class="bi bi-trash"></i>
-                                        </NavLink>
-                                    </div> *@
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>
-                                    @TruncateToWords("Revised ESMP for the proposed Kasitu Area exploration of Niobium,Tantalum, Uranium and Zircon T/A Kampingo Sibande in Mzuzu District", 6)
-                                </td>
-                                <td>Mzuzu</td>
-                                <td>MMC Limited</td>
-                                <td>2025-08-05</td>
-                                <td>@DateTime.Now.AddMonths(-2)</td>
-                                <td>
-                                    <div class="flex-row d-flex">
-                                        <div class="p-1">
-                                            <NavLink class="p-2 text-white rounded bg-warning">
-                                                <i class="bi bi-eye-fill"></i>
-                                            </NavLink>
-                                        </div>
-                                        <div class="p-1">
-                                            <NavLink class="p-2 text-white rounded bg-success">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </NavLink>
-                                        </div>
-                                        <div class="p-1">
-                                            <NavLink class="p-2 text-white rounded bg-danger">
-                                                <i class="bi bi-trash"></i>
-                                            </NavLink>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>
-                                    @TruncateToWords("Revised ESMP for gold and heavy mineral sands in T/A Katunga, Chikwawa", 6)
-                                </td>
-                                <td>Chikwawa</td>
-                                <td>HDL Mining LTD </td>
-                                <td>2025-08-05</td>
-                                <td>@DateTime.Now.AddMonths(-3)</td>
-                                <td>
-                                    <div class="flex-row d-flex">
-                                        <div class="p-1">
-                                            <NavLink class="p-2 text-white rounded bg-warning" href="/Projects/View">
-                                                <i class="bi bi-eye-fill"></i>
-                                            </NavLink>
-                                        </div>
-                                        <div class="p-1">
-                                            <NavLink class="p-2 text-white rounded bg-success">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </NavLink>
-                                        </div>
-                                        <div class="p-1">
-                                            <NavLink class="p-2 text-white rounded bg-danger">
-                                                <i class="bi bi-trash"></i>
-                                            </NavLink>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                  
+                                </div>
+                            </td>
+    </RowTemplate>
+                    </TableTemplate>
                     <div class="justify-content-center d-flex">
                         <nav aria-label="...">
                             <ul class="pagination">
@@ -416,6 +354,8 @@ else
     [SupplyParameterFromForm]
     private ContactPersonDTO ContactPerson { get; set; } = new();
 
+    public List<ProjectDTO>? Projects { get; set; }
+
     [Parameter]
     public string? PropID { get; set; }
 
@@ -440,9 +380,14 @@ else
         // var proponentID = Guid.
         // if (!string.IsNullOrEmpty(PropID))
         // {
-            Proponent = await ProponentService.GetProponentAsync(
-            Guid.Parse(PropID));
-            contactPeople = await ContactPersonService.GetContactPersonsAsync(Guid.Parse(PropID));
+        Proponent = await ProponentService.GetProponentAsync(
+        Guid.Parse(PropID));
+        if (Proponent != null)
+        {
+            contactPeople = Proponent?.Contacts?.ToList();
+            Projects = Proponent?.Projects?.ToList();
+        }
+            // contactPeople = await ContactPersonService.GetContactPersonsAsync(Guid.Parse(PropID));
         // }
     }
 

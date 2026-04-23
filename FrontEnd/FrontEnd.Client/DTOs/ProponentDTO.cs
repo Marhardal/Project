@@ -4,7 +4,10 @@ namespace FrontEnd.Client.DTOs
 {
     public class ProponentsDTO
     {
-        public Guid ID { get; set; } = Guid.NewGuid();
+        // Do not generate a new Guid by default. When deserializing server responses
+        // we want the incoming ID (if provided) to be preserved. If the server omits
+        // the ID it should remain Guid.Empty instead of creating a misleading value.
+        public Guid ID { get; set; }
 
         [Required]
         public string Name { get; set; } = string.Empty;
@@ -19,10 +22,10 @@ namespace FrontEnd.Client.DTOs
 
         public DateTime updatedOn { get; set; }
 
-        //public ICollection<ContactPersonDTO>? Contacts { get; set; }
+        public ICollection<ContactPersonDTO>? Contacts { get; set; }
         //public ContactPersonDTO? Contact { get; set; }
-        //public ICollection<ProjectModel>? Projects { get; set; }
-        //public ProjectModel? Project { get; set; }
+        public ICollection<ProjectDTO>? Projects { get; set; }
+        public ProjectDTO? Project { get; set; }
     }
 
 }

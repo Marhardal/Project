@@ -9,6 +9,10 @@
       {
         "Path": "Project\\Project.csproj",
         "Action": "Start"
+      },
+      {
+        "Path": "FrontEnd\\FrontEnd.Client\\FrontEnd.Client.csproj",
+        "Action": "Start"
       }
     ]
   }

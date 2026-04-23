@@ -68,30 +68,25 @@
                     int index = proposals.IndexOf(proposal) + 1;
                 }
                 <td>@index</td>
-                <td class="py-2">
-                    @proposal.Name
+                <td>
+                <span class="d-inline-block text-truncate" style="max-width: 350px;" title="@proposal.Name">@proposal.Name</span>
                 </td>
                 <td class="py-2">@proposal.Proponent?.Name</td>
                 <td class="py-2">@proposal.Location</td>
                 <td class="py-2">@proposal.ProjectType</td>
                 <td class="py-2">@proposal.createdOn.ToString("yyyy-MMM, dd")</td>
                 <td class="py-2">
-                    <div class="flex-row d-flex justify-content-end ">
-                        <div class="p-1">
-                            <NavLink class="p-2 rounded btn btn-outline-warning" href="@($"Project/View/{proposal.Id}")">
+                <div class="d-flex gap-1 justify-content-end ">
+                       
+                            <NavLink class="rounded btn btn-outline-warning" href="@($"Project/View/{proposal.Id}")">
                                 <i class="bi bi-eye-fill"></i>
                             </NavLink>
-                        </div>
-                        <div class="p-1">
-                            <NavLink class="p-2 rounded btn btn-outline-success">
+                            <NavLink class="rounded btn btn-outline-success">
                                 <i class="bi bi-pencil-square"></i>
                             </NavLink>
-                        </div>
-                        <div class="p-1">
-                            <NavLink class="p-2 rounded btn btn-outline-danger">
+                            <NavLink class="rounded btn btn-outline-danger">
                                 <i class="bi bi-trash"></i>
                             </NavLink>
-                        </div>
                     </div>
                 </td>
             </RowTemplate>

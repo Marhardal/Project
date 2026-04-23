@@ -1,4 +1,5 @@
 ﻿using FrontEnd.Client.DTOs;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace FrontEnd.Client.Services
@@ -37,6 +38,23 @@ namespace FrontEnd.Client.Services
 
                 // Return empty list to avoid bubbling exceptions to the UI lifecycle.
                 return new List<ProjectDTO>();
+            }
+        }
+
+        public async Task<HttpResponseMessage> CreateProjectAsync(ProjectDTO dto)
+        {
+            try
+            {
+                return await _http.PostAsJsonAsync("api/projects", dto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to create project via POST {Endpoint}", "api/projects");
+                var resp = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+                {
+                    Content = new StringContent(ex.Message)
+                };
+                return resp;
             }
         }
 

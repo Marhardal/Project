@@ -3,8 +3,8 @@
 @using FrontEnd.Client.DTOs
 @using Services
 @inject ProjectService ProjectService
+@inject ProponentService ProponentService
 @inject HttpClient http
-
 
 <PageTitle>MEPA | Proposals</PageTitle>
 
@@ -14,7 +14,7 @@
     </div>
     <div class="col-md-2">
         <div class="mb-3 input-group rounded-pill justify-content-end">
-  <span class="input-group-text" id="basic-addon1">Show</span>
+            <span class="input-group-text" id="basic-addon1">Show</span>
             <select class="form-control-sm" aria-label="Username" aria-describedby="basic-addon1">
                 <option>10</option>
                 <option>20</option>
@@ -22,11 +22,12 @@
                 <option>40</option>
                 <option>50</option>
             </select>
-</div>
+        </div>
     </div>
     <div class="col-md-2 text-end">
         <div class="dropdown-center">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
                 Export
             </button>
             <ul class="dropdown-menu">
@@ -36,263 +37,203 @@
         </div>
     </div>
     <div class="col-md-2 text-end">
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="bi bi-plus-square me-2"></i>Add</button>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-        <div class="mb-3 input-group">
-            <span class="input-group-text" id="basic-addon1">Search</span>
-            <input type="text" class="form-control" placeholder="Search" aria-label="Username" aria-describedby="basic-addon1">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i
+            class="bi bi-plus-square me-2"></i>Add</button>
         </div>
     </div>
-</div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="mb-3 input-group">
+                <span class="input-group-text" id="basic-addon1">Search</span>
+                <input type="text" class="form-control" placeholder="Search" aria-label="Username"
+                       aria-describedby="basic-addon1">
+            </div>
+        </div>
+    </div>
 
-<div class="border rounded bg-body-tertiary">
-    <TableTemplate Items="proposals" Context="proposal">
+    <div class="border rounded bg-body-tertiary">
+        <TableTemplate Items="proposals" Context="proposal">
 
-        <TableHeader>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Proponent</th>
-            <th scope="col">Location</th>
-            <th scope="col">Status</th>
-            <th scope="col">Created On</th>
-            <th scope="col"></th>
-    </TableHeader>
-    <RowTemplate Context="proposal">
-            @{
-                int index = proposals.IndexOf(proposal) + 1;
-            }
-            <td>@index</td>
-            <td class="py-2">
-                @proposal.Name
-            </td>
-            <td class="py-2">@proposal.Proponent?.Name</td>
-            <td class="py-2">@proposal.Location</td>
-            <td class="py-2">@proposal.ProjectType</td>
-            <td class="py-2">@proposal.createdOn.ToString("yyyy-MMM, dd")</td>
-            <td class="py-2">
-                <div class="flex-row d-flex justify-content-end ">
-                    <div class="p-1">
-                        <NavLink class="rounded btn p-2 btn-outline-warning" href="@($"Project/View/{proposal.Id}")">
-                            <i class="bi bi-eye-fill"></i>
-                        </NavLink>
-                    </div>
-                    <div class="p-1">
-                        <NavLink class="rounded btn p-2 btn-outline-success">
-                            <i class="bi bi-pencil-square"></i>
-                        </NavLink>
-                    </div>
-                    <div class="p-1">
-                        <NavLink class="rounded btn p-2 btn-outline-danger">
-                            <i class="bi bi-trash"></i>
-                        </NavLink>
-                    </div>
-                </div>
-            </td>
-    </RowTemplate>
-    </TableTemplate>
-    @* <table class="table p-2 mt-2 rounded-pill table-hover">
-        <thead class="text-white bg-dark">
-            <tr class="">
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th scope="row">1</th>
+            <TableHeader>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Proponent</th>
+                <th scope="col">Location</th>
+                <th scope="col">Status</th>
+                <th scope="col">Created On</th>
+                <th scope="col"></th>
+            </TableHeader>
+            <RowTemplate Context="proposal">
+                @{
+                    int index = proposals.IndexOf(proposal) + 1;
+                }
+                <td>@index</td>
                 <td class="py-2">
-                    @TruncateToWords("Revised ESMP for Dumisan Borrow Pit in Kasungu District", 6)
+                    @proposal.Name
                 </td>
-                <td class="py-2">Kasungu</td>
-                <td class="py-2">Mota-Engil</td>
-                <td class="py-2">Started</td>
-                <td class="py-2">@DateTime.Now.AddMonths(-1).ToString("yyyy-MMM, dd")</td>
+                <td class="py-2">@proposal.Proponent?.Name</td>
+                <td class="py-2">@proposal.Location</td>
+                <td class="py-2">@proposal.ProjectType</td>
+                <td class="py-2">@proposal.createdOn.ToString("yyyy-MMM, dd")</td>
                 <td class="py-2">
                     <div class="flex-row d-flex justify-content-end ">
                         <div class="p-1">
-                            <NavLink class="rounded btn p-2 btn-outline-warning" href="Project/View">
+                            <NavLink class="p-2 rounded btn btn-outline-warning" href="@($"Project/View/{proposal.Id}")">
                                 <i class="bi bi-eye-fill"></i>
                             </NavLink>
                         </div>
                         <div class="p-1">
-                            <NavLink class="rounded btn p-2 btn-outline-success">
+                            <NavLink class="p-2 rounded btn btn-outline-success">
                                 <i class="bi bi-pencil-square"></i>
                             </NavLink>
                         </div>
                         <div class="p-1">
-                            <NavLink class="rounded btn p-2 btn-outline-danger">
-                            <i class="bi bi-trash"></i>
+                            <NavLink class="p-2 rounded btn btn-outline-danger">
+                                <i class="bi bi-trash"></i>
                             </NavLink>
                         </div>
                     </div>
                 </td>
-            </tr>
-            <tr>
-                <th scope="row">1</th>
-                <td class="py-2">
-                    @TruncateToWords("Revised ESMP for Dumisan Borrow Pit in Kasungu District", 6)
-                </td>
-                <td class="py-2">Kasungu</td>
-                <td class="py-2">Mota-Engil</td>
-                <td class="py-2">Started</td>
-                <td class="py-2">@DateTime.Now.AddMonths(-1).ToString("yyyy-MMM, dd")</td>
-                <td class="py-2">
-                    <div class="flex-row d-flex justify-content-end ">
-                        <div class="p-1">
-                            <NavLink class="rounded btn p-2 btn-outline-warning" href="Project/View">
-                                <i class="bi bi-eye-fill"></i>
-                            </NavLink>
-                        </div>
-                        <div class="p-1">
-                            <NavLink class="rounded btn p-2 btn-outline-success">
-                                <i class="bi bi-pencil-square"></i>
-                            </NavLink>
-                        </div>
-                        <div class="p-1">
-                            <NavLink class="rounded btn p-2 btn-outline-danger">
-                            <i class="bi bi-trash"></i>
-                            </NavLink>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">1</th>
-                <td class="py-2">
-                    @TruncateToWords("Revised ESMP for Dumisan Borrow Pit in Kasungu District", 6)
-                </td>
-                <td class="py-2">Kasungu</td>
-                <td class="py-2">Mota-Engil</td>
-                <td class="py-2">Started</td>
-                <td class="py-2">@DateTime.Now.AddMonths(-1).ToString("yyyy-MMM, dd")</td>
-                <td class="py-2">
-                    <div class="flex-row d-flex justify-content-end ">
-                        <div class="p-1">
-                            <NavLink class="rounded btn p-2 btn-outline-warning" href="Project/View">
-                                <i class="bi bi-eye-fill"></i>
-                            </NavLink>
-                        </div>
-                        <div class="p-1">
-                            <NavLink class="rounded btn p-2 btn-outline-success">
-                                <i class="bi bi-pencil-square"></i>
-                            </NavLink>
-                        </div>
-                        <div class="p-1">
-                            <NavLink class="rounded btn p-2 btn-outline-danger">
-                            <i class="bi bi-trash"></i>
-                            </NavLink>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row">1</th>
-                <td class="py-2">
-                    @TruncateToWords("Revised ESMP for Dumisan Borrow Pit in Kasungu District", 6)
-                </td>
-                <td class="py-2">Kasungu</td>
-                <td class="py-2">Mota-Engil</td>
-                <td class="py-2">Started</td>
-                <td class="py-2">@DateTime.Now.AddMonths(-1).ToString("yyyy-MMM, dd")</td>
-                <td class="py-2">
-                    <div class="flex-row d-flex justify-content-end ">
-                        <div class="p-1">
-                            <NavLink class="rounded btn p-2 btn-outline-warning" href="Project/View">
-                                <i class="bi bi-eye-fill"></i>
-                            </NavLink>
-                        </div>
-                        <div class="p-1">
-                            <NavLink class="rounded btn p-2 btn-outline-success">
-                                <i class="bi bi-pencil-square"></i>
-                            </NavLink>
-                        </div>
-                        <div class="p-1">
-                            <NavLink class="rounded btn p-2 btn-outline-danger">
-                            <i class="bi bi-trash"></i>
-                            </NavLink>
-                        </div>
-                    </div>
-                </td>
-            </tr>
+            </RowTemplate>
+        </TableTemplate>
+
+        <div class="justify-content-center d-flex">
+            <nav aria-label="...">
+                <ul class="pagination">
+                    <li class="page-item"><a href="#" class="page-link">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#" aria-current="page">2</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
             
-        </tbody>
-    </table> *@
-    <div class="justify-content-center d-flex">
-        <nav aria-label="...">
-            <ul class="pagination">
-                <li class="page-item"><a href="#" class="page-link">Previous</a></li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item active">
-                    <a class="page-link" href="#" aria-current="page">2</a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">Next</a></li>
-            </ul>
-        </nav>
-    </div>
-</div>
-
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Project</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <EditForm method="post" Model="Proposal" OnValidSubmit="HandleSubmission" FormName="create">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Project</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <DataAnnotationsValidator />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="Name" class="form-label">Project Name</label>
+                                    <InputText @bind-Value="Proposal.Name" class="form-control" id="Name"
+                                               placeholder="Enter Project Name."></InputText>
+                                    <ValidationMessage For="@(() => Proposal.Name)" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                
+                                <div class="mb-3">
+                                    <label for="ProponentID" class="form-label">Project Proponent</label>
+                                    <InputSelect @bind-Value="Proposal.ProponentID" id="ProponentID" class="form-select"
+                                                 aria-label="Default select example">
+                                        <option value="">-- Select Proponent --</option>
+                                        @foreach (var proponent in proponents)
+                                        {
+                                            <option value="@proponent.ID">@proponent.Name</option>
+                                        }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => Proposal.ProponentID)" class="text-danger" />
+                                </div>
+                            </div>
+                        </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="Location" class="form-label">Location</label>
+                                <InputText @bind-Value="Proposal.Location" class="form-control" id="Location" placeholder="Enter Project Location.">
+                                </InputText>
+                                <ValidationMessage For="@(() => Proposal.Location)" class="text-danger"  />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="SubmissionDate" class="form-label">Submission Date</label>
+                                <InputDate @bind-Value="Proposal.SubmissionDate" class="form-control"
+                                           id="SubmissionDate"></InputDate>
+                                <ValidationMessage For="@(() => Proposal.SubmissionDate)" class="text-danger" />
+                            </div>
+                        </div>
+                    </div>
+                        <div class="mb-3">
+                            <label for="Description" class="form-label">Description</label>
+                            <InputTextArea @bind-Value="Proposal.Description" class="form-control" id="Description" rows="3"
+                                           placeholder="Enter Project Description."></InputTextArea>
+                            <ValidationMessage For="@(() => Proposal.Description)" class="text-danger" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+        
+                </EditForm>
             </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Project Name</label>
-                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Project Name." required>
-                </div>
-                <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Project Proponent</label>
-                    <select class="form-select" aria-label="Default select example">
-                        <option selected>Select Project Proponent</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Submission Date</label>
-                    <input type="date" class="form-control" id="exampleFormControlInput1" required>
-                </div>
-                <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Description</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" required></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Create</button>
-            </div>
+        
         </div>
     </div>
-</div>
-
 @code {
     bool isloaded;
 
-    private List<ProjectDTO>? proposals;
-    private ProjectDTO? Proposal = new();
+    // Initialize lists to avoid null reference issues in the UI
+    private List<ProjectDTO> proposals = new();
+    private List<ProponentsDTO> proponents = new();
+    [SupplyParameterFromForm]
+    private ProjectDTO Proposal { get; set; } = new();
+    private EditContext? editContext;
+
     private string TruncateToWords(string text, int wordLimit)
     {
         if (string.IsNullOrEmpty(text)) return text;
-        
+
         var words = text.Split(' ');
         if (words.Length <= wordLimit) return text;
-        
+
         return string.Join(" ", words.Take(wordLimit)) + "...";
     }
 
     protected override async Task OnInitializedAsync()
     {
-        if (!isloaded)
+        // Fetch projects and proponents with null-checks to prevent null assignments
+        var projectResult = await ProjectService.GetProjectAsync();
+        proposals = projectResult ?? new List<ProjectDTO>();
+
+        var proponentResult = await ProponentService.GetProponentsAsync();
+        proponents = proponentResult ?? new List<ProponentsDTO>();
+
+        isloaded = true;
+    }
+
+    async Task HandleSubmission()
+    {
+        Proposal.createdOn = DateTime.Now;
+        Proposal.ProjectType = ProjectType.Audit;
+        Proposal.closingDate = DateTime.Now;
+        Proposal.assignedDate = DateTime.Now;
+        var response = await ProjectService.CreateProjectAsync(Proposal);
+        if (response.IsSuccessStatusCode)
         {
-            // await Task.Delay(500);
-            proposals = await ProjectService.GetProjectAsync();
-            isloaded = true;
+            var projectResult = await ProjectService.GetProjectAsync();
+            proposals = projectResult ?? new List<ProjectDTO>();
+
+            var proponentResult = await ProponentService.GetProponentsAsync();
+            proponents = proponentResult ?? new List<ProponentsDTO>();
+
+            Proposal = new ProjectDTO();
+            StateHasChanged();
         }
     }
 }

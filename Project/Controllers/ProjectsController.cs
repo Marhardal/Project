@@ -25,7 +25,32 @@ namespace Project.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProjectModel>>> GetProjects()
         {
-            return await _context.Projects.ToListAsync();
+            var projects = await _context.Projects.Include(p => p.Proponent).AsNoTracking().Select
+                (
+                p => new
+                {
+                    p.Id,
+                    p.Location,
+                    p.Name,
+                    p.ProjectType,
+                    p.ProponentID,
+                    p.SubmissionDate,
+                    p.closingDate,
+                    p.assignedDate,
+                    p.Description,
+                    Proponent = new Proponent
+                    {
+                        Name = p.Proponent != null ? p.Proponent.Name : null,
+                        Address = p.Proponent != null ? p.Proponent.Address : null,
+                        Location = p.Proponent != null ? p.Proponent.Location : null
+                    }
+                }).ToListAsync();
+
+            if (!projects.Any())
+            {
+                return NoContent();
+            }
+            return Ok(projects);
         }
 
         // GET: api/Projects/5

@@ -19,7 +19,7 @@ namespace Project.Models
         public ProjectType ProjectType { get; set; }
         public DateTime assignedDate { get; set; }
         public DateTime? closingDate { get; set; }
-        public DateTime SubmissionDate { get; set; }
+        public DateTime SubmissionDate { get; set; } = DateTime.Now;
         public DateTime createdOn { get; set; } = DateTime.Now;
         public DateTime updatedOn { get; set; }
         //public ICollection<Proponent>? Proponents { get; set; }

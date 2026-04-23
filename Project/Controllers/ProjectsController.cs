@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project.Data;
 using Project.Models;
+using Project.Models.ProjectManager.Data.Model;
+using ProjectManager.Data.Model;
 
 namespace Project.Controllers
 {
@@ -57,14 +59,55 @@ namespace Project.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectModel>> GetProjectModel(Guid id)
         {
-            var projectModel = await _context.Projects.FindAsync(id);
+            var projectModel = await _context.Projects
+     .Where(p => p.Id == id)
+     .Select(p => new ProjectModel
+     {
+         Id = p.Id,
+         Name = p.Name,
+         Location = p.Location,
+         ProjectType = p.ProjectType,
+         SubmissionDate = p.SubmissionDate,
+         closingDate = p.closingDate,
+         assignedDate = p.assignedDate,
+         Description = p.Description,
+
+         Proponent = p.Proponent == null ? null : new Proponent
+         {
+             Name = p.Proponent.Name,
+             Address = p.Proponent.Address,
+             Location = p.Proponent.Location
+         },
+
+         Trackings = p.Trackings.Select(t => new TrackingModel
+         {
+             Id = t.Id,
+             userID = t.userID,
+             createdOn = t.createdOn,
+
+             Status = t.Status == null ? null : new Status
+             {
+                 ID = t.Status.ID,
+                 Name = t.Status.Name,
+                 SortOrder = t.Status.SortOrder,
+             },
+
+             Review = t.Review == null ? null : new ReviewModel
+             {
+                 ID = t.Review.ID,
+                 Remarks = t.Review.Remarks,
+                 createdOn = t.Review.createdOn
+             }
+         }).ToList()
+     })
+     .FirstOrDefaultAsync();
 
             if (projectModel == null)
             {
                 return NotFound();
             }
 
-            return projectModel;
+            return Ok(projectModel);
         }
 
         // PUT: api/Projects/5
@@ -105,7 +148,10 @@ namespace Project.Controllers
         {
             _context.Projects.Add(projectModel);
             await _context.SaveChangesAsync();
-
+            //TrackingModel tracking = new TrackingModel()
+            //{
+                
+            //}
             return CreatedAtAction("GetProjectModel", new { id = projectModel.Id }, projectModel);
         }
 

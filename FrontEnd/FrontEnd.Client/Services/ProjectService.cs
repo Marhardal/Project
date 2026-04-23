@@ -41,6 +41,21 @@ namespace FrontEnd.Client.Services
             }
         }
 
+        public async Task<ProjectDTO> GetProjectAsync(Guid id)
+        {
+            try
+            {
+                var result = await _http.GetFromJsonAsync<ProjectDTO>($"api/projects/{id}");
+                return result ?? new ProjectDTO();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to GET project from {BaseAddress}{Endpoint}", _http.BaseAddress, $"api/projects/{id}");
+                return new ProjectDTO();
+            }
+        }
+
+
         public async Task<HttpResponseMessage> CreateProjectAsync(ProjectDTO dto)
         {
             try

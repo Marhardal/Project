@@ -12,6 +12,8 @@ namespace FrontEnd.Client.DTOs
         [Required]
         public string? Color { get; set; }
 
+        public int SortOrder { get; set; }
+
         public DateTime createdOn { get; set; }
         public DateTime updatedOn { get; set; }
 

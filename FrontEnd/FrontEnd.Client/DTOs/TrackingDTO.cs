@@ -19,12 +19,13 @@ namespace FrontEnd.Client.DTOs
         public ProjectDTO? Project { get; set; }
         [ForeignKey("StatusID")]
         public StatusDTO? Status { get; set; }
-        //public ReviewDTO? Review { get; set; }
+        public ReviewDTO? Review { get; set; }
 
     }
 
     public enum ProjectType
     {
+        Proposal,
         ESMP,
         Audit,
         ESIA

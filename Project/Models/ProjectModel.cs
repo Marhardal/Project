@@ -30,16 +30,17 @@ namespace Project.Models
 
     public enum ProjectType
     {
+        Proposal,
         ESMP,
         Audit,
         ESIA
     }
 
-    public enum Proposal
-    {
-        NotStarted,
-        Submitted,
-        Approved,
-        Rejected
-    }
+    //public enum Proposal
+    //{
+    //    NotStarted,
+    //    Submitted,
+    //    Approved,
+    //    Rejected
+    //}
 }

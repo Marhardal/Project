@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace FrontEnd.Client.DTOs
 {
@@ -22,7 +23,8 @@ namespace FrontEnd.Client.DTOs
         public DateTime updatedOn { get; set; }
         //public ICollection<Proponent>? Proponents { get; set; }
         public ProponentsDTO? Proponent { get; set; }
-        public ICollection<TrackingDTO>? Trackings { get; set; }
+        // Initialize Trackings to an empty collection to avoid null reference or empty-sequence issues in the UI
+        public ICollection<TrackingDTO> Trackings { get; set; } = new List<TrackingDTO>();
         //public TrackingDTO? Tracking { get; set; }
 
     }

@@ -1,6 +1,6 @@
 ﻿using Project.Models.ProjectManager.Data.Model;
 
-namespace ProjectManager.Data.Model
+namespace Project.Models
 {
     public class ReviewModel
     {

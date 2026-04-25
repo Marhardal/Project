@@ -1,4 +1,5 @@
 ﻿@page "/Proponent/View/{PropID}"
+@rendermode InteractiveWebAssembly
 @using FrontEnd.Client.Components.Components
 @using FrontEnd.Client.DTOs
 @using FrontEnd.Client.Services
@@ -136,9 +137,12 @@
                                 <td>@contact.createdOn.ToString("MMM dd, yyyy")</td>
                                 <td>
             <div class="d-flex gap-1 justify-content-center">
-                                    <button class="btn btn-sm btn-outline-warning" title="Edit">
+                                        <button class="btn btn-sm btn-outline-warning" type="button" title="Edit"
+                                                @onclick="() => editPerson(contact)"
+                                                @onclick:stopPropagation="true">
                                         <i class="bi bi-pencil"></i>
                                     </button>
+                                        @* data-bs-toggle="modal" data-bs-target="#staticBackdrop" *@
                                     <button class="btn btn-sm btn-outline-danger" title="Delete">
                                         <i class="bi bi-trash"></i>
                                     </button>
@@ -146,65 +150,18 @@
                                 </td>
                                     </RowTemplate>
                         </TableTemplate>
-                        @* <div class="border rounded bg-body-tertiary my-2">
-                            <table class="table p-2 mt-2 rounded-pill table-hover">
-                                <thead class="text-white bg-dark">
-                                    <tr class="">
-                                        <th scope="col">#</th>
-                                        <th scope="col">Full Name</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Phone</th>
-                                        <th scope="col">Created On</th>
-                                        <th scope="col">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td class="py-2">
-                                            John Doe
-                                        </td>
-                                        <td class="py-2">jdoe@gmail.com</td>
-                                        <td class="py-2">1234567890</td>
-                                        <td class="py-2">@DateTime.Now.AddMonths(-1)</td>
-                                        <td class="py-2">
-                                            <div class="flex-row d-flex">
-                                                <div class="p-1">
-                                                    <NavLink class="rounded btn p-2 btn-outline-success">
-                                                        <i class="bi bi-pencil-square"></i>
-                                                    </NavLink>
-                                                </div>
-                                                <div class="p-1">
-                                                    <NavLink class="rounded btn p-2 btn-outline-danger">
-                                                        <i class="bi bi-trash"></i>
-                                                    </NavLink>
-                                                </div>
-                                                <button class="btn btn-sm btn-outline-warning" title="Edit">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-danger" title="Delete">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="justify-content-center d-flex">
-                                <nav aria-label="...">
-                                    <ul class="pagination">
-                                        <li class="page-item"><a href="#" class="page-link">Previous</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                        <li class="page-item active">
-                                            <a class="page-link" href="#" aria-current="page">2</a>
-                                        </li>
-                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                                    </ul>
-                                </nav>
-                            </div>
-                        </div> *@
-                    }
+                        @code{
+    async Task TestClick()
+    {
+        Console.WriteLine("Test button clicked!");
+    }
+                        }
+                        <button class="btn btn-sm btn-outline-warning" title="Edit"
+                                @onclick="() => TestClick()"
+                                @onclick:stopPropagation="true">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        }
                     else
                     {
                         <span class="text-muted text-center justify-content-center align-content-center mx-auto">No contact people found for this proponent.</span>
@@ -307,9 +264,9 @@
     </div>
 
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <EditForm method="post" Model="ContactPerson" OnValidSubmit="HandleSubmission" FormName="create" Enhance>
+                <EditForm Model="CreatePerson" OnValidSubmit="HandleCreate" FormName="create" Enhance>
                     <DataAnnotationsValidator />
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Contact Person</h1>
@@ -318,18 +275,18 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="exampleFormControlInput1" class="form-label">Full Name</label>
-                            <InputText @bind-Value="ContactPerson.FullName" id="FullName" class="form-control " placeholder="Enter Full Name." ></InputText>
-                            <ValidationMessage For="@(() => ContactPerson.FullName)" class="text-danger blazor-error-boundary blazor-error-ui" />
+                            <InputText @bind-Value="CreatePerson.FullName" id="FullName" class="form-control " placeholder="Enter Full Name." ></InputText>
+                            <ValidationMessage For="@(() => CreatePerson.FullName)" class="text-danger blazor-error-boundary blazor-error-ui" />
                         </div>
                         <div class="mb-3">
                             <label for="exampleFormControlInput1" class="form-label">Email</label>
-                                <InputText class="form-control" @bind-Value="ContactPerson.Email" id="Email" placeholder="Enter Contact Person Email." ></InputText>
-                            <ValidationMessage For="@(() => ContactPerson.Email)" class="text-danger blazor-error-boundary blazor-error-ui" />
+                                <InputText class="form-control" @bind-Value="CreatePerson.Email" id="Email" placeholder="Enter Contact Person Email." ></InputText>
+                            <ValidationMessage For="@(() => CreatePerson.Email)" class="text-danger blazor-error-boundary blazor-error-ui" />
                         </div>
                         <div class="mb-3">
                             <label for="exampleFormControlInput1" class="form-label">Phone</label>
-                            <InputText class="form-control" @bind-Value="ContactPerson.Phone" id="Phone" placeholder="Enter Contact Person Phone." ></InputText>
-                            <ValidationMessage For="@(() => ContactPerson.Phone)" class="text-danger blazor-error-boundary" />
+                            <InputText class="form-control" @bind-Value="CreatePerson.Phone" id="Phone" placeholder="Enter Contact Person Phone." ></InputText>
+                            <ValidationMessage For="@(() => CreatePerson.Phone)" class="text-danger blazor-error-boundary" />
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -340,6 +297,42 @@
             </div>
         </div>
     </div>
+
+  @*   <div class="modal fade" id="editPerson" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <EditForm method="post" Model="EditPerson" OnValidSubmit="HandleUpdate" FormName="edit" Enhance>
+                    <DataAnnotationsValidator />
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Contact Person</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Proponent.ID" value="@EditPerson.Id" />
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Full Name</label>
+                        <InputText @bind-Value="EditPerson.FullName" id="EditPerson.FullName" class="form-control " placeholder="Enter Full Name."></InputText>
+                            <ValidationMessage For="@(() => EditPerson.FullName)" class="text-danger blazor-error-boundary blazor-error-ui" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Email</label>
+                        <InputText class="form-control" @bind-Value="EditPerson.Email" id="EditPerson.Email" placeholder="Enter Contact Person Email."></InputText>
+                            <ValidationMessage For="@(() => EditPerson.Email)" class="text-danger blazor-error-boundary blazor-error-ui" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Phone</label>
+                        <InputText class="form-control" @bind-Value="EditPerson.Phone" id="EditPerson.Phone" placeholder="Enter Contact Person Phone."></InputText>
+                            <ValidationMessage For="@(() => EditPerson.Phone)" class="text-danger blazor-error-boundary" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div> *@
 }
 else
 {
@@ -352,7 +345,11 @@ else
     private ProponentsDTO? Proponent;
 
     [SupplyParameterFromForm]
-    private ContactPersonDTO ContactPerson { get; set; } = new();
+    private ContactPersonDTO? CreatePerson { get; set; } = new();
+    // [SupplyParameterFromForm(FormName = "edit")]
+    // private ContactPersonDTO? EditPerson { get; set; }
+
+    // EditContext context;
 
     public List<ProjectDTO>? Projects { get; set; }
 
@@ -380,6 +377,7 @@ else
         // var proponentID = Guid.
         // if (!string.IsNullOrEmpty(PropID))
         // {
+        // CreatePerson = new();
         Proponent = await ProponentService.GetProponentAsync(
         Guid.Parse(PropID));
         if (Proponent != null)
@@ -387,19 +385,19 @@ else
             contactPeople = Proponent?.Contacts?.ToList();
             Projects = Proponent?.Projects?.ToList();
         }
-            // contactPeople = await ContactPersonService.GetContactPersonsAsync(Guid.Parse(PropID));
+        // contactPeople = await ContactPersonService.GetContactPersonsAsync(Guid.Parse(PropID));
         // }
     }
 
-    protected async Task HandleSubmission()
+    protected async Task HandleCreate()
     {
         isSubmitting = true;
         submitMessage = null;
         try
         {
-            ContactPerson.ProponentID = Guid.Parse(PropID);
-            ContactPerson.createdOn = DateTime.Now;
-            var response = await ContactPersonService.CreateContactPersonAsync(ContactPerson);
+            CreatePerson!.ProponentID = Guid.Parse(PropID);
+            CreatePerson.createdOn = DateTime.Now;
+            var response = await ContactPersonService.CreateContactPersonAsync(CreatePerson);
             if (response.IsSuccessStatusCode)
             {
                 // Refresh list
@@ -424,5 +422,51 @@ else
             isSubmitting = false;
             StateHasChanged();
         }
+    }
+
+    protected async Task HandleUpdate()
+    {
+        isSubmitting = true;
+        submitMessage = null;
+        // try
+        // {
+        //     EditPerson.ProponentID = Guid.Parse(PropID);
+        //     EditPerson.createdOn = DateTime.Now;
+        //     var response = await ContactPersonService.UpdateContactPersonAsync(EditPerson.Id, EditPerson);
+        //     if (response.IsSuccessStatusCode)
+        //     {
+        //         Refresh list
+        //         contactPeople = await ContactPersonService.GetContactPersonsAsync(Guid.Parse(PropID));
+        //         Reset form
+        //         Proponent = new();
+        //         Close modal
+        //         await JSRuntime.InvokeVoidAsync("bootstrap.Modal.getInstance", modalElement).AsTask();
+        //         submitMessage = "Proponent updated successfully!";
+        //     }
+        //     else
+        //     {
+        //         submitMessage = $"Error {response.StatusCode}: {await response.Content.ReadAsStringAsync()}";
+        //     }
+        // }
+        // catch (Exception ex)
+        // {
+        //     submitMessage = $"Error: {ex.Message}";
+        // }
+        // finally
+        // {
+        //     isSubmitting = false;
+        //     StateHasChanged();
+        // }
+    }
+
+    void editPerson(ContactPersonDTO contact)
+    {
+        CreatePerson = new ContactPersonDTO()
+        {
+            Id = contact.Id,
+            FullName = contact.FullName,
+            Email = contact.Email,
+            Phone = contact.Phone
+        };
     }
 }

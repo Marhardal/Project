@@ -1,6 +1,5 @@
 ﻿namespace Project.Models
 {
-    using global::ProjectManager.Data.Model;
     using System.ComponentModel.DataAnnotations.Schema;
 
     namespace ProjectManager.Data.Model

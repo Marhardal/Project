@@ -35,7 +35,8 @@
     <div class="col-md-5">
         <div class="my-2 input-group">
             <span class="input-group-text" id="basic-addon1">Search</span>
-            <input type="text" class="form-control" placeholder="Search" aria-label="Username" aria-describedby="basic-addon1">
+            <input type="text" class="form-control" placeholder="Search" aria-label="Username"
+                   aria-describedby="basic-addon1">
         </div>
     </div>
 
@@ -43,7 +44,8 @@
         <div class="d-flex flex-wrap gap-2 justify-content-end">
             <div class="dropdown-center small flex-grow-1 flex-md-grow-0">
                 <!-- Grows to fill space on mobile -->
-                <button class="btn btn-secondary dropdown-toggle w-100 w-md-auto" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-secondary dropdown-toggle w-100 w-md-auto" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                     Export
                 </button>
                 <ul class="dropdown-menu dropdown-menu-sm">
@@ -53,7 +55,8 @@
             </div>
             <div class="flex-grow-1 flex-md-grow-0">
                 <!-- Grows to fill space on mobile -->
-                <button type="button" @onclick="OpenCreateModal" class="btn btn-primary w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                <button type="button" @onclick="OpenCreateModal" class="btn btn-primary w-100 w-md-auto"
+                        data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                     <i class="bi bi-plus-square me-2"></i>Add
                 </button>
             </div>
@@ -71,42 +74,42 @@ else if (proponents?.Count > 0)
     <div class="border rounded bg-body-tertiary">
         <div class="p-2 mt-2">
 
-<TableTemplate Items="proponents" Context="proponent">
+            <TableTemplate Items="proponents" Context="proponent">
 
-    <TableHeader>
-        <th scope="col">#</th>
-        <th scope="col">Name</th>
-        <th scope="col">Postal Address</th>
-        <th scope="col">Location</th>
-        <th scope="col">Created On</th>
-        <th scope="col"></th>
-    </TableHeader>
-    <RowTemplate Context="proponent">
-        @{
-            int index = proponents.IndexOf(proponent) + 1;
-        }
-        <td>@index</td>
-        <td>@proponent.Name</td>
-        <td>@proponent.Address</td>
-        <td>@proponent.Location</td>
-        <td>@proponent.createdOn.ToString("MMM dd, yyyy")</td>
-        <td>
-            <div class="d-flex gap-1 justify-content-center">
-                <NavLink class="btn btn-sm btn-outline-primary" href="@($"/Proponent/View/{proponent.ID}")">
-                    <i class="bi bi-eye"></i>
-                </NavLink>
-                            <button class="btn btn-sm btn-outline-warning" @onclick="() => EditProponent(proponent)" title="Edit" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop">
-                    <i class="bi bi-pencil"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-danger" title="Delete">
-                    <i class="bi bi-trash"></i>
-                </button>
-            </div>
-        </td>
-    </RowTemplate>
+                <TableHeader>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Postal Address</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Created On</th>
+                    <th scope="col"></th>
+                </TableHeader>
+                <RowTemplate Context="proponent">
+                    @{
+                        int index = proponents.IndexOf(proponent) + 1;
+                    }
+                    <td>@index</td>
+                    <td>@proponent.Name</td>
+                    <td>@proponent.Address</td>
+                    <td>@proponent.Location</td>
+                    <td>@proponent.createdOn.ToString("MMM dd, yyyy")</td>
+                    <td>
+                        <div class="d-flex gap-1 justify-content-center">
+                            <NavLink class="btn btn-sm btn-outline-primary" href="@($"/Proponent/View/{proponent.ID}")">
+                                <i class="bi bi-eye"></i>
+                            </NavLink>
+                            <button class="btn btn-sm btn-outline-warning" @onclick="() => EditProponent(proponent)"
+                                    title="Edit" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" title="Delete">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </RowTemplate>
 
-    </TableTemplate>
+            </TableTemplate>
         </div>
 
         <div class="justify-content-center d-flex">
@@ -133,10 +136,9 @@ else
 
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <EditForm method="post" Model="Proponent" OnValidSubmit="HandleSubmission" FormName="create" Enhance>
-                @* <DataAnnotationsValidator /> *@
+            <EditForm method="post" Model="Proponent" OnValidSubmit="HandleSubmission" FormName="create">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">@* Create Proponent *@ @(isEditMode ? "Edit Proponent" : "Create Proponent")</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -147,34 +149,37 @@ else
                     @* <ValidationSummary /> *@
                     <div class="mb-3">
                         <label for="Name" class="form-label">Proponent Name</label>
-                        <InputText id="Name" @bind-Value="Proponent.Name" class="form-control" placeholder="Enter Proponent Name."></InputText>
+                        <InputText id="Name" @bind-Value="Proponent.Name" class="form-control"
+                                   placeholder="Enter Proponent Name."></InputText>
                         <ValidationMessage For="@(() => Proponent.Name)" class="text-danger" />
                     </div>
                     <div class="mb-3">
                         <label for="Address" class="form-label">Postal Address</label>
-                        <InputText id="Address" @bind-Value="Proponent.Address" class="form-control" placeholder="Enter Proponent Address."></InputText>
+                        <InputText id="Address" @bind-Value="Proponent.Address" class="form-control"
+                                   placeholder="Enter Proponent Address."></InputText>
                         <ValidationMessage For="@(() => Proponent.Address)" class="text-danger" />
                     </div>
-    <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">Proponent Location</label>
-        <InputText id="Location" @bind-Value="Proponent.Location" class="form-control" placeholder="Enter Proponent Location." />
-        <ValidationMessage For="@(() => Proponent.Location)" class="text-danger" />
-    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Proponent Location</label>
+                        <InputText id="Location" @bind-Value="Proponent.Location" class="form-control"
+                                   placeholder="Enter Proponent Location." />
+                        <ValidationMessage For="@(() => Proponent.Location)" class="text-danger" />
+                    </div>
 
-    @if (!string.IsNullOrEmpty(submitMessage))
-    {
-        <div class="alert @(submitMessage?.Contains("Error") == true ? "alert-danger" : "alert-success") alert-dismissible fade show" role="alert">
-            @submitMessage
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
+                    @if (!string.IsNullOrEmpty(submitMessage))
+                    {
+                        <div class="alert @(submitMessage?.Contains("Error") == true ? "alert-danger" : "alert-success") alert-dismissible fade show"
+                             role="alert">
+                            @submitMessage
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-    <button type="submit" class="btn btn-primary" disabled="@isSubmitting">
-        @(isSubmitting ? "Creating..." : "Create")
-    </button>
+                    <button type="submit" class="btn btn-primary" @onclick="HandleSubmission">Create
+                    </button>
 
                 </div>
             </EditForm>
@@ -186,7 +191,8 @@ else
 @code {
     private List<ProponentsDTO>? proponents;
 
-    private ProponentsDTO Proponent { get; set; } = new();
+    [SupplyParameterFromForm]
+    private ProponentsDTO? Proponent { get; set; } = new();
 
     private ElementReference modalElement;
 
@@ -220,8 +226,9 @@ else
     {
         isSubmitting = true;
         submitMessage = null;
-        try 
+        try
         {
+            Proponent.createdOn = DateTime.Now;
             var response = await ProponentService.CreateProponentAsync(Proponent);
             if (response.IsSuccessStatusCode)
             {

@@ -347,7 +347,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[ProjectManager.Data.Model.ReviewModel, Project, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Project.Models.ReviewModel, Project, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -367,13 +367,13 @@
     "Parameters": [
       {
         "Name": "reviewModel",
-        "Type": "ProjectManager.Data.Model.ReviewModel",
+        "Type": "Project.Models.ReviewModel",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "ProjectManager.Data.Model.ReviewModel",
+        "Type": "Project.Models.ReviewModel",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -399,7 +399,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "ProjectManager.Data.Model.ReviewModel",
+        "Type": "Project.Models.ReviewModel",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -424,7 +424,7 @@
       },
       {
         "Name": "reviewModel",
-        "Type": "ProjectManager.Data.Model.ReviewModel",
+        "Type": "Project.Models.ReviewModel",
         "IsRequired": true
       }
     ],

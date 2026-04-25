@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Project.Models;
 using Project.Models.ProjectManager.Data.Model;
-using ProjectManager.Data.Model;
 
 namespace Project.Data
 {

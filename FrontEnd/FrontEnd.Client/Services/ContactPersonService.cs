@@ -58,5 +58,22 @@ namespace FrontEnd.Client.Services
             }
         }
 
+        public async Task<HttpResponseMessage> UpdateContactPersonAsync(Guid id, ContactPersonDTO dto)
+        {
+            try
+            {
+                return await _http.PutAsJsonAsync($"api/ContactPersons/{id}", dto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to update ContactPerson {Id} via PUT {Endpoint}", id, $"api/ContactPersons/{id}");
+                var resp = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+                {
+                    Content = new StringContent(ex.Message)
+                };
+                return resp;
+            }
+        }
+
     }
 }

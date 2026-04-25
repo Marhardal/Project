@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project.Data;
-using ProjectManager.Data.Model;
+using Project.Models;
 
 namespace Project.Controllers
 {

@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Project.Data;
 using Project.Models;
 using Project.Models.ProjectManager.Data.Model;
-using ProjectManager.Data.Model;
 
 namespace Project.Controllers
 {

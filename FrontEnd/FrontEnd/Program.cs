@@ -56,6 +56,16 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("https://localhost:7217")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // ProponentService is provided via AddHttpClient<ProponentService>() above, which registers
 // a typed client and ensures HttpClient is configured with BaseAddress. Do not re-register
 // as a plain scoped service — that would bypass the typed client and provide an HttpClient
@@ -85,6 +95,8 @@ app.MapStaticAssets();
 
 // Ensure CORS middleware runs before mapping endpoints so the policy is applied
 app.UseCors("AllowBlazor");
+
+app.UseCors("AllowFrontend");
 
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()

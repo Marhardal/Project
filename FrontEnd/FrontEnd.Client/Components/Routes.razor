@@ -1,0 +1,10 @@
+﻿@namespace FrontEnd.Client
+
+<Router AppAssembly="typeof(Program).Assembly"
+        AdditionalAssemblies="new[] { typeof(FrontEnd.Client.Components._Imports).Assembly }"
+        NotFoundPage="typeof(FrontEnd.Client.Components.Pages.NotFound)">
+    <Found Context="routeData">
+        <RouteView RouteData="routeData" DefaultLayout="typeof(FrontEnd.Client.Components.Layout.MainLayout)" />
+        <FocusOnNavigate RouteData="routeData" Selector="h1" />
+    </Found>
+</Router>

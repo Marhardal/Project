@@ -26,16 +26,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowBlazor",
-        policy =>
-        {
-            policy.WithOrigins("https://localhost:5002") // Blazor URL
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        });
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("https://localhost:7217") // ✅ FIXED
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
 });
+
 builder.Services.Configure<ScalarOptions>(options =>
 {
     options.WithOpenApiRoutePattern("/openapi/v1.json");
@@ -51,6 +53,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
+
+app.UseCors("AllowFrontend");
 
 app.UseHttpsRedirection();
 

@@ -1,0 +1,13 @@
+﻿@page "/render-mode-1"
+@rendermode InteractiveServer
+
+<button @onclick="UpdateMessage">Click me</button> @message
+
+@code {
+    private string message = "Not updated yet.";
+
+    private void UpdateMessage()
+    {
+        message = "Somebody updated me!";
+    }
+}

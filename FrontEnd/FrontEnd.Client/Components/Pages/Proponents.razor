@@ -1,4 +1,5 @@
 ﻿@page "/proponents"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 @using FrontEnd.Client.Components
 @using FrontEnd.Client
 @using FrontEnd.Client.Components.Components
@@ -6,7 +7,7 @@
 @using FrontEnd.Client.Services
 @inject HttpClient http
 @inject ProponentService ProponentService
-@* @inject IJSRuntime JSRuntime *@
+@inject IJSRuntime JSRuntime
 @* @rendermode InteractiveWebAssembly *@
 
 <PageTitle>MEPA | Proponents</PageTitle>
@@ -138,7 +139,7 @@ else
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <EditForm method="post" Model="Proponent" OnValidSubmit="HandleSubmission" FormName="create">
+            <EditForm method="post" Model="Proponent" OnValidSubmit="@(isEditMode ? HandleUpdate : HandleSubmission)" FormName="create">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">@* Create Proponent *@ @(isEditMode ? "Edit Proponent" : "Create Proponent")</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -178,7 +179,8 @@ else
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" @onclick="HandleSubmission">Create
+                    <button type="submit" class="btn btn-primary">
+                        @(isEditMode ? "Update" : "Create")
                     </button>
 
                 </div>
@@ -255,5 +257,46 @@ else
             StateHasChanged();
         }
     }
+    
+    protected async Task HandleUpdate()
+    {
+        isSubmitting = true;
+        submitMessage = null;
+        try
+        {
+            // EditPerson.ProponentID = ;
+            // Proponent!.ProponentID = Guid.Parse(PropID);
+            Proponent.updatedOn = DateTime.Now;
+            var response = await ProponentService.UpdateProponentAsync(Proponent.ID, Proponent);
+            if (response.IsSuccessStatusCode)
+            {
+                // Refresh list
+                proponents = await ProponentService.GetProponentsAsync();
+                
+                // Reset form
+                Proponent = new();
+                
+                // await JSRuntime.InvokeVoidAsync("closeModal", "staticBackdrop");
+                // Close modal
+                // await JSRuntime.InvokeVoidAsync("bootstrap.Modal.getInstance", modalElement).AsTask();
+                isEditMode = false;
+                submitMessage = "Proponent updated successfully!";
+            }
+            else
+            {
+                submitMessage = $"Error {response.StatusCode}: {await response.Content.ReadAsStringAsync()}";
+            }
+        }
+        catch (Exception ex)
+        {
+            submitMessage = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            isSubmitting = false;
+            StateHasChanged();
+        }
+    }
+
 }
 

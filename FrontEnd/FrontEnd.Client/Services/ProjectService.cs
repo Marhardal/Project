@@ -55,7 +55,6 @@ namespace FrontEnd.Client.Services
             }
         }
 
-
         public async Task<HttpResponseMessage> CreateProjectAsync(ProjectDTO dto)
         {
             try
@@ -65,6 +64,23 @@ namespace FrontEnd.Client.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to create project via POST {Endpoint}", "api/projects");
+                var resp = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+                {
+                    Content = new StringContent(ex.Message)
+                };
+                return resp;
+            }
+        }
+
+        public async Task<HttpResponseMessage> UpdateProjectAsync(Guid id, ProjectDTO dto)
+        {
+            try
+            {
+                return await _http.PutAsJsonAsync($"api/projects/{id}", dto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to update project {Id} via PUT {Endpoint}", id, $"api/projects/{id}");
                 var resp = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
                 {
                     Content = new StringContent(ex.Message)

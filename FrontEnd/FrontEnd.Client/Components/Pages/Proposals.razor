@@ -256,7 +256,7 @@
     protected override async Task OnInitializedAsync()
     {
         // Fetch projects and proponents with null-checks to prevent null assignments
-        var projectResult = await ProjectService.GetProjectAsync();
+        var projectResult = await ProjectService.GetProjectAsync(true);
         proposals = projectResult ?? new List<ProjectDTO>();
 
         var proponentResult = await ProponentService.GetProponentsAsync();
@@ -274,7 +274,7 @@
         var response = await ProjectService.CreateProjectAsync(Proposal);
         if (response.IsSuccessStatusCode)
         {
-            var projectResult = await ProjectService.GetProjectAsync();
+            var projectResult = await ProjectService.GetProjectAsync(true);
             proposals = projectResult ?? new List<ProjectDTO>();
 
             var proponentResult = await ProponentService.GetProponentsAsync();
@@ -298,7 +298,7 @@
             if (response.IsSuccessStatusCode)
             {
                 // Refresh list
-                proposals = await ProjectService.GetProjectAsync();
+                proposals = await ProjectService.GetProjectAsync(true);
 
                 // Reset form
                 Proposal = new();

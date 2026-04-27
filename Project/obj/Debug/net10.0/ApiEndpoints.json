@@ -121,26 +121,6 @@
   },
   {
     "ContainingType": "Project.Controllers.ProjectsController",
-    "Method": "GetProjects",
-    "RelativePath": "api/Projects",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Project.Models.ProjectModel, Project, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "Project.Controllers.ProjectsController",
     "Method": "PostProjectModel",
     "RelativePath": "api/Projects",
     "HttpMethod": "POST",
@@ -227,6 +207,32 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Project.Controllers.ProjectsController",
+    "Method": "GetProjects",
+    "RelativePath": "api/Projects/filter/{isProposal}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "isProposal",
+        "Type": "System.Boolean",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Project.Models.ProjectModel, Project, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "Project.Controllers.ProponentsController",

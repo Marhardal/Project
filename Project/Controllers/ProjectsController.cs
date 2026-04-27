@@ -23,72 +23,147 @@ namespace Project.Controllers
         }
 
         // GET: api/Projects
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProjectModel>>> GetProjects()
+        //[HttpGet("{isProposal}")]
+        //public async Task<ActionResult<IEnumerable<ProjectModel>>> GetProjects(bool isProposal)
+        //{
+        //    int SortOrder;
+
+        //    var approvedStatus = await _context.Statuses.ToListAsync();
+
+        //    if (approvedStatus == null)
+        //    {
+        //        return NoContent();
+        //    }
+
+        //    SortOrder = isProposal ? 3 : approvedStatus.Count();
+
+        //    var projects = await _context.Projects
+        //        .AsNoTracking()
+        //        .Where(p => p.Trackings.LastOrDefault().Status.SortOrder == SortOrder)
+        //        .Select(p => new
+        //        {
+        //            p.Id,
+        //            p.Location,
+        //            p.Name,
+        //            p.ProjectType,
+        //            p.ProponentID,
+        //            p.SubmissionDate,
+        //            p.closingDate,
+        //            p.assignedDate,
+        //            p.Description,
+
+        //            Proponent = p.Proponent == null ? null : new Proponent
+        //            {
+        //                ID = p.Proponent.ID,
+        //                Name = p.Proponent.Name,
+        //                Address = p.Proponent.Address,
+        //                Location = p.Proponent.Location
+        //            },
+
+        //            Trackings = p.Trackings
+        //                .OrderByDescending(t => t.createdOn)
+        //                .Select(t => new TrackingModel
+        //                {
+        //                    Id = t.Id,
+        //                    userID = t.userID,
+        //                    createdOn = t.createdOn,
+        //                    StatusID = t.StatusID,
+
+        //                    Status = t.Status == null ? null : new Status
+        //                    {
+        //                        ID = t.Status.ID,
+        //                        Name = t.Status.Name,
+        //                        Color = t.Status.Color,
+        //                        SortOrder = t.Status.SortOrder
+        //                    },
+
+        //                    Review = t.Review == null ? null : new ReviewModel
+        //                    {
+        //                        ID = t.Review.ID,
+        //                        Remarks = t.Review.Remarks,
+        //                        createdOn = t.Review.createdOn
+        //                    }
+        //                })
+        //                .ToList()
+        //        })
+        //        .ToListAsync();
+        //    if (!projects.Any())
+        //    {
+        //        return NoContent();
+        //    }
+        //    return Ok(projects);
+        //}
+
+        [HttpGet("filter/{isProposal:bool}")]
+        public async Task<ActionResult<IEnumerable<ProjectModel>>> GetProjects(bool isProposal = true)
         {
+            var maxSortOrder = await _context.Statuses
+                .MaxAsync(s => s.SortOrder);
+
+            var targetSortOrder = isProposal ? 3 : maxSortOrder;
+
             var projects = await _context.Projects
-    .Include(p => p.Proponent)
-    .Include(p => p.Trackings)
-        .ThenInclude(t => t.Status)
-    .Include(p => p.Trackings)
-        .ThenInclude(t => t.Review)
-    .AsNoTracking()
-    .Select(p => new
-    {
-        p.Id,
-        p.Location,
-        p.Name,
-        p.ProjectType,
-        p.ProponentID,
-        p.SubmissionDate,
-        p.closingDate,
-        p.assignedDate,
-        p.Description,
-
-        Proponent = p.Proponent == null ? null : new Proponent
-        {
-            ID = p.Proponent.ID,
-            Name = p.Proponent.Name,
-            Address = p.Proponent.Address,
-            Location = p.Proponent.Location
-        },
-
-        Trackings = p.Trackings
-            .OrderByDescending(t => t.createdOn)
-            .Select(t => new TrackingModel
-            {
-                Id = t.Id,
-                userID = t.userID,
-                createdOn = t.createdOn,
-                StatusID = t.StatusID,
-
-                Status = t.Status == null ? null : new Status
+                .AsNoTracking()
+                .Where(p => p.Trackings
+                    .OrderByDescending(t => t.createdOn)
+                    .Select(t => t.Status.SortOrder)
+                    .FirstOrDefault() < targetSortOrder)
+                .Select(p => new
                 {
-                    ID = t.Status.ID,
-                    Name = t.Status.Name,
-                    Color = t.Status.Color,
-                    SortOrder = t.Status.SortOrder,
-                },
+                    p.Id,
+                    p.Location,
+                    p.Name,
+                    p.ProjectType,
+                    p.ProponentID,
+                    p.SubmissionDate,
+                    p.closingDate,
+                    p.assignedDate,
+                    p.Description,
 
-                Review = t.Review == null ? null : new ReviewModel
-                {
-                    ID = t.Review.ID,
-                    Remarks = t.Review.Remarks,
-                    createdOn = t.Review.createdOn
-                }
-            })
-            .ToList()
-    })
-    .ToListAsync();
+                    Proponent = p.Proponent == null ? null : new Proponent
+                    {
+                        ID = p.Proponent.ID,
+                        Name = p.Proponent.Name,
+                        Address = p.Proponent.Address,
+                        Location = p.Proponent.Location
+                    },
+
+                    Trackings = p.Trackings
+                        .OrderByDescending(t => t.createdOn)
+                        .Select(t => new TrackingModel
+                        {
+                            Id = t.Id,
+                            userID = t.userID,
+                            createdOn = t.createdOn,
+                            StatusID = t.StatusID,
+
+                            Status = t.Status == null ? null : new Status
+                            {
+                                ID = t.Status.ID,
+                                Name = t.Status.Name,
+                                Color = t.Status.Color,
+                                SortOrder = t.Status.SortOrder
+                            },
+
+                            Review = t.Review == null ? null : new ReviewModel
+                            {
+                                ID = t.Review.ID,
+                                Remarks = t.Review.Remarks,
+                                createdOn = t.Review.createdOn
+                            }
+                        })
+                        .ToList()
+                })
+                .ToListAsync();
+
             if (!projects.Any())
-            {
                 return NoContent();
-            }
+
             return Ok(projects);
         }
 
         // GET: api/Projects/5
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         public async Task<ActionResult<ProjectModel>> GetProjectModel(Guid id)
         {
             var projectModel = await _context.Projects

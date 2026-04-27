@@ -16,11 +16,11 @@ namespace FrontEnd.Client.Services
             _logger = logger;
         }
 
-        public async Task<List<ProjectDTO>> GetProjectAsync()
+        public async Task<List<ProjectDTO>> GetProjectAsync(bool isProposal)
         {
             try
             {
-                var result = await _http.GetFromJsonAsync<List<ProjectDTO>>($"api/Projects/");
+                var result = await _http.GetFromJsonAsync<List<ProjectDTO>>($"api/Projects/filter/{isProposal}");
                 return result ?? new List<ProjectDTO>();
             }
             catch (Exception ex)

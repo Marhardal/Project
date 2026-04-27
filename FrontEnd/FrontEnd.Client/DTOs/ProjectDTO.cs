@@ -25,7 +25,7 @@ namespace FrontEnd.Client.DTOs
         public ProponentsDTO? Proponent { get; set; }
         // Initialize Trackings to an empty collection to avoid null reference or empty-sequence issues in the UI
         public ICollection<TrackingDTO> Trackings { get; set; } = new List<TrackingDTO>();
-        //public TrackingDTO? Tracking { get; set; }
+        public TrackingDTO? Tracking { get; set; }
 
     }
 }

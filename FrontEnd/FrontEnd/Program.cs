@@ -2,8 +2,6 @@ using System;
 using FrontEnd;
 using FrontEnd.Client.Services;
 using FrontEnd.Components;
-using FrontEnd.Services;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,11 +23,11 @@ builder.Services.AddHttpClient<ProponentService>((sp, client) =>
     client.Timeout = TimeSpan.FromSeconds(100);
 });
 
-builder.Services.AddHttpClient<StatusService>((sp, client) =>
-{
-    client.BaseAddress = new Uri("https://localhost:7120/");
-    client.Timeout = TimeSpan.FromSeconds(100);
-});
+//builder.Services.AddHttpClient<StatusService>((sp, client) =>
+//{
+//    client.BaseAddress = new Uri("https://localhost:7120/");
+//    client.Timeout = TimeSpan.FromSeconds(100);
+//});
 
 builder.Services.AddHttpClient<ContactPersonService>((sp, client) =>
 {
@@ -38,6 +36,12 @@ builder.Services.AddHttpClient<ContactPersonService>((sp, client) =>
 });
 
 builder.Services.AddHttpClient<ProjectService>((sp, client) =>
+{
+    client.BaseAddress = new Uri("https://localhost:7120/");
+    client.Timeout = TimeSpan.FromSeconds(100);
+});
+
+builder.Services.AddHttpClient<StatusService>((sp, client) =>
 {
     client.BaseAddress = new Uri("https://localhost:7120/");
     client.Timeout = TimeSpan.FromSeconds(100);

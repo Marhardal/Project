@@ -122,7 +122,16 @@ namespace Project.Controllers
             }
 
             _context.Entry(projectModel).State = EntityState.Modified;
-
+            TrackingModel tracking = new TrackingModel()
+            {
+                StatusID = projectModel.Tracking.StatusID,
+                ProjectID = projectModel.Id,
+                userID = Guid.Parse("97775807-c99a-445a-9bc3-2a88c3449823"),
+                assignedDate = DateTime.UtcNow,
+                createdOn = DateTime.UtcNow,
+                updatedOn = DateTime.UtcNow,
+            };
+            _context.Tracking.Add(tracking);
             try
             {
                 await _context.SaveChangesAsync();
@@ -148,11 +157,18 @@ namespace Project.Controllers
         public async Task<ActionResult<ProjectModel>> PostProjectModel(ProjectModel projectModel)
         {
             _context.Projects.Add(projectModel);
+            var firstStatus = await _context.Statuses.OrderBy(s => s.SortOrder).FirstOrDefaultAsync();
+            TrackingModel tracking = new TrackingModel()
+            {
+                StatusID = firstStatus.ID,
+                    ProjectID = projectModel.Id,
+                    userID = Guid.Parse("97775807-c99a-445a-9bc3-2a88c3449823"),
+                    assignedDate = DateTime.UtcNow,
+                createdOn = DateTime.UtcNow,
+                updatedOn = DateTime.UtcNow,
+            };
+            _context.Tracking.Add(tracking);
             await _context.SaveChangesAsync();
-            //TrackingModel tracking = new TrackingModel()
-            //{
-                
-            //}
             return CreatedAtAction("GetProjectModel", new { id = projectModel.Id }, projectModel);
         }
 

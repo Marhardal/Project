@@ -1,11 +1,5 @@
 ﻿@page "/Proposals"
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
-@using FrontEnd.Client.Components.Components
-@using FrontEnd.Client.DTOs
-@using Services
-@inject ProjectService ProjectService
-@* @inject ProponentService ProponentService *@
-@inject HttpClient http
 
 <PageTitle>MEPA | Proposals</PageTitle>
 
@@ -69,23 +63,25 @@
                 }
                 <td>@index</td>
                 <td>
-                <span class="d-inline-block text-truncate" style="max-width: 350px;" title="@proposal.Name">@proposal.Name</span>
+                    <span class="d-inline-block text-truncate" style="max-width: 350px;"
+                          title="@proposal.Name">@proposal.Name</span>
                 </td>
                 <td class="py-2">@proposal.Proponent?.Name</td>
                 <td class="py-2">@proposal.Location</td>
                 <td class="py-2">@proposal.ProjectType</td>
                 <td class="py-2">@proposal.createdOn.ToString("yyyy-MMM, dd")</td>
                 <td class="py-2">
-                <div class="d-flex gap-1 justify-content-end ">
-                            <NavLink class="rounded btn btn-sm btn-outline-warning" href="@($"Project/View/{proposal.Id}")">
-                                <i class="bi bi-eye-fill"></i>
-                            </NavLink>
-                    <button @onclick="() => editProposal(proposal)" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="rounded btn btn-sm btn-outline-success">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
-                            <NavLink class="rounded btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i>
-                            </NavLink>
+                    <div class="d-flex gap-1 justify-content-end ">
+                        <NavLink class="rounded btn btn-sm btn-outline-warning" href="@($"Project/View/{proposal.Id}")">
+                            <i class="bi bi-eye-fill"></i>
+                        </NavLink>
+                    <button data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop" @onclick="() => editProposal(proposal)" class="rounded btn btn-sm btn-outline-success">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <NavLink class="rounded btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </NavLink>
                     </div>
                 </td>
             </RowTemplate>
@@ -110,9 +106,10 @@
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
-                <EditForm method="post" Model="Proposal" OnValidSubmit="@(isEditMode ? HandleUpdate : HandleSubmission)" FormName="create">
+                <EditForm method="post" Model="Proposal" OnValidSubmit="@(isEditMode? HandleUpdate : HandleSubmission)"
+                          FormName="create">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="staticBackdropLabel">@(isEditMode ? "Edit" : "Create") Project</h1>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">@(isEditMode ? "Edit Proposal" : "Create Proposal") </h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -143,24 +140,44 @@
                             </div>
                         </div>
                     
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="Location" class="form-label">Location</label>
-                                <InputText @bind-Value="Proposal.Location" class="form-control" id="Location" placeholder="Enter Project Location.">
-                                </InputText>
-                                <ValidationMessage For="@(() => Proposal.Location)" class="text-danger"  />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="Location" class="form-label">Location</label>
+                                    <InputText @bind-Value="Proposal.Location" class="form-control" id="Location"
+                                               placeholder="Enter Project Location.">
+                                    </InputText>
+                                    <ValidationMessage For="@(() => Proposal.Location)" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="SubmissionDate" class="form-label">Submission Date</label>
+                                    <InputDate @bind-Value="Proposal.SubmissionDate" class="form-control"
+                                               id="SubmissionDate"></InputDate>
+                                    <ValidationMessage For="@(() => Proposal.SubmissionDate)" class="text-danger" />
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="SubmissionDate" class="form-label">Submission Date</label>
-                                <InputDate @bind-Value="Proposal.SubmissionDate" class="form-control"
-                                           id="SubmissionDate"></InputDate>
-                                <ValidationMessage For="@(() => Proposal.SubmissionDate)" class="text-danger" />
-                            </div>
+                        @if (isEditMode)
+                    {
+                        <div class="mb-3">
+                            <label for="Status" class="form-label">Status</label>
+                            <InputSelect @bind-Value="Proposal.Tracking.StatusID" id="Status" class="form-select"
+                                         aria-label="Default select example">
+                                <option value="">-- Select Status --</option>
+                                @foreach (var status in statuses)
+                                {
+                                    <option value="@status.ID">@status.Name</option>
+                                }
+                            </InputSelect>
+                                    
+                            @* <InputTextArea @bind-Value="Proposal.Tracking.StatusID" class="form-control" id="Status"
+                        rows="3"
+                                           placeholder="Enter Proposal Status."></InputTextArea> *@
+                            <ValidationMessage For="@(() => Proposal.Tracking.StatusID)" class="text-danger" />
                         </div>
-                    </div>
+                    }
                         <div class="mb-3">
                             <label for="Description" class="form-label">Description</label>
                             <InputTextArea @bind-Value="Proposal.Description" class="form-control" id="Description" rows="3"
@@ -168,16 +185,16 @@
                             <ValidationMessage For="@(() => Proposal.Description)" class="text-danger" />
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">@(isEditMode ? "Update" : "Create")</button>
-                    </div>
+                      
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">@(isEditMode ? "Update" : "Create")</button>
+                </div>
         
-                </EditForm>
-            </div>
-        
+            </EditForm>
         </div>
     </div>
+</div>
 @code {
     bool isloaded;
     bool isSubmitting;
@@ -186,6 +203,7 @@
     // Initialize lists to avoid null reference issues in the UI
     private List<ProjectDTO> proposals = new();
     private List<ProponentsDTO> proponents = new();
+    private List<StatusDTO> statuses = new();
     [SupplyParameterFromForm]
     private ProjectDTO Proposal { get; set; } = new();
     private EditContext? editContext;
@@ -208,7 +226,9 @@
 
         var proponentResult = await ProponentService.GetProponentsAsync();
         proponents = proponentResult ?? new List<ProponentsDTO>();
-
+        var statusResult = await StatusService.GetStatusAsync();
+        statuses = (statusResult ?? new List<StatusDTO>()).OrderBy(s => s.SortOrder)
+    .Take(3).ToList();
         isloaded = true;
     }
 
@@ -246,10 +266,10 @@
             {
                 // Refresh list
                 proposals = await ProjectService.GetProjectAsync();
-                
+
                 // Reset form
                 Proposal = new();
-                
+
                 // await JSRuntime.InvokeVoidAsync("closeModal", "staticBackdrop");
                 // Close modal
                 // await JSRuntime.InvokeVoidAsync("bootstrap.Modal.getInstance", modalElement).AsTask();
@@ -272,17 +292,31 @@
         }
     }
 
-    void editProposal(ProjectDTO project)
+    async Task editProposal(ProjectDTO project)
     {
+        var tracking = project.Trackings?
+            .OrderByDescending(t => t.createdOn)
+            .FirstOrDefault();
+
+        var defaultStatusId = statuses.FirstOrDefault()?.ID ?? Guid.Empty;
+
         Proposal = new ProjectDTO()
+        {
+            Id = project.Id,
+            Name = project.Name,
+            Location = project.Location,
+            ProponentID = project.ProponentID,
+            ProjectType = project.ProjectType,
+            Description = project.Description,
+            SubmissionDate = project.SubmissionDate,
+            Tracking = new TrackingDTO()
             {
-                Id = project.Id,
-                Name = project.Name,
-                Location = project.Location,
-                ProponentID = project.ProponentID,
-                ProjectType = project.ProjectType,
-                Description = project.Description,
-            };
-        isEditMode = true;    
+                StatusID = tracking?.StatusID ?? defaultStatusId
+            }
+        };
+
+        isEditMode = true;
+
+        await JSRuntime.InvokeVoidAsync("showModal", "staticBackdrop");
     }
 }

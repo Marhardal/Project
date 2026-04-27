@@ -200,7 +200,9 @@
                 <div class="container py-4">
                     <h5 class="fw-semibold mb-4">Project Timelines</h5>
                     @{
-                        List<TrackingDTO> trackings = Project?.Trackings?.ToList();
+                        var trackings = (Project?.Trackings ?? new List<TrackingDTO>())
+    .OrderByDescending(t => t.createdOn)
+    .ToList();
                     }
                     @if (trackings.Any())
                     {

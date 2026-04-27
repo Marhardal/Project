@@ -25,7 +25,7 @@ namespace Project.Models
         //public ICollection<Proponent>? Proponents { get; set; }
         public Proponent? Proponent { get; set; }
         public ICollection<TrackingModel>? Trackings { get; set; }
-        //public TrackingModel? Tracking { get; set; }
+        public TrackingModel? Tracking { get; set; }
     }
 
     public enum ProjectType

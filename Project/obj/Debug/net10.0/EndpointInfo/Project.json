@@ -1825,7 +1825,17 @@
               }
             ]
           },
-          "trackings": { }
+          "trackings": { },
+          "tracking": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/TrackingModel"
+              }
+            ]
+          }
         }
       },
       "ProjectType": {
@@ -2072,79 +2082,7 @@
           }
         }
       },
-      "TrackingModel": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "userID": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "projectID": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "statusID": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "assignedDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "closingDate": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date-time"
-          },
-          "createdOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedOn": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date-time"
-          },
-          "project": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/ProjectModel"
-              }
-            ]
-          },
-          "status": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/Status"
-              }
-            ]
-          },
-          "review": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/ReviewModel"
-              }
-            ]
-          }
-        }
-      },
+      "TrackingModel": { },
       "TwoFactorRequest": {
         "type": "object",
         "properties": {

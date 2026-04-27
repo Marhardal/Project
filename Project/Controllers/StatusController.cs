@@ -25,7 +25,7 @@ namespace Project.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Status>>> GetStatuses()
         {
-            return await _context.Statuses.ToListAsync();
+            return await _context.Statuses.OrderBy(s => s.SortOrder).ToListAsync();
         }
 
         // GET: api/Status/5

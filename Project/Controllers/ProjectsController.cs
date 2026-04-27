@@ -66,6 +66,7 @@ namespace Project.Controllers
                 {
                     ID = t.Status.ID,
                     Name = t.Status.Name,
+                    Color = t.Status.Color,
                     SortOrder = t.Status.SortOrder,
                 },
 

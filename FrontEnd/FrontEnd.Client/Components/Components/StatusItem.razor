@@ -1,0 +1,18 @@
+<div class="w-auto text-center d-flex align-items-center">
+    <div class="d-inline-flex rounded">
+        <span class="rounded d-inline-block"
+              style="width: 18px; height: 18px;
+            background-color: @(string.IsNullOrWhiteSpace(Colour) ? "#6c757d" :
+                                                  (Colour.StartsWith("#") ? Colour : $"#{Colour}"));">
+        </span>
+    </div>
+    <span class="ms-2">@Name</span>
+</div>
+
+@code {
+    [Parameter]
+    public string Colour { get; set; } = "#6c757d";
+
+    [Parameter]
+    public string Name { get; set; } = "";
+}

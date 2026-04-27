@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Net.NetworkInformation;
 
 namespace FrontEnd.Client.DTOs
@@ -25,10 +26,16 @@ namespace FrontEnd.Client.DTOs
 
     public enum ProjectType
     {
+        [Display(Name = "Proposal")]
         Proposal,
-        ESMP,
+        [Display(Name = "Environmental Impact Assessment")]
+        ESIA,
+
+        [Display(Name = "Project Audit")]
         Audit,
-        ESIA
+
+        [Display(Name = "Environmental & Social Management Plan")]
+        ESMP,
     }
 
     public enum Proposal

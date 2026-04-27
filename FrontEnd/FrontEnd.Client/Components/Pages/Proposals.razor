@@ -159,25 +159,53 @@
                                 </div>
                             </div>
                         </div>
-                        @if (isEditMode)
-                    {
-                        <div class="mb-3">
-                            <label for="Status" class="form-label">Status</label>
-                            <InputSelect @bind-Value="Proposal.Tracking.StatusID" id="Status" class="form-select"
-                                         aria-label="Default select example">
-                                <option value="">-- Select Status --</option>
-                                @foreach (var status in statuses)
-                                {
-                                    <option value="@status.ID">@status.Name</option>
-                                }
-                            </InputSelect>
-                                    
-                            @* <InputTextArea @bind-Value="Proposal.Tracking.StatusID" class="form-control" id="Status"
-                        rows="3"
-                                           placeholder="Enter Proposal Status."></InputTextArea> *@
-                            <ValidationMessage For="@(() => Proposal.Tracking.StatusID)" class="text-danger" />
-                        </div>
+                    @{
+                        var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
+                        var isApproved = selectedStatus?.Name == "Approved";
                     }
+@if (isEditMode && Proposal?.Tracking != null)
+{
+    <div class="row">
+        <div class="@(isApproved ? "col-md-6" : "col-md-12")">
+            <div class="mb-3">
+                <label for="Status" class="form-label">Status</label>
+
+                <InputSelect @bind-Value="Proposal.Tracking.StatusID"
+                             id="Status"
+                             class="form-select">
+                    <option value="">-- Select Status --</option>
+                    @foreach (var status in statuses)
+                    {
+                        <option value="@status.ID">@status.Name</option>
+                    }
+                </InputSelect>
+
+                <ValidationMessage For="@(() => Proposal.Tracking.StatusID)" class="text-danger" />
+            </div>
+        </div>
+
+        @if (isApproved)
+        {
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="ProjectType" class="form-label">Type</label>
+
+                    <InputSelect @bind-Value="Proposal.ProjectType"
+                                 id="ProjectType"
+                                 class="form-select">
+                        <option value="">-- Select Project Type --</option>
+                        @foreach (var type in Enum.GetValues<ProjectType>())
+                        {
+                            <option value="@type">@EnumHelper.GetDisplayName(type)</option>
+                        }
+                    </InputSelect>
+
+                    <ValidationMessage For="@(() => Proposal.ProjectType)" class="text-danger" />
+                </div>
+            </div>
+        }
+    </div>
+}
                         <div class="mb-3">
                             <label for="Description" class="form-label">Description</label>
                             <InputTextArea @bind-Value="Proposal.Description" class="form-control" id="Description" rows="3"
@@ -204,6 +232,7 @@
     private List<ProjectDTO> proposals = new();
     private List<ProponentsDTO> proponents = new();
     private List<StatusDTO> statuses = new();
+    private List<ProjectType> projectTypes;
     [SupplyParameterFromForm]
     private ProjectDTO Proposal { get; set; } = new();
     private EditContext? editContext;
@@ -226,9 +255,7 @@
 
         var proponentResult = await ProponentService.GetProponentsAsync();
         proponents = proponentResult ?? new List<ProponentsDTO>();
-        var statusResult = await StatusService.GetStatusAsync();
-        statuses = (statusResult ?? new List<StatusDTO>()).OrderBy(s => s.SortOrder)
-    .Take(3).ToList();
+    
         isloaded = true;
     }
 
@@ -315,6 +342,11 @@
             }
         };
 
+        var statusResult = await StatusService.GetStatusAsync();
+        statuses = (statusResult ?? new List<StatusDTO>()).OrderBy(s => s.SortOrder)
+    .Take(3).ToList();
+
+    // var types = ProjectType
         isEditMode = true;
 
         await JSRuntime.InvokeVoidAsync("showModal", "staticBackdrop");

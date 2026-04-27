@@ -26,28 +26,59 @@ namespace Project.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProjectModel>>> GetProjects()
         {
-            var projects = await _context.Projects.Include(p => p.Proponent).AsNoTracking().Select
-                (
-                p => new
-                {
-                    p.Id,
-                    p.Location,
-                    p.Name,
-                    p.ProjectType,
-                    p.ProponentID,
-                    p.SubmissionDate,
-                    p.closingDate,
-                    p.assignedDate,
-                    p.Description,
-                    Proponent = new Proponent
-                    {
-                        ID = p.Proponent != null ? p.Proponent.ID : Guid.Empty,
-                        Name = p.Proponent != null ? p.Proponent.Name : null,
-                        Address = p.Proponent != null ? p.Proponent.Address : null,
-                        Location = p.Proponent != null ? p.Proponent.Location : null
-                    }
-                }).ToListAsync();
+            var projects = await _context.Projects
+    .Include(p => p.Proponent)
+    .Include(p => p.Trackings)
+        .ThenInclude(t => t.Status)
+    .Include(p => p.Trackings)
+        .ThenInclude(t => t.Review)
+    .AsNoTracking()
+    .Select(p => new
+    {
+        p.Id,
+        p.Location,
+        p.Name,
+        p.ProjectType,
+        p.ProponentID,
+        p.SubmissionDate,
+        p.closingDate,
+        p.assignedDate,
+        p.Description,
 
+        Proponent = p.Proponent == null ? null : new Proponent
+        {
+            ID = p.Proponent.ID,
+            Name = p.Proponent.Name,
+            Address = p.Proponent.Address,
+            Location = p.Proponent.Location
+        },
+
+        Trackings = p.Trackings
+            .OrderByDescending(t => t.createdOn)
+            .Select(t => new TrackingModel
+            {
+                Id = t.Id,
+                userID = t.userID,
+                createdOn = t.createdOn,
+                StatusID = t.StatusID,
+
+                Status = t.Status == null ? null : new Status
+                {
+                    ID = t.Status.ID,
+                    Name = t.Status.Name,
+                    SortOrder = t.Status.SortOrder,
+                },
+
+                Review = t.Review == null ? null : new ReviewModel
+                {
+                    ID = t.Review.ID,
+                    Remarks = t.Review.Remarks,
+                    createdOn = t.Review.createdOn
+                }
+            })
+            .ToList()
+    })
+    .ToListAsync();
             if (!projects.Any())
             {
                 return NoContent();

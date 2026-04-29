@@ -1,8 +1,6 @@
-﻿using Project.Models.ProjectManager.Data.Model;
+﻿using Project.Models;
 
-namespace Project.Models
-{
-    public class ReviewModel
+public class ReviewModel
     {
         public Guid ID { get; set; } = Guid.NewGuid();
         public Guid TrackingID { get; set; }
@@ -13,9 +11,8 @@ namespace Project.Models
         public DateTime updatedOn { get; set; }
         public TrackingModel? Tracking { get; set; }
     }
-    public enum ResolvedStatus
-    {
-        Resolved,
-        Unresolved
-    }
+public enum ResolvedStatus
+{
+    Resolved,
+    Unresolved
 }

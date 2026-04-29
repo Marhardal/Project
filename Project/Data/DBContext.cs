@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Project.Migrations;
 using Project.Models;
-using Project.Models.ProjectManager.Data.Model;
 
 namespace Project.Data
 {
@@ -20,10 +20,11 @@ namespace Project.Data
 
         public DbSet<Status> Statuses { get; set; }
 
-        public DbSet<TrackingModel> Tracking { get; set; }
+        public DbSet<TrackingModel> Trackings { get; set; }
 
         public DbSet<ReviewModel> Reviews { get; set; }
 
+        public DbSet<UserModel> UserProfils { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -53,6 +54,27 @@ namespace Project.Data
                 .HasOne(r => r.Tracking)
                 .WithOne(t => t.Review)
                 .HasForeignKey<ReviewModel>(r => r.TrackingID);
+
+            modelBuilder.Entity<TrackingModel>()
+    .HasOne(t => t.Project)
+    .WithMany(p => p.Trackings)
+    .HasForeignKey(t => t.ProjectID);
+
+            modelBuilder.Entity<TrackingModel>()
+                .HasOne(t => t.Status)
+                .WithMany(s => s.Trackings)
+                .HasForeignKey(t => t.StatusID);
+
+            modelBuilder.Entity<TrackingModel>()
+                .HasOne(t => t.User)
+                .WithMany(u => u.Trackings)
+                .HasForeignKey(t => t.userID);
+
+            modelBuilder.Entity<UserModel>()
+    .HasOne(u => u.identityUser)
+    .WithOne()
+    .HasForeignKey<UserModel>(u => u.UserID)
+    .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Status>().HasData(
     new Status

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project.Data;
 using Project.Models;
-using Project.Models.ProjectManager.Data.Model;
 
 namespace Project.Controllers
 {
@@ -238,7 +237,7 @@ namespace Project.Controllers
                 createdOn = DateTime.UtcNow,
                 updatedOn = DateTime.UtcNow,
             };
-            _context.Tracking.Add(tracking);
+            _context.Trackings.Add(tracking);
             try
             {
                 await _context.SaveChangesAsync();
@@ -274,7 +273,7 @@ namespace Project.Controllers
                 createdOn = DateTime.UtcNow,
                 updatedOn = DateTime.UtcNow,
             };
-            _context.Tracking.Add(tracking);
+            _context.Trackings.Add(tracking);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetProjectModel", new { id = projectModel.Id }, projectModel);
         }

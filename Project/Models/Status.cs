@@ -1,9 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Project.Models;
+using System.ComponentModel.DataAnnotations;
 
-namespace Project.Models
-{
-    namespace ProjectManager.Data.Model
-    {
         public class Status
         {
             public Guid ID { get; set; } = Guid.NewGuid();
@@ -19,10 +16,7 @@ namespace Project.Models
             public DateTime createdOn { get; set; }
             public DateTime updatedOn { get; set; }
 
-            public TrackingModel? Tracking { get; set; }
+            //public TrackingModel? Tracking { get; set; }
             public ICollection<TrackingModel>? Trackings { get; set; }
 
         }
-    }
-
-}

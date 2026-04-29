@@ -23,6 +23,6 @@ namespace Project.Models
         public ICollection<ContactPerson>? Contacts { get; set; }
         public ContactPerson? Contact { get; set; }
         public ICollection<ProjectModel>? Projects { get; set; }
-        public ProjectModel? Project { get; set; }
+        //public ProjectModel? Project { get; set; }
     }
 }

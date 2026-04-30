@@ -1,5 +1,13 @@
-﻿(() => {
+﻿﻿(() => {
     'use strict'
+
+    // Click hidden button to trigger Bootstrap modal
+    window.clickHiddenButton = function(elementId) {
+        const button = document.getElementById(elementId);
+        if (button) {
+            button.click();
+        }
+    };
 
     // Graphs
     const ctx = document.getElementById('myChart')

@@ -1,0 +1,108 @@
+﻿@* <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    Launch static backdrop modal
+</button>
+
+<!-- Modal --> *@
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content ">
+            
+            <EditForm method="post" Model="userProfile" OnValidSubmit="HandleSubmission">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="firstName" class="form-label">First Name</label>
+                            <InputText id="firstName" class="form-control" @bind-Value="userProfile.FirstName" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="surname" class="form-label">Surname</label>
+                            <InputText id="surname" class="form-control" @bind-Value="userProfile.Surname" />
+                        </div>
+                    
+                    </div>
+                    <div class="row md-3">
+                        <div class="col-md-6">
+                            <label for="Username" class="form-label">Username</label>
+                            <InputText id="Username" class="form-control" @bind-Value="userProfile.Username" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <InputText id="email" type="email" class="form-control" @bind-Value="userProfile.Email" />
+                        </div>
+                    </div>
+                    <div class="row md-3">
+                        <div class="col-md-6">
+                            <label for="Phone" class="form-label">Phone Number</label>
+                            <InputText id="Phone" type="tel" class="form-control" @bind-Value="userProfile.Phone" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="dateOfBirth" class="form-label">Date of Birth</label>
+                            <InputDate id="dateOfBirth" class="form-control" @bind-Value="userProfile.DOB" />
+                        </div>
+                    </div>
+                    <div class="row md-3">
+                        <div class="col-md-6">
+                            <label for="title" class="form-label">Title</label>
+                            <InputSelect id="title" class="form-select" @bind-Value="userProfile.Title">
+                                <option value="">Select Title</option>
+                                <option value="Mr">Mr</option>
+                                <option value="Mrs">Mrs</option>
+                                <option value="Ms">Ms</option>
+                                <option value="Dr">Dr</option>
+                            </InputSelect>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="gender" class="form-label">Gender</label>
+                            <InputRadioGroup id="gender" class="form-check-input" @bind-Value="userProfile.Gender"></InputRadioGroup>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Understood</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private UserProfileDTO? userProfile { get; set; } = new();
+
+    [Parameter]
+    public UserProfileDTO? Profile { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (Profile != null)
+        {
+            userProfile = new UserProfileDTO
+            {
+                UserID = Profile.UserID,
+                FirstName = Profile.FirstName,
+                Surname = Profile.Surname,
+                Username = Profile.Username,
+                Email = Profile.Email,
+                Phone = Profile.Phone,
+                DOB = Profile.DOB,
+                Title = Profile.Title,
+                Gender = Profile.Gender
+            };
+        }
+    }
+
+    private async Task HandleSubmission()
+    {
+        
+    }
+}

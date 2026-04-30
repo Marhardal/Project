@@ -1,0 +1,4 @@
+﻿UPDATE Tracking
+SET userID = NULL
+WHERE userID IS NOT NULL
+AND userID NOT IN (SELECT ID FROM UserProfils);

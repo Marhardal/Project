@@ -1,5 +1,5 @@
 ﻿@page "/"
-@using FrontEnd.Components.Components
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
 <div class="flex-wrap pt-3 pb-2 mb-3 d-flex justify-content-between flex-md-nowrap align-items-center border-bottom">
     <h1 class="h2">Dashboard</h1>
@@ -241,3 +241,54 @@
         </div>
     </div>
 </div>
+@* <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    Launch static backdrop modal
+</button> *@
+@if (showProfileModal)
+{
+    <UserProfile Profile="@userProfile" />
+
+    <button id="openProfileModalBtn"
+            type="button"
+            class="d-none"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop">
+    </button>
+}
+
+@code {
+    private UserProfileDTO userProfile = new();
+    private bool showProfileModal;
+    private bool modalShown;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = Guid.Parse("97775807-c99a-445a-9bc3-2a88c3449823");
+
+        var profile = await UserProfileService.GetUserProfileAsync(userId);
+
+        if (profile == null || profile.ID == Guid.Empty)
+        {
+            userProfile = new UserProfileDTO();
+            showProfileModal = true;
+        }
+        else
+        {
+            userProfile = profile;
+            showProfileModal = false;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (showProfileModal && !modalShown)
+        {
+            modalShown = true;
+
+            await JSRuntime.InvokeVoidAsync(
+                "eval",
+                "document.getElementById('openProfileModalBtn')?.click();"
+            );
+        }
+    }
+}

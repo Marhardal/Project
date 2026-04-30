@@ -353,7 +353,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Project.Models.ReviewModel, Project, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[ReviewModel, Project, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -373,13 +373,13 @@
     "Parameters": [
       {
         "Name": "reviewModel",
-        "Type": "Project.Models.ReviewModel",
+        "Type": "ReviewModel",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Project.Models.ReviewModel",
+        "Type": "ReviewModel",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -405,7 +405,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Project.Models.ReviewModel",
+        "Type": "ReviewModel",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -430,7 +430,7 @@
       },
       {
         "Name": "reviewModel",
-        "Type": "Project.Models.ReviewModel",
+        "Type": "ReviewModel",
         "IsRequired": true
       }
     ],
@@ -462,7 +462,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Project.Models.ProjectManager.Data.Model.Status, Project, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Status, Project, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -482,13 +482,13 @@
     "Parameters": [
       {
         "Name": "status",
-        "Type": "Project.Models.ProjectManager.Data.Model.Status",
+        "Type": "Status",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Project.Models.ProjectManager.Data.Model.Status",
+        "Type": "Status",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -514,7 +514,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Project.Models.ProjectManager.Data.Model.Status",
+        "Type": "Status",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -539,7 +539,7 @@
       },
       {
         "Name": "status",
-        "Type": "Project.Models.ProjectManager.Data.Model.Status",
+        "Type": "Status",
         "IsRequired": true
       }
     ],
@@ -571,7 +571,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Project.Models.ProjectManager.Data.Model.TrackingModel, Project, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Project.Models.TrackingModel, Project, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -591,13 +591,13 @@
     "Parameters": [
       {
         "Name": "trackingModel",
-        "Type": "Project.Models.ProjectManager.Data.Model.TrackingModel",
+        "Type": "Project.Models.TrackingModel",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Project.Models.ProjectManager.Data.Model.TrackingModel",
+        "Type": "Project.Models.TrackingModel",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -623,7 +623,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Project.Models.ProjectManager.Data.Model.TrackingModel",
+        "Type": "Project.Models.TrackingModel",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -648,7 +648,7 @@
       },
       {
         "Name": "trackingModel",
-        "Type": "Project.Models.ProjectManager.Data.Model.TrackingModel",
+        "Type": "Project.Models.TrackingModel",
         "IsRequired": true
       }
     ],
@@ -658,6 +658,115 @@
     "ContainingType": "Project.Controllers.TrackingsController",
     "Method": "DeleteTrackingModel",
     "RelativePath": "api/Trackings/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Project.Controllers.UserController",
+    "Method": "GetUserProfils",
+    "RelativePath": "api/User",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Project.Models.UserModel, Project, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Project.Controllers.UserController",
+    "Method": "PostUserModel",
+    "RelativePath": "api/User",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userModel",
+        "Type": "Project.Models.UserModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Project.Models.UserModel",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Project.Controllers.UserController",
+    "Method": "GetUserModel",
+    "RelativePath": "api/User/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Project.Models.UserModel",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Project.Controllers.UserController",
+    "Method": "PutUserModel",
+    "RelativePath": "api/User/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "userModel",
+        "Type": "Project.Models.UserModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Project.Controllers.UserController",
+    "Method": "DeleteUserModel",
+    "RelativePath": "api/User/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,

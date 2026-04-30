@@ -48,6 +48,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXFRhYmxlVGVtcGxhdGUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd.Client/Components/Components/UserProfile.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXFVzZXJQcm9maWxlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd.Client/Components/Pages/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xIb21lLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd.Client/Components/Pages/NotFound.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xOb3RGb3VuZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -78,10 +86,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd.Client/Components/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xfSW1wb3J0cy5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd.Client/Pages/Counter - Copy.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291bnRlciAtIENvcHkucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd.Client/Pages/Counter.razor]

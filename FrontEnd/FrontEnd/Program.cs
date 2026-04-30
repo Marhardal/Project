@@ -47,6 +47,12 @@ builder.Services.AddHttpClient<StatusService>((sp, client) =>
     client.Timeout = TimeSpan.FromSeconds(100);
 });
 
+builder.Services.AddHttpClient<UserProfileService>((sp, client) =>
+{
+    client.BaseAddress = new Uri("https://localhost:7120/");
+    client.Timeout = TimeSpan.FromSeconds(100);
+});
+
 // Register CORS and a named policy used by the middleware later in the pipeline.
 builder.Services.AddCors(options =>
 {

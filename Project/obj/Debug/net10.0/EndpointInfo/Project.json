@@ -1513,6 +1513,193 @@
         }
       }
     },
+    "/api/User": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserModel"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserModel"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/User/{id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserModel"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/WeatherForecast": {
       "get": {
         "tags": [
@@ -1838,7 +2025,15 @@
               }
             ]
           },
-          "trackings": { },
+          "trackings": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/TrackingModel"
+            }
+          },
           "tracking": {
             "oneOf": [
               {
@@ -1919,16 +2114,6 @@
             "items": {
               "$ref": "#/components/schemas/ProjectModel"
             }
-          },
-          "project": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/ProjectModel"
-              }
-            ]
           }
         }
       },
@@ -1988,114 +2173,94 @@
           }
         }
       },
-      "ResolvedStatus": {
-        "type": "integer"
-      },
-      "ReviewModel": {
+      "ReviewModel": { },
+      "Status": { },
+      "TrackingModel": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
             "format": "uuid"
           },
-          "trackingID": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "remarks": {
+          "userID": {
             "type": [
               "null",
               "string"
-            ]
+            ],
+            "format": "uuid"
           },
-          "date": {
+          "projectID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "statusID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "assignedDate": {
             "type": "string",
             "format": "date-time"
+          },
+          "closingDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedOn": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "project": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ProjectModel"
+              }
+            ]
           },
           "status": {
-            "$ref": "#/components/schemas/ResolvedStatus"
-          },
-          "createdOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "tracking": {
             "oneOf": [
               {
                 "type": "null"
               },
               {
-                "$ref": "#/components/schemas/TrackingModel"
+                "$ref": "#/components/schemas/Status"
               }
             ]
-          }
-        }
-      },
-      "Status": {
-        "required": [
-          "name",
-          "color"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
           },
-          "name": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "color": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "sortOrder": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          },
-          "createdOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedOn": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "tracking": {
+          "review": {
             "oneOf": [
               {
                 "type": "null"
               },
               {
-                "$ref": "#/components/schemas/TrackingModel"
+                "$ref": "#/components/schemas/ReviewModel"
               }
             ]
           },
-          "trackings": {
-            "type": [
-              "null",
-              "array"
-            ],
-            "items": {
-              "$ref": "#/components/schemas/TrackingModel"
-            }
+          "user": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/UserModel"
+              }
+            ]
           }
         }
       },
-      "TrackingModel": { },
       "TwoFactorRequest": {
         "type": "object",
         "properties": {
@@ -2159,6 +2324,7 @@
           }
         }
       },
+      "UserModel": { },
       "WeatherForecast": {
         "type": "object",
         "properties": {
@@ -2213,6 +2379,9 @@
     },
     {
       "name": "Trackings"
+    },
+    {
+      "name": "User"
     },
     {
       "name": "WeatherForecast"

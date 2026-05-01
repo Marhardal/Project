@@ -1513,10 +1513,10 @@
         }
       }
     },
-    "/api/User": {
+    "/api/Users": {
       "get": {
         "tags": [
-          "User"
+          "Users"
         ],
         "responses": {
           "200": {
@@ -1552,23 +1552,23 @@
       },
       "post": {
         "tags": [
-          "User"
+          "Users"
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserModel"
+                "$ref": "#/components/schemas/UserDTO"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserModel"
+                "$ref": "#/components/schemas/UserDTO"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/UserModel"
+                "$ref": "#/components/schemas/UserDTO"
               }
             }
           },
@@ -1598,14 +1598,14 @@
         }
       }
     },
-    "/api/User/{id}": {
+    "/api/Users/{userID}": {
       "get": {
         "tags": [
-          "User"
+          "Users"
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "userID",
             "in": "path",
             "required": true,
             "schema": {
@@ -1636,10 +1636,12 @@
             }
           }
         }
-      },
+      }
+    },
+    "/api/Users/{id}": {
       "put": {
         "tags": [
-          "User"
+          "Users"
         ],
         "parameters": [
           {
@@ -1680,7 +1682,7 @@
       },
       "delete": {
         "tags": [
-          "User"
+          "Users"
         ],
         "parameters": [
           {
@@ -1840,6 +1842,9 @@
             "type": "string"
           }
         }
+      },
+      "Gender": {
+        "type": "integer"
       },
       "HttpValidationProblemDetails": {
         "type": "object",
@@ -2175,6 +2180,9 @@
       },
       "ReviewModel": { },
       "Status": { },
+      "Title": {
+        "type": "integer"
+      },
       "TrackingModel": {
         "type": "object",
         "properties": {
@@ -2324,6 +2332,56 @@
           }
         }
       },
+      "UserDTO": {
+        "required": [
+          "userID",
+          "firstName",
+          "surname",
+          "gender",
+          "title",
+          "dob"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userID": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "surname": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "title": {
+            "$ref": "#/components/schemas/Title"
+          },
+          "dob": {
+            "type": "string",
+            "format": "date"
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updateOn": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "UserModel": { },
       "WeatherForecast": {
         "type": "object",
@@ -2381,7 +2439,7 @@
       "name": "Trackings"
     },
     {
-      "name": "User"
+      "name": "Users"
     },
     {
       "name": "WeatherForecast"

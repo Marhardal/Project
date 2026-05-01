@@ -1,4 +1,5 @@
 ﻿using FrontEnd.Client.DTOs;
+using System.Net;
 using System.Net.Http.Json;
 
     public class UserProfileService
@@ -16,7 +17,7 @@ using System.Net.Http.Json;
         {
             try
             {
-                var result = await _http.GetFromJsonAsync<UserProfileDTO>($"api/User/{userId}");
+                var result = await _http.GetFromJsonAsync<UserProfileDTO>($"api/Users/{userId}");
                 return result ?? new UserProfileDTO();
             }
             catch (Exception ex)
@@ -37,5 +38,23 @@ using System.Net.Http.Json;
             }
         }
 
+    public async Task<HttpResponseMessage> CreateProfileAsync(UserProfileDTO dto)
+    {
+        try
+        {
+            return await _http.PostAsJsonAsync("api/Users", dto);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to create Profile via POST {Endpoint}", "api/Profile");
+            var resp = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+            {
+                Content = new StringContent(ex.Message)
+            };
+            return resp;
+        }
     }
+
+
+}
 

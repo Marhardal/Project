@@ -12,27 +12,41 @@ namespace Project.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly DBContext _context;
 
-        public UserController(DBContext context)
+        public UsersController(DBContext context)
         {
             _context = context;
         }
 
-        // GET: api/User
+        // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserModel>>> GetUserProfils()
         {
             return await _context.UserProfils.ToListAsync();
         }
 
-        // GET: api/User/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserModel>> GetUserModel(Guid id)
+        // GET: api/Users/5
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<UserModel>> GetUserModel(Guid id)
+        //{
+        //    var userModel = await _context.UserProfils.FindAsync(id);
+
+        //    if (userModel == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return userModel;
+        //}
+
+        // GET: api/Users/5
+        [HttpGet("{userID}")]
+        public async Task<ActionResult<UserModel>> GetUserProfile(Guid userID)
         {
-            var userModel = await _context.UserProfils.FindAsync(id);
+            var userModel = await _context.UserProfils.Where(u => u.UserID == userID.ToString()).FirstOrDefaultAsync();
 
             if (userModel == null)
             {
@@ -42,7 +56,7 @@ namespace Project.Controllers
             return userModel;
         }
 
-        // PUT: api/User/5
+        // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUserModel(Guid id, UserModel userModel)
@@ -73,18 +87,31 @@ namespace Project.Controllers
             return NoContent();
         }
 
-        // POST: api/User
+        // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<UserModel>> PostUserModel(UserModel userModel)
+        public async Task<ActionResult<UserModel>> PostUserModel(UserDTO userDTO)
         {
+            var userModel = new UserModel
+            {
+                ID = Guid.NewGuid(),
+                FirstName = userDTO.FirstName,
+                Surname = userDTO.Surname,
+                Gender = userDTO.Gender,
+                Title = userDTO.Title,
+                DOB = userDTO.DOB,
+                UserID = userDTO.UserID.ToString(),
+                createdOn = DateTime.UtcNow,
+                UpdateOn = DateTime.UtcNow,
+            };
+
             _context.UserProfils.Add(userModel);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetUserModel", new { id = userModel.ID }, userModel);
         }
 
-        // DELETE: api/User/5
+        // DELETE: api/Users/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserModel(Guid id)
         {

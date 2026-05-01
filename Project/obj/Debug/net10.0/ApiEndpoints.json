@@ -671,9 +671,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "Project.Controllers.UserController",
+    "ContainingType": "Project.Controllers.UsersController",
     "Method": "GetUserProfils",
-    "RelativePath": "api/User",
+    "RelativePath": "api/Users",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -691,16 +691,16 @@
     ]
   },
   {
-    "ContainingType": "Project.Controllers.UserController",
+    "ContainingType": "Project.Controllers.UsersController",
     "Method": "PostUserModel",
-    "RelativePath": "api/User",
+    "RelativePath": "api/Users",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "userModel",
-        "Type": "Project.Models.UserModel",
+        "Name": "userDTO",
+        "Type": "Project.Models.UserDTO",
         "IsRequired": true
       }
     ],
@@ -717,35 +717,9 @@
     ]
   },
   {
-    "ContainingType": "Project.Controllers.UserController",
-    "Method": "GetUserModel",
-    "RelativePath": "api/User/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Guid",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "Project.Models.UserModel",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "Project.Controllers.UserController",
+    "ContainingType": "Project.Controllers.UsersController",
     "Method": "PutUserModel",
-    "RelativePath": "api/User/{id}",
+    "RelativePath": "api/Users/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -764,9 +738,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "Project.Controllers.UserController",
+    "ContainingType": "Project.Controllers.UsersController",
     "Method": "DeleteUserModel",
-    "RelativePath": "api/User/{id}",
+    "RelativePath": "api/Users/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -778,6 +752,32 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Project.Controllers.UsersController",
+    "Method": "GetUserProfile",
+    "RelativePath": "api/Users/{userID}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userID",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Project.Models.UserModel",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "Microsoft.AspNetCore.Routing.IdentityApiEndpointRouteBuilderExtensions\u002B\u003C\u003Ec__1\u00601[[Microsoft.AspNetCore.Identity.IdentityUser, Microsoft.Extensions.Identity.Stores, Version=10.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",

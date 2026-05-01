@@ -243,16 +243,6 @@
     private ProjectDTO Proposal { get; set; } = new();
     private EditContext? editContext;
 
-    private string TruncateToWords(string text, int wordLimit)
-    {
-        if (string.IsNullOrEmpty(text)) return text;
-
-        var words = text.Split(' ');
-        if (words.Length <= wordLimit) return text;
-
-        return string.Join(" ", words.Take(wordLimit)) + "...";
-    }
-
     protected override async Task OnInitializedAsync()
     {
         // Fetch projects and proponents with null-checks to prevent null assignments

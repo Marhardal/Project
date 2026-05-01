@@ -1,25 +1,17 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Project.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace Project
+namespace Project.Models
 {
     public class UserDTO
     {
         public Guid ID { get; set; }
         [Required]
-        public Guid UserID { get; set; } = default!;
-        public IdentityUser identityUser { get; set; } = default!;
+        public string UserID { get; set; }
         [Required]
         public string? FirstName { get; set; }
         [Required]
         public string? Surname { get; set; }
-        [Required]
-        public string? Username { get; set; }
-        [Required, EmailAddress]
-        public string? Email { get; set; }
-        [Required, Phone]
-        public string? Phone { get; set; }
         [Required]
         public Gender Gender { get; set; }
         [Required]

@@ -6,7 +6,7 @@
 <!-- Modal --> *@
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content ">
             
             <EditForm method="post" Model="userProfile" OnValidSubmit="HandleSubmission">
@@ -16,36 +16,29 @@
                 </div>
                 <div class="modal-body">
                     <DataAnnotationsValidator />
-                    <ValidationSummary />
+                    @* <ValidationSummary /> *@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="firstName" class="form-label">First Name</label>
-                            <InputText id="firstName" class="form-control" @bind-Value="userProfile.FirstName" />
+                            <InputText id="firstName" class="form-control" @bind-Value="userProfile.FirstName" placeholder="Enter your First Name." />
+                            <ValidationMessage For="@(() => userProfile.FirstName)" class="text-danger" />
                         </div>
                         <div class="col-md-6">
                             <label for="surname" class="form-label">Surname</label>
-                            <InputText id="surname" class="form-control" @bind-Value="userProfile.Surname" />
+                            <InputText id="surname" class="form-control" @bind-Value="userProfile.Surname" placeholder="Enter your Surname." />
+                            <ValidationMessage For="@(() => userProfile.Surname)" class="text-danger" />
                         </div>
-                    
-                    </div>
-                    <div class="row md-3">
-                        <div class="col-md-6">
-                            <label for="Username" class="form-label">Username</label>
-                            <InputText id="Username" class="form-control" @bind-Value="userProfile.Username" />
                         </div>
-                        <div class="col-md-6">
-                            <label for="email" class="form-label">Email</label>
-                            <InputText id="email" type="email" class="form-control" @bind-Value="userProfile.Email" />
-                        </div>
-                    </div>
-                    <div class="row md-3">
-                        <div class="col-md-6">
+                          <div class="row md-3">
+                        @* <div class="col-md-6">
                             <label for="Phone" class="form-label">Phone Number</label>
-                            <InputText id="Phone" type="tel" class="form-control" @bind-Value="userProfile.Phone" />
-                        </div>
+                            <InputText id="Phone" type="tel" class="form-control" @bind-Value="userProfile.Phone" placeholder="Enter your Phone Number." />
+                            <ValidationMessage For="@(() => userProfile.Phone)" class="text-danger" />
+                        </div> *@
                         <div class="col-md-6">
                             <label for="dateOfBirth" class="form-label">Date of Birth</label>
-                            <InputDate id="dateOfBirth" class="form-control" @bind-Value="userProfile.DOB" />
+                            <InputDate id="dateOfBirth" class="form-control" @bind-Value="userProfile.DOB"/>
+                            <ValidationMessage For="@(() => userProfile.DOB)" class="text-danger" />
                         </div>
                     </div>
                     <div class="row md-3">
@@ -58,17 +51,29 @@
                                 <option value="Ms">Ms</option>
                                 <option value="Dr">Dr</option>
                             </InputSelect>
+                            <ValidationMessage For="@(() => userProfile.Title)" class="text-danger" />
                         </div>
                         <div class="col-md-6">
-                            <label for="gender" class="form-label">Gender</label>
-                            <InputRadioGroup id="gender" class="form-check-input" @bind-Value="userProfile.Gender"></InputRadioGroup>
+                            <label for="gender" class="form-label w-full">Gender</label>
+                            <InputRadioGroup @bind-Value="userProfile.Gender" class="">
+                                <div class="form-check form-check-inline">
+                                    <InputRadio class="form-check-input" Value="Gender.Female" />
+                                    <label class="form-check-label">Female</label>
+                                </div>
+
+                                <div class="form-check form-check-inline">
+                                    <InputRadio class="form-check-input" Value="Gender.Male" />
+                                    <label class="form-check-label">Male</label>
+                                </div>
+                            </InputRadioGroup>
+
+                            <ValidationMessage For="@(() => userProfile.Gender)" class="text-danger" />
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Understood</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
                 </div>
             </EditForm>
         </div>
@@ -91,18 +96,33 @@
                 UserID = Profile.UserID,
                 FirstName = Profile.FirstName,
                 Surname = Profile.Surname,
-                Username = Profile.Username,
-                Email = Profile.Email,
-                Phone = Profile.Phone,
-                DOB = Profile.DOB,
+                DOB = DateOnly.FromDateTime(DateTime.Now),
                 Title = Profile.Title,
                 Gender = Profile.Gender
             };
         }
     }
-
+    bool isSubmitting = false;
+    string submitMessage = string.Empty;
     private async Task HandleSubmission()
     {
-        
+        isSubmitting = true;
+        submitMessage = null;
+        try
+        {
+            userProfile.createdOn = DateTime.Now;
+            var userId = Guid.Parse("97775807-c99a-445a-9bc3-2a88c3449823");
+            userProfile.UserID = userId;
+            userProfile.ID = Guid.NewGuid();
+            var response = await UserProfileService.CreateProfileAsync(userProfile);
+            if (response.IsSuccessStatusCode)
+            {
+            }
+        }
+        catch (Exception)
+        {
+            
+            throw;
+        }
     }
 }

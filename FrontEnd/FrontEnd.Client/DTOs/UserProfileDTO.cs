@@ -1,21 +1,18 @@
 ﻿
+using FrontEnd.Client.DTOs;
 using System.ComponentModel.DataAnnotations;
 
     public class UserProfileDTO
     {
         public Guid ID { get; set; }
         [Required]
-        public Guid UserID { get; set; }
-        //public IdentityUser identityUser { get; set; } = default!;
+        public Guid UserID { get; set; } = default!;
         [Required]
         public string? FirstName { get; set; }
         [Required]
         public string? Surname { get; set; }
-        [Required]
         public string? Username { get; set; }
-        [Required, EmailAddress]
         public string? Email { get; set; }
-        [Required, Phone]
         public string? Phone { get; set; }
         [Required]
         public Gender Gender { get; set; }
@@ -24,11 +21,12 @@ using System.ComponentModel.DataAnnotations;
         [Required]
         public DateOnly DOB { get; set; }
         public DateTime createdOn { get; set; }
-        public DateTime UpdateOn { get; set; }
+        public DateTime UpdateOn { get; set; } = DateTime.Now;
+    //public ICollection<TrackingDTO>? Trackings { get; set; }
 
-    }
+}
 
-    public enum Title
+public enum Title
     {
         Mr,
         Mrs,

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Project.Models

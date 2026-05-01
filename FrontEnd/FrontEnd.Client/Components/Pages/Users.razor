@@ -1,0 +1,113 @@
+﻿@page "/Users"
+
+<PageTitle>MEPA | Users</PageTitle>
+
+
+<div class="my-4 row g-0 align-items-center ">
+    <div class="col-md-4 my-2">
+        <div class="d-flex flex-wrap gap-2">
+            <div class="flex-grow-1 flex-md-grow-0 my-2">
+                <h3>Users</h3>
+            </div>
+            <div class="flex-grow-1 flex-md-grow-0">
+                <div class="my-2 input-group rounded-pill small">
+                    <span class="input-group-text" id="basic-addon1">Show</span>
+                    <select class="form-control-sm" aria-label="Username" aria-describedby="basic-addon1">
+                        <option>10</option>
+                        <option>20</option>
+                        <option>30</option>
+                        <option>40</option>
+                        <option>50</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-5">
+        <div class="my-2 input-group">
+            <span class="input-group-text" id="basic-addon1">Search</span>
+            <input type="text" class="form-control" placeholder="Search" aria-label="Username"
+                   aria-describedby="basic-addon1">
+        </div>
+    </div>
+
+    <div class="col-md-3 col-12">
+        <div class="d-flex flex-wrap gap-2 justify-content-end">
+            <div class="dropdown-center small flex-grow-1 flex-md-grow-0">
+                <!-- Grows to fill space on mobile -->
+                <button class="btn btn-secondary dropdown-toggle w-100 w-md-auto" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    Export
+                </button>
+                <ul class="dropdown-menu dropdown-menu-sm">
+                    <li><a class="dropdown-item" href="#">PDF</a></li>
+                    <li><a class="dropdown-item" href="#">Excel</a></li>
+                </ul>
+            </div>
+            <div class="flex-grow-1 flex-md-grow-0">
+                <!-- Grows to fill space on mobile -->
+                <button type="button" @onclick="OpenCreateModal" class="btn btn-primary w-100 w-md-auto"
+                        data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    <i class="bi bi-plus-square me-2"></i>Add
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="border rounded bg-body-tertiary">
+        <div class="p-2 mt-2">
+
+            <TableTemplate Items="users" Context="user">
+
+                <TableHeader>
+                    <th scope="col">#</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Surname</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Status</th>
+                    <th scope="col"></th>
+                </TableHeader>
+                <RowTemplate Context="proponent">
+                    @{
+                        int index = proponents.IndexOf(proponent) + 1;
+                    }
+                    <td>@index</td>
+                    <td>@proponent.Name</td>
+                    <td>@proponent.Address</td>
+                    <td>@proponent.Location</td>
+                    <td>@proponent.createdOn.ToString("MMM dd, yyyy")</td>
+                    <td>
+                        <div class="d-flex gap-1 justify-content-center">
+                            <NavLink class="btn btn-sm btn-outline-primary" href="@($"/Proponent/View/{proponent.ID}")">
+                                <i class="bi bi-eye"></i>
+                            </NavLink>
+                            <button class="btn btn-sm btn-outline-warning" @onclick="() => EditProponent(proponent)"
+                                    title="Edit" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" title="Delete">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </RowTemplate>
+
+            </TableTemplate>
+        </div>
+
+
+@code {
+    [SupplyParameterFromForm]
+    private UserProfileDTO? UserProfile { get; set; } = new UserProfileDTO();
+    private bool isEditMode = false;
+    private List<UserProfileDTO> users = new List<UserProfileDTO>();
+
+    void OpenCreateModal()
+    {
+        isEditMode = false;
+        UserProfile = new UserProfileDTO();
+    }
+
+}

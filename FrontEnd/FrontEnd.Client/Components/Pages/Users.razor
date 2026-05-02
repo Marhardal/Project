@@ -67,23 +67,26 @@
                     <th scope="col">Role</th>
                     <th scope="col">Email</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Created On</th>
                     <th scope="col"></th>
                 </TableHeader>
-                <RowTemplate Context="proponent">
+                <RowTemplate Context="user">
                     @{
-                        int index = proponents.IndexOf(proponent) + 1;
+                        int index = users.IndexOf(user) + 1;
                     }
                     <td>@index</td>
-                    <td>@proponent.Name</td>
-                    <td>@proponent.Address</td>
-                    <td>@proponent.Location</td>
-                    <td>@proponent.createdOn.ToString("MMM dd, yyyy")</td>
+                    <td>@user.FirstName</td>
+                    <td>@user.Surname</td>
+                    <td>@* @user.Role *@</td>
+                    <td>@user.Email</td>
+                    <td>@* @user.Status *@</td>
+                    <td>@user.createdOn.ToString("MMM dd, yyyy")</td>
                     <td>
                         <div class="d-flex gap-1 justify-content-center">
-                            <NavLink class="btn btn-sm btn-outline-primary" href="@($"/Proponent/View/{proponent.ID}")">
+                            <NavLink class="btn btn-sm btn-outline-primary" href="@($"/User/View/{user.ID}")">
                                 <i class="bi bi-eye"></i>
                             </NavLink>
-                            <button class="btn btn-sm btn-outline-warning" @onclick="() => EditProponent(proponent)"
+                            <button class="btn btn-sm btn-outline-warning" @* @onclick="() => EditProponent(proponent)" *@
                                     title="Edit" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                                 <i class="bi bi-pencil"></i>
                             </button>
@@ -96,7 +99,7 @@
 
             </TableTemplate>
         </div>
-
+        </div>
 
 @code {
     [SupplyParameterFromForm]

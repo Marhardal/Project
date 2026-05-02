@@ -17,16 +17,23 @@ namespace Project.Controllers
     {
         private readonly DBContext _context;
 
-        public UsersController(DBContext context)
+        private readonly UserManager<IdentityUser> _userManager;
+        public UsersController(DBContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserModel>>> GetUserProfils()
         {
-            return await _context.UserProfils.ToListAsync();
+            var userProfiles = await _context.UserProfiles.Include(i => i.identityUser).ToListAsync();
+            if (userProfiles is null)
+            {
+                return NoContent();
+            }
+            return userProfiles;
         }
 
         // GET: api/Users/5
@@ -47,7 +54,7 @@ namespace Project.Controllers
         [HttpGet("{userID}")]
         public async Task<ActionResult<UserModel>> GetUserProfile(Guid userID)
         {
-            var userModel = await _context.UserProfils.Where(u => u.UserID == userID.ToString()).FirstOrDefaultAsync();
+            var userModel = await _context.UserProfiles.Where(u => u.UserID == userID.ToString()).Include(i => i.identityUser).FirstOrDefaultAsync();
 
             if (userModel == null)
             {
@@ -106,7 +113,7 @@ namespace Project.Controllers
                 UpdateOn = DateTime.UtcNow,
             };
 
-            _context.UserProfils.Add(userModel);
+            _context.UserProfiles.Add(userModel);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetUserModel", new { id = userModel.ID }, userModel);
@@ -116,13 +123,13 @@ namespace Project.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserModel(Guid id)
         {
-            var userModel = await _context.UserProfils.FindAsync(id);
+            var userModel = await _context.UserProfiles.FindAsync(id);
             if (userModel == null)
             {
                 return NotFound();
             }
 
-            _context.UserProfils.Remove(userModel);
+            _context.UserProfiles.Remove(userModel);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -130,7 +137,7 @@ namespace Project.Controllers
 
         private bool UserModelExists(Guid id)
         {
-            return _context.UserProfils.Any(e => e.ID == id);
+            return _context.UserProfiles.Any(e => e.ID == id);
         }
     }
 }

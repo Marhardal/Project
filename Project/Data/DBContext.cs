@@ -24,7 +24,7 @@ namespace Project.Data
 
         public DbSet<ReviewModel> Reviews { get; set; }
 
-        public DbSet<UserModel> UserProfils { get; set; }
+        public DbSet<UserModel> UserProfiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -13,12 +13,12 @@ public class UserProfileService
         _logger = logger;
     }
 
-    public async Task<UserProfileDTO> GetUserProfilesAsync()
+    public async Task<List<UserProfileDTO>> GetUserProfilesAsync()
     {
         try
         {
-            var result = await _http.GetFromJsonAsync<UserProfileDTO>($"api/Users");
-            return result ?? new UserProfileDTO();
+            var result = await _http.GetFromJsonAsync<List<UserProfileDTO>>($"api/Users");
+            return result ?? new List<UserProfileDTO>();
         }
         catch (Exception ex)
         {
@@ -34,7 +34,7 @@ public class UserProfileService
             }
 
             // Return empty list to avoid bubbling exceptions to the UI lifecycle.
-            return new UserProfileDTO();
+            return new List<UserProfileDTO>();
         }
     }
 

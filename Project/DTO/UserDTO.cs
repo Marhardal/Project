@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Project.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace Project.Models
+namespace Project.DTO
 {
     public class UserDTO
     {

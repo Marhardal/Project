@@ -1526,7 +1526,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/UserModel"
+                    "$ref": "#/components/schemas/UserProfileDTO"
                   }
                 }
               },
@@ -1534,7 +1534,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/UserModel"
+                    "$ref": "#/components/schemas/UserProfileDTO"
                   }
                 }
               },
@@ -1542,7 +1542,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/UserModel"
+                    "$ref": "#/components/schemas/UserProfileDTO"
                   }
                 }
               }
@@ -1620,17 +1620,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserModel"
+                  "$ref": "#/components/schemas/UserProfileDTO"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserModel"
+                  "$ref": "#/components/schemas/UserProfileDTO"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserModel"
+                  "$ref": "#/components/schemas/UserProfileDTO"
                 }
               }
             }
@@ -1890,6 +1890,48 @@
                 "type": "string"
               }
             }
+          }
+        }
+      },
+      "IdentityDTO": {
+        "required": [
+          "email",
+          "username",
+          "phone"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "username": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "phone": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "accessFailedCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "lockoutEnabled": {
+            "type": "boolean"
+          },
+          "twoFactorEnabled": {
+            "type": "boolean"
           }
         }
       },
@@ -2383,6 +2425,65 @@
         }
       },
       "UserModel": { },
+      "UserProfileDTO": {
+        "required": [
+          "userID",
+          "firstName",
+          "surname",
+          "gender",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userID": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "surname": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "title": {
+            "$ref": "#/components/schemas/Title"
+          },
+          "dob": {
+            "type": "string",
+            "format": "date"
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updateOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "identityDTO": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/IdentityDTO"
+              }
+            ]
+          }
+        }
+      },
       "WeatherForecast": {
         "type": "object",
         "properties": {

@@ -77,13 +77,13 @@
                     <td>@index</td>
                     <td>@user.FirstName</td>
                     <td>@user.Surname</td>
-                    <td>@* @user.Role *@</td>
-                    <td>@user.Email</td>
-                    <td>@* @user.Status *@</td>
+                    <td>@* @user.Role *@Admin</td>
+                    <td>@user.IdentityDTO?.Email</td>
+                    <td>@* @user.Status *@ Active</td>
                     <td>@user.createdOn.ToString("MMM dd, yyyy")</td>
                     <td>
                         <div class="d-flex gap-1 justify-content-center">
-                            <NavLink class="btn btn-sm btn-outline-primary" href="@($"/User/View/{user.ID}")">
+                        <NavLink class="btn btn-sm btn-outline-primary" href="@($"/User/Details/{user.UserID}")">
                                 <i class="bi bi-eye"></i>
                             </NavLink>
                             <button class="btn btn-sm btn-outline-warning" @* @onclick="() => EditProponent(proponent)" *@
@@ -111,6 +111,13 @@
     {
         isEditMode = false;
         UserProfile = new UserProfileDTO();
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userProfiles = await UserProfileService.GetUserProfilesAsync();
+        users = userProfiles;
     }
 
 }

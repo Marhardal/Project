@@ -680,7 +680,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[Project.Models.UserModel, Project, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Project.DTO.UserProfileDTO, Project, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -700,7 +700,7 @@
     "Parameters": [
       {
         "Name": "userDTO",
-        "Type": "Project.Models.UserDTO",
+        "Type": "Project.DTO.UserDTO",
         "IsRequired": true
       }
     ],
@@ -769,7 +769,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Project.Models.UserModel",
+        "Type": "Project.DTO.UserProfileDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project.Data;
+using Project.DTO;
 using Project.Models;
 
 namespace Project.Controllers
@@ -26,14 +22,36 @@ namespace Project.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserModel>>> GetUserProfils()
+        public async Task<ActionResult<IEnumerable<UserProfileDTO>>> GetUserProfils()
         {
-            var userProfiles = await _context.UserProfiles.Include(i => i.identityUser).ToListAsync();
-            if (userProfiles is null)
+            var userProfiles = await _context.UserProfiles.Include(i => i.identityUser)
+                .Select(
+                    u => new
+                    {
+                        u.UserID,
+                        u.FirstName,
+                        u.Surname,
+                        u.DOB,
+                        u.Gender,
+                        u.Title,
+                        u.createdOn,
+                        IdentityDTO = u.identityUser == null ? null : new IdentityDTO
+                        {
+                            Email = u.identityUser.Email,
+                            Username = u.identityUser.UserName,
+                            Phone = u.identityUser.PhoneNumber,
+                            TwoFactorEnabled = u.identityUser.TwoFactorEnabled,
+                            AccessFailedCount = u.identityUser.AccessFailedCount,
+                           LockoutEnabled = u.identityUser.LockoutEnabled
+                        }
+                    }
+                )
+                .ToListAsync();
+            if (userProfiles is null || !userProfiles.Any())
             {
                 return NoContent();
             }
-            return userProfiles;
+            return Ok(userProfiles);
         }
 
         // GET: api/Users/5
@@ -52,16 +70,39 @@ namespace Project.Controllers
 
         // GET: api/Users/5
         [HttpGet("{userID}")]
-        public async Task<ActionResult<UserModel>> GetUserProfile(Guid userID)
+        public async Task<ActionResult<UserProfileDTO>> GetUserProfile(Guid userID)
         {
-            var userModel = await _context.UserProfiles.Where(u => u.UserID == userID.ToString()).Include(i => i.identityUser).FirstOrDefaultAsync();
+            var userModel = await _context.UserProfiles.Where(u => u.UserID == userID.ToString())
+                .Include(i => i.identityUser)
+                .Select(
+                    u => new
+                    {
+                        u.ID,
+                        u.UserID,
+                        u.FirstName,
+                        u.Surname,
+                        u.DOB,
+                        u.Gender,
+                        u.Title,
+                        u.createdOn,
+                        IdentityDTO = u.identityUser == null ? null : new IdentityDTO
+                        {
+                            Email = u.identityUser.Email,
+                            Username = u.identityUser.UserName,
+                            Phone = u.identityUser.PhoneNumber,
+                            TwoFactorEnabled = u.identityUser.TwoFactorEnabled,
+                            AccessFailedCount = u.identityUser.AccessFailedCount,
+                            LockoutEnabled = u.identityUser.LockoutEnabled
+                        }
+                    }
+                ).FirstOrDefaultAsync();
 
             if (userModel == null)
             {
                 return NotFound();
             }
 
-            return userModel;
+            return Ok(userModel);
         }
 
         // PUT: api/Users/5

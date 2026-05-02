@@ -55,67 +55,125 @@
         </div>
     </div>
 </div>
-    <div class="border rounded bg-body-tertiary">
-        <div class="p-2 mt-2">
 
-            <TableTemplate Items="users" Context="user">
+<div class="border rounded bg-body-tertiary">
+    <div class="p-2 mt-2">
 
-                <TableHeader>
-                    <th scope="col">#</th>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Surname</th>
-                    <th scope="col">Role</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Created On</th>
-                    <th scope="col"></th>
-                </TableHeader>
-                <RowTemplate Context="user">
-                    @{
-                        int index = users.IndexOf(user) + 1;
-                    }
-                    <td>@index</td>
-                    <td>@user.FirstName</td>
-                    <td>@user.Surname</td>
-                    <td>@* @user.Role *@Admin</td>
-                    <td>@user.IdentityDTO?.Email</td>
-                    <td>@* @user.Status *@ Active</td>
-                    <td>@user.createdOn.ToString("MMM dd, yyyy")</td>
-                    <td>
-                        <div class="d-flex gap-1 justify-content-center">
+        <TableTemplate Items="users" Context="user">
+
+            <TableHeader>
+                <th scope="col">#</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Surname</th>
+                <th scope="col">Role</th>
+                <th scope="col">Email</th>
+                <th scope="col">Status</th>
+                <th scope="col">Created On</th>
+                <th scope="col"></th>
+            </TableHeader>
+            <RowTemplate Context="user">
+                @{
+                    int index = users.IndexOf(user) + 1;
+                }
+                <td>@index</td>
+                <td>@user.FirstName</td>
+                <td>@user.Surname</td>
+                <td>@* @user.Role *@Admin</td>
+                <td>@user.IdentityDTO?.Email</td>
+                <td>@* @user.Status *@ Active</td>
+                <td>@user.createdOn.ToString("MMM dd, yyyy")</td>
+                <td>
+                    <div class="d-flex gap-1 justify-content-center">
                         <NavLink class="btn btn-sm btn-outline-primary" href="@($"/User/Details/{user.UserID}")">
-                                <i class="bi bi-eye"></i>
-                            </NavLink>
-                            <button class="btn btn-sm btn-outline-warning" @* @onclick="() => EditProponent(proponent)" *@
-                                    title="Edit" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" title="Delete">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </RowTemplate>
+                            <i class="bi bi-eye"></i>
+                        </NavLink>
+                        <button class="btn btn-sm btn-outline-danger" title="Delete">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </RowTemplate>
 
-            </TableTemplate>
+        </TableTemplate>
+    </div>
+</div>
+
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <EditForm method="post" Model="Identity" OnValidSubmit="HandleSubmission" FormName="create">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Create User</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <DataAnnotationsValidator />
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Username</label>
+                        <InputText @bind-Value="Identity.Username" class="form-control" id="Name"
+                                   placeholder="Enter User Username."></InputText>
+                        <ValidationMessage For="@(() => Identity.Username)" class="text-danger" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Email</label>
+                        <InputText @bind-Value="Identity.Email" class="form-control" id="Name"
+                                   placeholder="Enter User Email."></InputText>
+                        <ValidationMessage For="@(() => Identity.Email)" class="text-danger" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Phone</label>
+                        <InputText @bind-Value="Identity.Phone" class="form-control" id="Name"
+                                   placeholder="Enter User Phone Number."></InputText>
+                        <ValidationMessage For="@(() => Identity.Phone)" class="text-danger" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Password</label>
+                        <InputText @bind-Value="Identity.Password" class="form-control" id="Name"
+                                   placeholder="Enter User Password."></InputText>
+                        <ValidationMessage For="@(() => Identity.Password)" class="text-danger" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Confirm Password</label>
+                        <InputText @bind-Value="Identity.ConfirmPassword" class="form-control" id="Name"
+                                   placeholder="Confirm User Password."></InputText>
+                        <ValidationMessage For="@(() => Identity.ConfirmPassword)" class="text-danger" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </EditForm>
         </div>
-        </div>
+    </div>
+</div>
 
 @code {
     [SupplyParameterFromForm]
-    private UserProfileDTO? UserProfile { get; set; } = new UserProfileDTO();
+    private IdentityDTO? Identity { get; set; } = new IdentityDTO();
     private bool isEditMode = false;
     private List<UserProfileDTO> users = new List<UserProfileDTO>();
 
     void OpenCreateModal()
     {
         isEditMode = false;
-        UserProfile = new UserProfileDTO();
+        // UserProfile = new UserProfileDTO();
     }
 
 
     protected override async Task OnInitializedAsync()
     {
+        var userProfiles = await UserProfileService.GetUserProfilesAsync();
+        users = userProfiles;
+    }
+
+    async Task HandleSubmission()
+    {
+        await UserProfileService.CreateUserAsync(Identity); 
+     
+        // Refresh the user list after submission
         var userProfiles = await UserProfileService.GetUserProfilesAsync();
         users = userProfiles;
     }

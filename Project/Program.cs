@@ -18,6 +18,11 @@ builder.Services.AddAuthentication();
 
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddEntityFrameworkStores<DBContext>();
+builder.Services.AddAuthentication();
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+//{
+//    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+//});
 
 // Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

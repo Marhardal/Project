@@ -74,12 +74,12 @@
                             </div>
                         </div>
                         <div class="row mb-2 g-2">
-                            <div class="col-6">
+                            <div class="col-md-6 col-sm-6">
                                 <label for="exampleInputEmail1" class="form-label">Date of Birth</label>
                                 <input type="date" @bind-value="User.DOB" class="form-control" id="exampleInputEmail1"
                                        aria-describedby="emailHelp" disabled />
                             </div>
-                            <div class="col-6">
+                            <div class="col-md-6 col-sm-6">
                                 <label for="exampleInputEmail1" class="form-label">Gender</label>
                                 <select class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" disabled>
                                     <option value="@User.Gender.ToString()">@User.Gender.ToString()</option>

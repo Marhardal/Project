@@ -120,6 +120,32 @@
     ]
   },
   {
+    "ContainingType": "Project.Controllers.IdentityController",
+    "Method": "CreateUser",
+    "RelativePath": "api/Identity",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "identity",
+        "Type": "Project.DTO.IdentityDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Project.Models.UserModel",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "Project.Controllers.ProjectsController",
     "Method": "PostProjectModel",
     "RelativePath": "api/Projects",

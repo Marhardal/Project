@@ -1,0 +1,184 @@
+﻿@if (User != null)
+{
+    <div class="container">
+        
+        <div class="mb-2 rounded">
+            <div class="card text-center bg-body-tertiary">
+                <div class="card-body">
+                    <h5 class="card-title">@User.FirstName @User.Surname</h5>
+                    <p class="card-text">Created @User.createdOn.ToString("MMMM yyyy")</p>
+                    <button class="btn btn-primary">Edit Profile</button>
+                    <button class="btn btn-secondary">Sign-Out</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mb-2 rounded">
+            <div class="card bg-body-tertiary">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="d-flex flex-row">
+                            <div class="p-1">
+                                @* <img src="@User.IdentityDTO?.ProfilePictureUrl" class="rounded-circle" alt="Profile
+                            Picture"
+                        width="50" height="50"> *@
+                                <i class="bi bi-info-circle-fill"></i>
+                            </div>
+                            <div class="p-1">
+                                <h5 class="card-title">Personal Information</h5>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="row mb-2 g-2">
+                            <div class="col-6">
+                                <label for="exampleInputEmail1" class="form-label">First Name</label>
+                                <input @bind-value="User.FirstName" class="form-control" id="exampleInputEmail1"
+                                       aria-describedby="emailHelp" disabled />
+                            </div>
+                            <div class="col-6">
+                                <label for="exampleInputEmail1" class="form-label">Surname</label>
+                                <input @bind-value="User.Surname" class="form-control" id="exampleInputEmail1"
+                                       aria-describedby="emailHelp" disabled />
+                            </div>
+                        </div>
+                        <div class="row mb-2 g-2">
+                            <div class="col-6">
+                                <label for="exampleInputEmail1" class="form-label">Email Address</label>
+                                <input @bind-value="User.IdentityDTO?.Email" class="form-control" id="exampleInputEmail1"
+                                       aria-describedby="emailHelp" disabled />
+                            </div>
+                            <div class="col-6">
+                                <label for="exampleInputEmail1" class="form-label">Phone Number</label>
+                                <input @bind-value="User.IdentityDTO?.Phone" class="form-control" id="exampleInputEmail1"
+                                       aria-describedby="emailHelp" disabled />
+                            </div>
+                        </div>
+                        <div class="row mb-2 g-2">
+                            <div class="col-6">
+                                <label for="exampleInputEmail1" class="form-label">Username</label>
+                                <input @bind-value="User.IdentityDTO?.Username" class="form-control" id="exampleInputEmail1"
+                                       aria-describedby="emailHelp" disabled />
+                            </div>
+                            <div class="col-6">
+                                <label for="exampleInputEmail1" class="form-label">Title</label>
+                                <select class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" disabled>
+                                    <option value="@User.Title.ToString()">@User.Title.ToString()</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2 g-2">
+                            <div class="col-md-6 col-sm-6">
+                                <label for="exampleInputEmail1" class="form-label">Date of Birth</label>
+                                <input type="date" @bind-value="User.DOB" class="form-control" id="exampleInputEmail1"
+                                       aria-describedby="emailHelp" disabled />
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <label for="exampleInputEmail1" class="form-label">Gender</label>
+                                <select class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" disabled>
+                                    <option value="@User.Gender.ToString()">@User.Gender.ToString()</option>
+                                </select>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="mb-2 rounded">
+            <div class="card bg-body-tertiary">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="d-flex flex-row">
+                            <div class="p-1">
+                                <i class="bi bi-shield-lock-fill"></i>
+                            </div>
+                            <div class="p-1">
+                                <h5 class="card-title">Change Password</h5>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                                   disabled />
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                                   disabled />
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                                   disabled />
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="mb-2 rounded">
+            <div class="card bg-body-tertiary">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="d-flex flex-row">
+                            <div class="p-1">
+                                <i class="bi bi-shield-fill-x"></i>
+                            </div>
+                            <div class="p-1">
+                                <h5 class="card-title">Danger Zone</h5>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="row mb-2 g-2">
+                            <div class="col-10">
+                                <label for="exampleInputEmail1" class="form-label">
+                                    Deactivate Account
+                                </label>
+                                <p class="text-danger">
+                                    Deactivating your account will disable your access but keep your data
+                                    intact.
+                                    You can reactivate it later.
+                                </p>
+                            </div>
+                            <div class="col-2">
+                                <button class="btn btn-warning">Deactivate Account</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="row mb-2 g-2">
+                            <div class="col-10 col-sm-6">
+                                <label for="exampleInputEmail1" class="form-label">Delete Account</label>
+                                <p class="text-danger">
+                                    Deleting your account is irreversible. All your data will be
+                                    permanently
+                                    removed.
+                                </p>
+                            </div>
+                            <div class="col-2 text-end col-sm-6">
+                                <button class="btn btn-danger">Delete Account</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string UserId { get; set; }
+
+    public UserProfileDTO? User { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        User = await UserProfileService.GetUserProfileAsync(Guid.Parse(UserId));
+    }
+}

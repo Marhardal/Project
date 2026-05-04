@@ -36,39 +36,36 @@ namespace Project.Data
                 .HasForeignKey(c => c.ProponentID);
 
             modelBuilder.Entity<Proponent>()
-                .HasMany(c => c.Projects)
-                .WithOne(c => c.Proponent)
-                .HasForeignKey(c => c.ProponentID);
+                .HasMany(p => p.Projects)
+                .WithOne(p => p.Proponent)
+                .HasForeignKey(p => p.ProponentID);
 
+            // Project → Trackings
             modelBuilder.Entity<ProjectModel>()
-                .HasMany(t => t.Trackings)
+                .HasMany(p => p.Trackings)
                 .WithOne(t => t.Project)
                 .HasForeignKey(t => t.ProjectID);
 
+            // Status → Trackings
             modelBuilder.Entity<Status>()
-                .HasMany(t => t.Trackings)
+                .HasMany(s => s.Trackings)
                 .WithOne(t => t.Status)
                 .HasForeignKey(t => t.StatusID);
 
-            modelBuilder.Entity<ReviewModel>()
-                .HasOne(r => r.Tracking)
-                .WithOne(t => t.Review)
+            // Tracking → Review (1:1)
+            modelBuilder.Entity<TrackingModel>()
+                .HasOne(t => t.Review)
+                .WithOne(r => r.Tracking)
                 .HasForeignKey<ReviewModel>(r => r.TrackingID);
 
-            modelBuilder.Entity<TrackingModel>()
-    .HasOne(t => t.Project)
-    .WithMany(p => p.Trackings)
-    .HasForeignKey(t => t.ProjectID);
-
-            modelBuilder.Entity<TrackingModel>()
-                .HasOne(t => t.Status)
-                .WithMany(s => s.Trackings)
-                .HasForeignKey(t => t.StatusID);
-
+            // User → Trackings
             modelBuilder.Entity<TrackingModel>()
                 .HasOne(t => t.User)
                 .WithMany(u => u.Trackings)
-                .HasForeignKey(t => t.userID);
+                .HasForeignKey(t => t.userID)
+                .HasPrincipalKey(u => u.UserID);
+                
+
 
             modelBuilder.Entity<UserModel>()
     .HasOne(u => u.identityUser)

@@ -681,24 +681,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProjectModel"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProjectModel"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProjectModel"
-                }
-              }
-            }
+            "description": "OK"
           }
         }
       },
@@ -2295,8 +2278,7 @@
             "type": [
               "null",
               "string"
-            ],
-            "format": "uuid"
+            ]
           },
           "projectID": {
             "type": "string",

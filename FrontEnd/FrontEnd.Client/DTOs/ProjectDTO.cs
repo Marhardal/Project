@@ -7,7 +7,7 @@ namespace FrontEnd.Client.DTOs
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         [Required]
-        public Guid ProponentID { get; set; }
+        public Guid? ProponentID { get; set; }
         [Required]
         public string? Name { get; set; }
         [Required]
@@ -19,7 +19,7 @@ namespace FrontEnd.Client.DTOs
         public DateTime assignedDate { get; set; }
         public DateTime? closingDate { get; set; }
         public DateTime SubmissionDate { get; set; } = DateTime.Now;
-        public DateTime createdOn { get; set; } = DateTime.Now;
+        public DateTime createdOn { get; set; }
         public DateTime updatedOn { get; set; }
         //public ICollection<Proponent>? Proponents { get; set; }
         public ProponentsDTO? Proponent { get; set; }

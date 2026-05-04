@@ -113,13 +113,15 @@ namespace Project.Controllers
                     p.closingDate,
                     p.assignedDate,
                     p.Description,
+                    p.createdOn,
 
                     Proponent = p.Proponent == null ? null : new Proponent
                     {
                         ID = p.Proponent.ID,
                         Name = p.Proponent.Name,
                         Address = p.Proponent.Address,
-                        Location = p.Proponent.Location
+                        Location = p.Proponent.Location,
+                        createdOn = p.createdOn,
                     },
 
                     Trackings = p.Trackings
@@ -156,53 +158,63 @@ namespace Project.Controllers
             return Ok(projects);
         }
 
-        // GET: api/Projects/5
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<ProjectModel>> GetProjectModel(Guid id)
+        public async Task<ActionResult> GetProjectModel(Guid id)
         {
             var projectModel = await _context.Projects
-     .Where(p => p.Id == id)
-     .Select(p => new ProjectModel
-     {
-         Id = p.Id,
-         Name = p.Name,
-         Location = p.Location,
-         ProjectType = p.ProjectType,
-         SubmissionDate = p.SubmissionDate,
-         closingDate = p.closingDate,
-         assignedDate = p.assignedDate,
-         Description = p.Description,
-         ProponentID = p.ProponentID,
-         Proponent = p.Proponent == null ? null : new Proponent
-         {
-            ID = p.Proponent.ID,
-            Name = p.Proponent.Name,
-            Address = p.Proponent.Address,
-            Location = p.Proponent.Location
-         },
+                .AsNoTracking()
+                .Where(p => p.Id == id)
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Name,
+                    p.Location,
+                    p.ProjectType,
+                    p.SubmissionDate,
+                    p.closingDate,
+                    p.assignedDate,
+                    p.Description,
+                    p.ProponentID,
+                    p.createdOn,
+                    Proponent = p.Proponent == null ? null : new
+                    {
+                        p.Proponent.ID,
+                        p.Proponent.Name,
+                        p.Proponent.Address,
+                        p.Proponent.Location
+                    },
 
-         Trackings = p.Trackings.Select(t => new TrackingModel
-         {
-             Id = t.Id,
-             userID = t.userID,
-             createdOn = t.createdOn,
+                    Trackings = p.Trackings
+                        .OrderByDescending(t => t.createdOn)
+                        .Select(t => new
+                        {
+                            t.Id,
+                            t.userID,
+                            t.createdOn,
 
-             Status = t.Status == null ? null : new Status
-             {
-                 ID = t.Status.ID,
-                 Name = t.Status.Name,
-                 SortOrder = t.Status.SortOrder,
-             },
+                            Status = t.Status == null ? null : new
+                            {
+                                t.Status.ID,
+                                t.Status.Name,
+                                t.Status.SortOrder
+                            },
 
-             Review = t.Review == null ? null : new ReviewModel
-             {
-                 ID = t.Review.ID,
-                 Remarks = t.Review.Remarks,
-                 createdOn = t.Review.createdOn
-             }
-         }).ToList()
-     })
-     .FirstOrDefaultAsync();
+                            Review = t.Review == null ? null : new
+                            {
+                                t.Review.ID,
+                                t.Review.Remarks,
+                                t.Review.createdOn
+                            },
+
+                            User = t.User == null ? null : new
+                            {
+                                t.User.FirstName,
+                                t.User.Surname
+                            }
+                        })
+                        .ToList()
+                })
+                .FirstOrDefaultAsync();
 
             if (projectModel == null)
             {
@@ -211,7 +223,6 @@ namespace Project.Controllers
 
             return Ok(projectModel);
         }
-
         // PUT: api/Projects/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -227,7 +238,7 @@ namespace Project.Controllers
             {
                 StatusID = projectModel.Tracking.StatusID,
                 ProjectID = projectModel.Id,
-                userID = Guid.Parse("97775807-c99a-445a-9bc3-2a88c3449823"),
+                userID = "97775807-c99a-445a-9bc3-2a88c3449823",
                 assignedDate = DateTime.UtcNow,
                 createdOn = DateTime.UtcNow,
                 updatedOn = DateTime.UtcNow,
@@ -262,9 +273,9 @@ namespace Project.Controllers
             TrackingModel tracking = new TrackingModel()
             {
                 StatusID = firstStatus.ID,
-                    ProjectID = projectModel.Id,
-                    userID = Guid.Parse("97775807-c99a-445a-9bc3-2a88c3449823"),
-                    assignedDate = DateTime.UtcNow,
+                ProjectID = projectModel.Id,
+                userID = "97775807-c99a-445a-9bc3-2a88c3449823",
+                assignedDate = DateTime.UtcNow,
                 createdOn = DateTime.UtcNow,
                 updatedOn = DateTime.UtcNow,
             };

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FrontEnd.Client.Components.Components;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net.NetworkInformation;
 
@@ -21,6 +22,7 @@ namespace FrontEnd.Client.DTOs
         [ForeignKey("StatusID")]
         public StatusDTO? Status { get; set; }
         public ReviewDTO? Review { get; set; }
+        public UserProfileDTO? User { get; set; }
 
     }
 

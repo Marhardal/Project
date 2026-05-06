@@ -26,10 +26,13 @@
     <script src="@Assets["lib/bootstrap/js/bootstrap.js"]"></script>
     <script>
         window.showModal = (id) => {
-        const el = document.getElementById(id);
-        const modal = bootstrap.Modal.getOrCreateInstance(el);
-        modal.show();
+            const el = document.getElementById(id);
+            const modal = bootstrap.Modal.getOrCreateInstance(el);
+            modal.show();
         };
+        function goBack() {
+            window.history.back();
+        }
     </script>
 </body>
 

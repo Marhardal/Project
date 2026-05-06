@@ -1,8 +1,4 @@
 ﻿@page "/Project/View/{ProjectID}"
-@using FrontEnd.Client.DTOs
-@using FrontEnd.Client.Services
-@using System.Linq
-@inject ProjectService ProjectService
 
 <PageTitle>MEPA | Project Details</PageTitle>
 
@@ -261,7 +257,7 @@
         <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">...</div> *@
         </div>
         <div class="p-2 bg-white rounded-bottom  border-start border-end border-bottom">
-            <NavLink class="btn btn-outline-primary btn-sm" href="Projects">Back</NavLink>
+            <button class="btn btn-outline-primary btn-sm" type="button" @onclick="() => GoBack()">Back</button>
             <NavLink type="button" class="btn btn-outline-secondary btn-sm" href=@($"/Proponent/View/{Project?.ProponentID}")>Proponent</NavLink>
         </div>
     </div>
@@ -362,4 +358,8 @@
         }
     }
 
+    private async Task GoBack()
+    {
+        await JSRuntime.InvokeVoidAsync("goBack");
+    }
 }

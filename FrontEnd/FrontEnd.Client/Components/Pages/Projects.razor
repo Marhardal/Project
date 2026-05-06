@@ -1,0 +1,194 @@
+﻿@page "/Projects"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
+
+<PageTitle>MEPA | Projects</PageTitle>
+@* 994190633 *@
+<div class="row">
+    <div class="col-md-8">
+        <h3>Projects</h3>
+    </div>
+    <div class="col-md-2 col-sm-2 text-md-end">
+        <div class="input-group rounded-pill justify-content-md-end">
+            <span class="input-group-text" id="basic-addon1">Show</span>
+            <select class="form-control-sm" aria-label="Username" aria-describedby="basic-addon1">
+                <option>10</option>
+                <option>20</option>
+                <option>30</option>
+                <option>40</option>
+                <option>50</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-2 col-sm-2 text-md-end">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+               Export
+            </button>
+            <ul class="dropdown-menu dropdown-menu-dark">
+                <li><a class="dropdown-item" href="#">Excel</a></li>
+                <li><a class="dropdown-item active" href="#">PDF</a></li>
+            </ul>
+        </div>
+    </div>
+    @* <div class="col-md-2 col-sm-2 text-md-end">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i
+            class="bi bi-plus-square me-2"></i>Add</button>
+    </div> *@
+</div>
+@if (projects != null)
+{
+    <div class="row">
+        <div class="col-md-7">
+            <div class="mb-3 input-group">
+                <span class="input-group-text" id="basic-addon1">Search</span>
+                <input type="text" class="form-control" placeholder="Search" aria-label="Username"
+                aria-describedby="basic-addon1">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="mb-3 input-group">
+                <label class="input-group-text" for="inputGroupSelect01">Type</label>
+                <select class="form-select" id="inputGroupSelect01">
+                    <option selected>Choose...</option>
+                    <option value="0">ESMP</option>
+                    <option value="1">Audit</option>
+                    <option value="2">ESIA</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="mb-3 input-group">
+                <label class="input-group-text" for="inputGroupSelect01">Status</label>
+                <select class="form-select" id="inputGroupSelect01">
+                    <option selected>Choose...</option>
+                    @* @foreach(var status in Statuses)
+                {
+                    <option value="@status.ID">@status.Name</option>
+                } *@
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="border rounded bg-body-tertiary">
+        <TableTemplate Items="projects" Context="project">
+            <TableHeader>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Proponent</th>
+                <th scope="col">Location</th>
+                <th scope="col">Type</th>
+                <th scope="col">Status</th>
+                <th scope="col">Submission</th>
+                <th scope="col">Started On</th>
+                <th scope="col"></th>
+            </TableHeader>
+
+            <RowTemplate Context="project">
+                @{
+                    int index = projects.IndexOf(project) + 1;
+                }
+                <td>@index</td>
+                @* <td>@project.Name</td> *@
+                <td>
+                    <span class="d-inline-block text-truncate" style="max-width: 350px;"
+                    title="@project.Name">@project.Name</span>
+                </td>
+                <td>@project?.Proponent?.Name</td>
+                <td>@project?.Location</td>
+                <td>@project?.ProjectType.ToString()</td>
+                @{
+                    var status = project?.Trackings.OrderByDescending(p => p.createdOn).FirstOrDefault()?.Status;
+                }
+
+                <td class="py-2">
+                    <StatusItem Name="@status?.Name" Colour="@status?.Color"></StatusItem>
+                </td>
+                <td>@project?.createdOn</td>
+                <td class="py-2">
+                    <div class="d-flex gap-1 justify-content-end ">
+                        <NavLink class="rounded btn btn-sm btn-outline-warning" href="@($"Project/View/{project.Id}")">
+                            <i class="bi bi-eye-fill"></i>
+                        </NavLink>
+                        @* @onclick="() => editProposal(proposal)" *@
+                        <button data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop" class="rounded btn btn-sm btn-outline-success">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <NavLink class="rounded btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </NavLink>
+                    </div>
+                </td>
+            </RowTemplate>
+        </TableTemplate>
+        <div class="justify-content-center d-flex">
+            <nav aria-label="...">
+                <ul class="pagination">
+                    <li class="page-item"><a href="#" class="page-link">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#" aria-current="page">2</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+}
+else
+{
+    <p>Please enter some projects via Proposals.</p>
+}
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Project</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Project Name</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1"
+                               placeholder="Enter Project Name." required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Project Proponent</label>
+                        <select class="form-select" aria-label="Default select example">
+                            <option selected>Select Project Proponent</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Submission Date</label>
+                        <input type="date" class="form-control" id="exampleFormControlInput1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Description</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@code {
+    List<ProjectDTO> projects = new List<ProjectDTO>();
+    protected override async Task OnInitializedAsync()
+    {
+        projects = await ProjectService.GetProjectAsync(false);
+    }
+
+    
+}

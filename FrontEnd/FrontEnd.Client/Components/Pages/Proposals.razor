@@ -3,37 +3,40 @@
 
 <PageTitle>MEPA | Proposals</PageTitle>
 
-<div class="row">
-    <div class="col-md-6">
-        <h3>Proposals</h3>
-    </div>
-    <div class="col-md-2">
-        <div class="mb-3 input-group rounded-pill justify-content-end">
-            <span class="input-group-text" id="basic-addon1">Show</span>
-            <select class="form-control-sm" aria-label="Username" aria-describedby="basic-addon1">
-                <option>10</option>
-                <option>20</option>
-                <option>30</option>
-                <option>40</option>
-                <option>50</option>
-            </select>
+@if (proposals != null && proposals.Count > 0)
+{
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Proposals</h3>
         </div>
-    </div>
-    <div class="col-md-2 text-end">
-        <div class="dropdown-center">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                Export
+        <div class="col-md-2">
+            <div class="mb-3 input-group rounded-pill justify-content-end">
+                <span class="input-group-text" id="basic-addon1">Show</span>
+                <select class="form-control-sm" aria-label="Username" aria-describedby="basic-addon1">
+                    <option>10</option>
+                    <option>20</option>
+                    <option>30</option>
+                    <option>40</option>
+                    <option>50</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2 text-end">
+            <div class="dropdown-center">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    Export
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">PDF</a></li>
+                    <li><a class="dropdown-item" href="#">Excel</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-2 text-end">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                <i class="bi bi-plus-square me-2"></i>Add
             </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">PDF</a></li>
-                <li><a class="dropdown-item" href="#">Excel</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="col-md-2 text-end">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i
-            class="bi bi-plus-square me-2"></i>Add</button>
         </div>
     </div>
     <div class="row">
@@ -68,21 +71,21 @@
                 </td>
                 <td class="py-2">@proposal.Proponent?.Name</td>
                 <td class="py-2">@proposal.Location</td>
-            @{
-                var status = proposal?.Trackings.OrderByDescending(p => p.createdOn).FirstOrDefault()?.Status;
-            }
+                @{
+                    var status = proposal?.Trackings.OrderByDescending(p => p.createdOn).FirstOrDefault()?.Status;
+                }
 
-            <td class="py-2">
-                <StatusItem Name="@status?.Name" Colour="@status?.Color"></StatusItem>
-            </td>
+                <td class="py-2">
+                    <StatusItem Name="@status?.Name" Colour="@status?.Color"></StatusItem>
+                </td>
                 <td class="py-2">@proposal.createdOn.ToString("yyyy-MMM, dd")</td>
                 <td class="py-2">
                     <div class="d-flex gap-1 justify-content-end ">
                         <NavLink class="rounded btn btn-sm btn-outline-warning" href="@($"Project/View/{proposal.Id}")">
                             <i class="bi bi-eye-fill"></i>
                         </NavLink>
-                    <button data-bs-toggle="modal"
-                            data-bs-target="#staticBackdrop" @onclick="() => editProposal(proposal)" class="rounded btn btn-sm btn-outline-success">
+                        <button data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop" @onclick="() => editProposal(proposal)" class="rounded btn btn-sm btn-outline-success">
                             <i class="bi bi-pencil-square"></i>
                         </button>
                         <NavLink class="rounded btn btn-sm btn-outline-danger">
@@ -106,9 +109,21 @@
                 </ul>
             </nav>
         </div>
+    </div>    
+}
+else
+{
+<div class="d-flex flex-column align-items-center justify-content-center min-vh-100">
+        <h5 class="mb-3">No Proposal Found</h5>
+        <p class="mb-4 text-muted">Please enter a new proposal.</p>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            <i class="bi bi-plus-square me-2"></i>Add
+        </button>
     </div>
+}
 
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -251,14 +266,14 @@
 
         var proponentResult = await ProponentService.GetProponentsAsync();
         proponents = proponentResult ?? new List<ProponentsDTO>();
-    
+
         isloaded = true;
     }
 
     async Task HandleSubmission()
     {
         Proposal.createdOn = DateTime.Now;
-        Proposal.ProjectType = ProjectType.Audit;
+        Proposal.ProjectType = ProjectType.Proposal;
         Proposal.closingDate = DateTime.Now;
         Proposal.assignedDate = DateTime.Now;
         var response = await ProjectService.CreateProjectAsync(Proposal);
@@ -283,6 +298,7 @@
         {
             // EditPerson.ProponentID = ;
             // Proponent!.ProponentID = Guid.Parse(PropID);
+            Proposal.ProjectType = ProjectType.Proposal;
             Proposal.updatedOn = DateTime.Now;
             var response = await ProjectService.UpdateProjectAsync(Proposal.Id, Proposal);
             if (response.IsSuccessStatusCode)

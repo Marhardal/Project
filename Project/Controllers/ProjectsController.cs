@@ -91,17 +91,12 @@ namespace Project.Controllers
         [HttpGet("filter/{isProposal:bool}")]
         public async Task<ActionResult<IEnumerable<ProjectModel>>> GetProjects(bool isProposal = true)
         {
-            var maxSortOrder = await _context.Statuses
-                .MaxAsync(s => s.SortOrder);
-
-            var targetSortOrder = isProposal ? 3 : maxSortOrder;
-
+           
             var projects = await _context.Projects
                 .AsNoTracking()
-                .Where(p => p.Trackings
-                    .OrderByDescending(t => t.createdOn)
-                    .Select(t => t.Status.SortOrder)
-                    .FirstOrDefault() < targetSortOrder)
+                .Where(p => isProposal
+        ? p.ProjectType == ProjectType.Proposal
+        : p.ProjectType != ProjectType.Proposal)
                 .Select(p => new
                 {
                     p.Id,

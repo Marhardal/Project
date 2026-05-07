@@ -295,6 +295,7 @@ else
             Proposal = new ProjectDTO();
             StateHasChanged();
         }
+        await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
     }
 
     async Task HandleUpdate()
@@ -343,6 +344,7 @@ else
             isSubmitting = false;
             StateHasChanged();
         }
+        submitMessage = null;
     }
 
     async Task editProposal(ProjectDTO project)

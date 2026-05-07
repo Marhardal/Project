@@ -231,7 +231,10 @@ else
                 Proponent = new();
                 // Close modal
                 // await JSRuntime.InvokeVoidAsync("bootstrap.Modal.getInstance", modalElement).AsTask();
-                submitMessage = "Proponent created successfully!";
+                
+                await JSRuntime.InvokeVoidAsync("SwalService.success", "Proponent created successfully!");
+                await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
+
             }
             else
             {
@@ -271,7 +274,10 @@ else
                 // Close modal
                 // await JSRuntime.InvokeVoidAsync("bootstrap.Modal.getInstance", modalElement).AsTask();
                 isEditMode = false;
-                submitMessage = "Proponent updated successfully!";
+                await JSRuntime.InvokeVoidAsync("SwalService.success", "Proponent updated successfully!");
+                await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
+                
+
             }
             else
             {

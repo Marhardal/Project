@@ -236,7 +236,10 @@
                                                     {
                                                         <div class="col-md-4">
                                                             <div class="text-muted small"><i class="bi bi-chat-square-dots-fill me-1"></i>Review</div>
-                                                            <div class="fw-medium">@tracking?.Review?.Remarks</div>
+                                                            <span class="d-inline-block text-truncate" style="max-width: 200px;">@tracking?.Review?.Remarks</span>
+                                                            <br />
+                                                                <NavLink type="button" @onclick="() => viewReview(tracking?.Review)" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop">View</NavLink>
+                                                            
                                                         </div>
                                                     }
                                                 </div>
@@ -375,4 +378,12 @@
             }
         }
     }
+
+    async Task viewReview(ReviewDTO review)
+    {
+        Review.Remarks = review.Remarks;
+        Review.ProjectID = review.ProjectID;
+        Review.TrackingID = review.TrackingID;
+    }
+
 }

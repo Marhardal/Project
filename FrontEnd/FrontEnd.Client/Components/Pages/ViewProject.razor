@@ -1,4 +1,5 @@
 ﻿@page "/Project/View/{ProjectID}"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
 <PageTitle>MEPA | Project Details</PageTitle>
 
@@ -257,36 +258,32 @@
         <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">...</div> *@
         </div>
         <div class="p-2 bg-white rounded-bottom  border-start border-end border-bottom">
-            <button class="btn btn-outline-primary btn-sm" type="button" @onclick="() => GoBack()">Back</button>
-            <NavLink type="button" class="btn btn-outline-secondary btn-sm" href=@($"/Proponent/View/{Project?.ProponentID}")>Proponent</NavLink>
+            <NavLink class="btn btn-outline-primary btn-sm" href="/Projects">Back</NavLink>
+            <NavLink class="btn btn-outline-secondary btn-sm" href=@($"/Proponent/View/{Project?.ProponentID}")>Proponent</NavLink>
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Review</button>
         </div>
     </div>
 
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
+            <EditForm method="post" Model="Proponent" OnValidSubmit="AddReview" FormName="create">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Proponent</h1>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Review</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Proponent Name</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Proponent Name." required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Postal Address</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Proponent Postal Address." required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Proponet Location</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Proponent Location." required>
+                        <label for="exampleFormControlInput1" class="form-label">Remarks</label>
+                        <InputTextArea id="Remarks" @bind-Value="Review.Remarks" class="form-control" placeholder="Enter Review Remarks." rows="4" />
+                        <ValidationMessage For="@(() => Review.Remarks)" class="text-danger" />
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Create</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
                 </div>
+                </EditForm>
             </div>
         </div>
     </div>
@@ -335,11 +332,14 @@
 </style>
 
 @code {
+    [SupplyParameterFromForm]
+    private ReviewDTO? Review { get; set; } = new();
+
     [Parameter]
     public string? ProjectID { get; set; }
 
     public ProjectDTO? Project;
-    
+
     private string TruncateToWords(string text, int wordLimit)
     {
         if (string.IsNullOrEmpty(text)) return text;
@@ -361,5 +361,18 @@
     private async Task GoBack()
     {
         await JSRuntime.InvokeVoidAsync("goBack");
+    }
+
+    async Task AddReview()
+    {
+        if (Project != null && Review != null)
+        {
+            if (Guid.TryParse(ProjectID, out var projectId))
+            {
+                Review.ProjectID = Guid.Parse(ProjectID);
+                await ReviewService.CreateReviewAsync(Review);
+                Project = await ProjectService.GetProjectAsync(projectId);
+            }
+        }
     }
 }

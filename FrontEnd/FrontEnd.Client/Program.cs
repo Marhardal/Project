@@ -13,4 +13,5 @@ builder.Services.AddScoped<ContactPersonService>();
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<StatusService>();
 builder.Services.AddScoped<UserProfileService>();
+builder.Services.AddScoped<ReviewService>();
 await builder.Build().RunAsync();

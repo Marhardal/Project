@@ -1029,17 +1029,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ReviewModel"
+                "$ref": "#/components/schemas/ReviewDTO"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/ReviewModel"
+                "$ref": "#/components/schemas/ReviewDTO"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/ReviewModel"
+                "$ref": "#/components/schemas/ReviewDTO"
               }
             }
           },
@@ -2259,6 +2259,57 @@
           },
           "newPassword": {
             "type": "string"
+          }
+        }
+      },
+      "ResolvedStatus": {
+        "type": "integer"
+      },
+      "ReviewDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "trackingID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "projectID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "remarks": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ResolvedStatus"
+          },
+          "createdOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedOn": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "tracking": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/TrackingModel"
+              }
+            ]
           }
         }
       },

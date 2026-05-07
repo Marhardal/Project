@@ -32,6 +32,7 @@
         },
         "frameworks": {
           "net10.0": {
+            "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {}
           }
@@ -50,6 +51,7 @@
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
             "Microsoft.AspNetCore.App.Internal.Assets": {
@@ -413,6 +415,7 @@
         },
         "frameworks": {
           "net10.0": {
+            "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {
               "C:\\Users\\user\\source\\repos\\Martin\\Frontend\\FrontEnd\\FrontEnd.Client\\FrontEnd.Client.csproj": {
@@ -435,6 +438,7 @@
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
             "Microsoft.AspNetCore.App.Internal.Assets": {

@@ -57,7 +57,7 @@ namespace Project.Data
                 .HasOne(t => t.Review)
                 .WithOne(r => r.Tracking)
                 .HasForeignKey<ReviewModel>(r => r.TrackingID);
-
+            
             // User → Trackings
             modelBuilder.Entity<TrackingModel>()
                 .HasOne(t => t.User)

@@ -389,7 +389,7 @@
     "Parameters": [
       {
         "Name": "reviewModel",
-        "Type": "ReviewModel",
+        "Type": "Project.DTO.ReviewDTO",
         "IsRequired": true
       }
     ],

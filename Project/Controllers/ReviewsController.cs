@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project.Data;
+using Project.DTO;
 using Project.Models;
 
 namespace Project.Controllers
@@ -76,9 +77,29 @@ namespace Project.Controllers
         // POST: api/Reviews
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ReviewModel>> PostReviewModel(ReviewModel reviewModel)
+        public async Task<ActionResult<ReviewModel>> PostReviewModel(ReviewDTO reviewModel)
         {
-            _context.Reviews.Add(reviewModel);
+            var firstStatus = await _context.Statuses.OrderBy(s => s.SortOrder).FirstOrDefaultAsync();
+            TrackingModel tracking = new TrackingModel()
+            {
+                StatusID = firstStatus.ID,
+                ProjectID = reviewModel.ProjectID,
+                userID = "97775807-c99a-445a-9bc3-2a88c3449823",
+                assignedDate = DateTime.UtcNow,
+                createdOn = DateTime.UtcNow,
+                updatedOn = DateTime.UtcNow,
+            };
+            _context.Trackings.Add(tracking);
+            ReviewModel model = new ReviewModel() 
+            { 
+                ID = reviewModel.ID,
+                TrackingID = tracking.Id,
+                Remarks = reviewModel.Remarks,
+                Date = reviewModel.Date,
+                createdOn = reviewModel.createdOn,
+                updatedOn = reviewModel.updatedOn,
+            };
+            _context.Reviews.Add(model);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetReviewModel", new { id = reviewModel.ID }, reviewModel);

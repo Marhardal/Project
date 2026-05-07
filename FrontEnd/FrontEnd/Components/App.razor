@@ -34,6 +34,19 @@
         function goBack() {
             window.history.back();
         }
+
+        function showModal(id) {
+        var modal = new bootstrap.Modal(document.getElementById(id));
+        modal.show();
+        }
+
+        function hideModal(id) {
+        var modalEl = document.getElementById(id);
+        var modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) {
+        modal.hide();
+        }
+        }
     </script>
 </body>
 

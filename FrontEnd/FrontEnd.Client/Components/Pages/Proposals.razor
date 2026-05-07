@@ -135,7 +135,14 @@ else
                     </div>
                     <div class="modal-body">
                         <DataAnnotationsValidator />
-                        <div class="row">
+                    @if (!string.IsNullOrEmpty(submitMessage))
+                    {
+                        <div class="alert alert-danger my-2" role="alert">
+                            @submitMessage
+                        </div>
+                        @* <div id="liveAlertPlaceholder"></div> *@
+                    }
+                    <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="Name" class="form-label">Project Name</label>
@@ -215,7 +222,7 @@ else
                                  id="ProjectType"
                                  class="form-select">
                         <option value="">-- Select Project Type --</option>
-                        @foreach (var type in Enum.GetValues<ProjectType>())
+                        @foreach (var type in Enum.GetValues<ProjectType>().Where(t => t != ProjectType.Proposal))
                         {
                             <option value="@type">@EnumHelper.GetDisplayName(type)</option>
                         }
@@ -296,9 +303,15 @@ else
         submitMessage = null;
         try
         {
+            var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
+
+            if (selectedStatus?.Name == "Approved" && Proposal.ProjectType == ProjectType.Proposal)
+            {
+                submitMessage = "Approved proposals must be assigned a valid project type.";
+                return;
+            }
             // EditPerson.ProponentID = ;
             // Proponent!.ProponentID = Guid.Parse(PropID);
-            Proposal.ProjectType = ProjectType.Proposal;
             Proposal.updatedOn = DateTime.Now;
             var response = await ProjectService.UpdateProjectAsync(Proposal.Id, Proposal);
             if (response.IsSuccessStatusCode)
@@ -313,7 +326,8 @@ else
                 // Close modal
                 // await JSRuntime.InvokeVoidAsync("bootstrap.Modal.getInstance", modalElement).AsTask();
                 isEditMode = false;
-                submitMessage = "Proposal updated successfully!";
+                submitMessage = "Proposal updated successfully!"; 
+                await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
             }
             else
             {
@@ -336,6 +350,13 @@ else
         var tracking = project.Trackings?
             .OrderByDescending(t => t.createdOn)
             .FirstOrDefault();
+        var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
+
+        if (selectedStatus?.Name == "Approved" && project.ProjectType == ProjectType.Proposal)
+        {
+            submitMessage = "Approved proposals must be assigned a valid project type.";
+            return;
+        }
 
         var defaultStatusId = statuses.FirstOrDefault()?.ID ?? Guid.Empty;
 

@@ -295,7 +295,11 @@ else
             Proposal = new ProjectDTO();
             StateHasChanged();
         }
+        // await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
         await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
+        
+        await JSRuntime.InvokeVoidAsync("SwalService.success", "Added a Proposal Successfull.");
+         
     }
 
     async Task HandleUpdate()
@@ -327,8 +331,12 @@ else
                 // Close modal
                 // await JSRuntime.InvokeVoidAsync("bootstrap.Modal.getInstance", modalElement).AsTask();
                 isEditMode = false;
-                submitMessage = "Proposal updated successfully!"; 
+                // submitMessage = "Proposal updated successfully!"; 
+                // await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
                 await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
+                
+                await JSRuntime.InvokeVoidAsync("SwalService.success", "Proposal updated successfully!");
+         
             }
             else
             {

@@ -375,6 +375,10 @@
                 Review.ProjectID = Guid.Parse(ProjectID);
                 await ReviewService.CreateReviewAsync(Review);
                 Project = await ProjectService.GetProjectAsync(projectId);
+                await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
+       
+                await JSRuntime.InvokeVoidAsync("SwalService.success", "Added a Project Remark.");
+         
             }
         }
     }

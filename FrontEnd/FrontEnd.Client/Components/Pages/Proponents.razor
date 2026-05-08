@@ -231,9 +231,9 @@ else
                 Proponent = new();
                 // Close modal
                 // await JSRuntime.InvokeVoidAsync("bootstrap.Modal.getInstance", modalElement).AsTask();
+                await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
                 
                 await JSRuntime.InvokeVoidAsync("SwalService.success", "Proponent created successfully!");
-                await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
 
             }
             else

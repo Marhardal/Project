@@ -350,7 +350,10 @@ else
                 Proponent = new();
                 // Close modal
                 // await JSRuntime.InvokeVoidAsync("bootstrap.Modal.getInstance", modalElement).AsTask();
-                submitMessage = "Proponent created successfully!";
+                // submitMessage = "Proponent created successfully!";
+                await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
+                
+                await JSRuntime.InvokeVoidAsync("SwalService.success", "Added a Contact Person for Proponent.");
             }
             else
             {
@@ -390,7 +393,9 @@ else
                 // Close modal
                 // await JSRuntime.InvokeVoidAsync("bootstrap.Modal.getInstance", modalElement).AsTask();
                 isEditMode = false;
-                submitMessage = "Proponent updated successfully!";
+                await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
+                
+                await JSRuntime.InvokeVoidAsync("SwalService.success", "Updated a Contact Person for Proponent.");
             }
             else
             {

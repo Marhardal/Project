@@ -40,6 +40,10 @@
     padding: .75rem 1rem;
 }
 
-.swal2-container {
+/*.swal2-container {
     z-index: 20000 !important;
+}
+*/
+.swal2-container {
+    z-index: 99999 !important;
 }

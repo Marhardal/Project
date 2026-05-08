@@ -1,22 +1,22 @@
 ﻿window.SwalService = {
-    //success: function (message) {
-    //    return Swal.fire({
-    //        icon: 'success',
-    //        title: 'Success',
-    //        text: message,
-    //        timer: 2000,
-    //        showConfirmButton: false
-    //    });
-    //},
-    toast: true,
-    position: "center", // 👈 change this
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.onmouseenter = Swal.stopTimer;
-        toast.onmouseleave = Swal.resumeTimer;
-    }
+
+    success: function (message) {
+
+        Swal.mixin({
+            toast: true,
+            position: "top", 
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        }).fire({
+            icon: "success",
+            title: message
+        });
+    },
 
     error: function (message) {
         return Swal.fire({

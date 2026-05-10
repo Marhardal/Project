@@ -238,7 +238,7 @@ namespace Project.Controllers
             {
                 StatusID = projectModel.Tracking.StatusID,
                 ProjectID = projectModel.Id,
-                userID = "97775807-c99a-445a-9bc3-2a88c3449823",
+                userID = "94f18329-f144-41bd-8f25-22b887f686e7",
                 assignedDate = DateTime.UtcNow,
                 createdOn = DateTime.UtcNow,
                 updatedOn = DateTime.UtcNow,
@@ -274,7 +274,7 @@ namespace Project.Controllers
             {
                 StatusID = firstStatus.ID,
                 ProjectID = projectModel.Id,
-                userID = "97775807-c99a-445a-9bc3-2a88c3449823",
+                userID = "94f18329-f144-41bd-8f25-22b887f686e7",
                 assignedDate = DateTime.UtcNow,
                 createdOn = DateTime.UtcNow,
                 updatedOn = DateTime.UtcNow,

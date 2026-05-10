@@ -2273,25 +2273,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\user\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\Martin\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\user\\source\\repos\\Martin\\Frontend\\FrontEnd\\FrontEnd\\FrontEnd.csproj",
+      "projectUniqueName": "C:\\Users\\Martin\\source\\repos\\Project\\FrontEnd\\FrontEnd\\FrontEnd.csproj",
       "projectName": "FrontEnd",
-      "projectPath": "C:\\Users\\user\\source\\repos\\Martin\\Frontend\\FrontEnd\\FrontEnd\\FrontEnd.csproj",
-      "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\user\\source\\repos\\Martin\\Frontend\\FrontEnd\\FrontEnd\\obj\\",
+      "projectPath": "C:\\Users\\Martin\\source\\repos\\Project\\FrontEnd\\FrontEnd\\FrontEnd.csproj",
+      "packagesPath": "C:\\Users\\Martin\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Martin\\source\\repos\\Project\\FrontEnd\\FrontEnd\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Martin\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -2300,7 +2298,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -2308,8 +2305,8 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {
-            "C:\\Users\\user\\source\\repos\\Martin\\Frontend\\FrontEnd\\FrontEnd.Client\\FrontEnd.Client.csproj": {
-              "projectPath": "C:\\Users\\user\\source\\repos\\Martin\\Frontend\\FrontEnd\\FrontEnd.Client\\FrontEnd.Client.csproj"
+            "C:\\Users\\Martin\\source\\repos\\Project\\FrontEnd\\FrontEnd.Client\\FrontEnd.Client.csproj": {
+              "projectPath": "C:\\Users\\Martin\\source\\repos\\Project\\FrontEnd\\FrontEnd.Client\\FrontEnd.Client.csproj"
             }
           }
         }

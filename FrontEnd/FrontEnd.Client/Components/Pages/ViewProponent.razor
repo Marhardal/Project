@@ -344,8 +344,6 @@ else
             var response = await ContactPersonService.CreateContactPersonAsync(CreatePerson);
             if (response.IsSuccessStatusCode)
             {
-                // Refresh list
-                contactPeople = await ContactPersonService.GetContactPersonsAsync(Guid.Parse(PropID));
                 // Reset form
                 Proponent = new();
                 // Close modal
@@ -366,6 +364,8 @@ else
         }
         finally
         {
+            // Refresh list
+            contactPeople = await ContactPersonService.GetContactPersonsAsync(Guid.Parse(PropID));
             isSubmitting = false;
             StateHasChanged();
         }
@@ -408,6 +408,8 @@ else
         }
         finally
         {
+            // Refresh list
+            contactPeople = await ContactPersonService.GetContactPersonsAsync(Guid.Parse(PropID));
             isSubmitting = false;
             StateHasChanged();
         }

@@ -276,7 +276,8 @@ namespace Project.Controllers
             };
             _context.Trackings.Add(tracking);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetProjectModel", new { id = projectModel.Id }, projectModel);
+            //return CreatedAtAction("GetProjectModel", new { id = projectModel.Id }, projectModel);
+            return StatusCode(201, new { StatusMessage = "Added Contact Person." });
         }
 
         // DELETE: api/Projects/5

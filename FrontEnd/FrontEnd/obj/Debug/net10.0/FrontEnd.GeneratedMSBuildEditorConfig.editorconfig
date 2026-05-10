@@ -19,85 +19,85 @@ build_property.TargetFrameworkIdentifier = .NETCoreApp
 build_property.TargetFrameworkVersion = v10.0
 build_property.RootNamespace = FrontEnd
 build_property.RootNamespace = FrontEnd
-build_property.ProjectDir = C:\Users\user\source\repos\Martin\Frontend\FrontEnd\FrontEnd\
+build_property.ProjectDir = C:\Users\Martin\source\repos\Project\FrontEnd\FrontEnd\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\user\source\repos\Martin\Frontend\FrontEnd\FrontEnd
+build_property.MSBuildProjectDirectory = C:\Users\Martin\source\repos\Project\FrontEnd\FrontEnd
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/App.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/App.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBcHAucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Component.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/Component.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Components/DashCard.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/Components/DashCard.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXERhc2hDYXJkLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Components/PieStatusChart.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/Components/PieStatusChart.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXFBpZVN0YXR1c0NoYXJ0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Components/StackedChart.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/Components/StackedChart.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXFN0YWNrZWRDaGFydC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Components/StatusItem.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/Components/StatusItem.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXFN0YXR1c0l0ZW0ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Components/TableTemplate.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/Components/TableTemplate.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXFRhYmxlVGVtcGxhdGUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Components/UpsertStatusItem.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/Components/UpsertStatusItem.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXFVwc2VydFN0YXR1c0l0ZW0ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Pages/Auth.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/Pages/Auth.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBdXRoLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Pages/Counter2.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/Pages/Counter2.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDb3VudGVyMi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Pages/Error.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/Pages/Error.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFcnJvci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Pages/ProjectbyMonth.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/Pages/ProjectbyMonth.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcm9qZWN0YnlNb250aC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Pages/ProjectbyProponents.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/Pages/ProjectbyProponents.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcm9qZWN0YnlQcm9wb25lbnRzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Pages/ProjectbyStatus.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/Pages/ProjectbyStatus.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcm9qZWN0YnlTdGF0dXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Pages/Test2.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/Pages/Test2.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xUZXN0Mi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Pages/Tracking.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/Pages/Tracking.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xUcmFja2luZy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/Pages/Weather.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/Pages/Weather.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xXZWF0aGVyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/user/source/repos/Martin/Frontend/FrontEnd/FrontEnd/Components/_Imports.razor]
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd/Components/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xfSW1wb3J0cy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 

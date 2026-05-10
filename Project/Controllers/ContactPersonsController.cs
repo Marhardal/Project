@@ -70,7 +70,9 @@ namespace Project.Controllers
                 }
             }
 
-            return NoContent();
+            //return NoContent();
+
+            return StatusCode(201, new { StatusMessage = "Updated Contact Person." });
         }
 
         // POST: api/ContactPersons
@@ -81,7 +83,8 @@ namespace Project.Controllers
             _context.Contacts.Add(contactPerson);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetContactPerson", new { id = contactPerson.Id }, contactPerson);
+            //return CreatedAtAction("GetContactPerson", new { id = contactPerson.Id }, contactPerson);
+            return StatusCode(201, new { StatusMessage = "Added Contact Person." });
         }
 
         // DELETE: api/ContactPersons/5

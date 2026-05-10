@@ -279,27 +279,39 @@ else
 
     async Task HandleSubmission()
     {
-        Proposal.createdOn = DateTime.Now;
-        Proposal.ProjectType = ProjectType.Proposal;
-        Proposal.closingDate = DateTime.Now;
-        Proposal.assignedDate = DateTime.Now;
-        var response = await ProjectService.CreateProjectAsync(Proposal);
-        if (response.IsSuccessStatusCode)
+
+        try
+        {
+            Proposal.createdOn = DateTime.Now;
+            Proposal.ProjectType = ProjectType.Proposal;
+            Proposal.closingDate = DateTime.Now;
+            Proposal.assignedDate = DateTime.Now;
+            var response = await ProjectService.CreateProjectAsync(Proposal);
+            if (response.IsSuccessStatusCode)
+            {
+                
+                await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
+
+                await JSRuntime.InvokeVoidAsync("SwalService.success", "Added a Proposal Successfull.");
+
+                Proposal = new ProjectDTO();
+            }
+            // await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
+        }
+        catch(Exception ex)
+        {
+            submitMessage = $"Error: {ex.Message}";
+        }
+        finally
         {
             var projectResult = await ProjectService.GetProjectAsync(true);
             proposals = projectResult ?? new List<ProjectDTO>();
 
             var proponentResult = await ProponentService.GetProponentsAsync();
             proponents = proponentResult ?? new List<ProponentsDTO>();
-
-            Proposal = new ProjectDTO();
             StateHasChanged();
         }
-        // await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
-        await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
-        
-        await JSRuntime.InvokeVoidAsync("SwalService.success", "Added a Proposal Successfull.");
-         
+
     }
 
     async Task HandleUpdate()

@@ -104,5 +104,27 @@ namespace Project.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("api/GetProjectStatus")]
+        public async Task<ActionResult<IEnumerable<ProjectStatus>>> GetProjectStatus()
+        {
+            var latestTrackings = await _context.Trackings
+                .Include(t => t.Status)
+                .OrderByDescending(t => t.createdOn)
+                .GroupBy(t => t.ProjectID)
+                .Select(g => g.First())
+                .ToListAsync();
+
+            var result = latestTrackings
+                .GroupBy(t => t.Status.Name)
+                .Select(g => new ProjectStatus
+                {
+                    Status = g.Key,
+                    Total = g.Count()
+                })
+                .ToList();
+
+            return Ok(result);
+        }
     }
 }

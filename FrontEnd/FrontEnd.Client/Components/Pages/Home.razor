@@ -125,8 +125,7 @@
             <div class="card-body">
                 @if (GroupedProjects.Any())
                 {
-                    <ApexChart TItem="GroupedProjectTypesDTO"
-                               Title="Projects by Type">
+                    <ApexChart TItem="GroupedProjectTypesDTO">
 
                         <ApexPointSeries TItem="GroupedProjectTypesDTO"
                                          Items="GroupedProjects"
@@ -153,7 +152,18 @@
                 </div>
             </div>
             <div class="card-body">
-                @* <PieChart></PieChart> *@
+                @if (ProjectStatuses.Any())
+                {
+                    <ApexChart TItem="ProjectStatusDTO">
+
+                        <ApexPointSeries TItem="ProjectStatusDTO"
+                                         Items="ProjectStatuses"
+                                         Name="Projects"
+                                         SeriesType="SeriesType.Pie"
+                                         XValue="e => e.Status"
+                                         YValue="e => e.Total" />
+                    </ApexChart>
+                }
             </div>
         </div>
     </div>
@@ -254,6 +264,7 @@
     private List<ProjectbyProponentDTO>? ProjectbyProponents;
     private List<RecentProjectsDTO>? RecentProjects;
     private List<GroupedProjectTypesDTO>? GroupedProjects;
+    private List<ProjectStatusDTO>? ProjectStatuses;
 
     protected override async Task OnInitializedAsync()
     {
@@ -267,6 +278,9 @@
 
         GroupedProjects = await HomeService.GetGroupedProjects()
                       ?? new List<GroupedProjectTypesDTO>();
+
+        ProjectStatuses = await HomeService.GetProjectStatuses()
+                      ?? new List<ProjectStatusDTO>();
 
 
         if (profile == null || profile.ID == Guid.Empty)

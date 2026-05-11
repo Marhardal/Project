@@ -86,5 +86,23 @@ namespace Project.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("api/GetGroupedProjects")]
+        public async Task<ActionResult<IEnumerable<GroupedProjectTypesDTO>>> GetGroupedProjects()
+        {
+            var result = await _context.Projects
+                .AsNoTracking()
+                .Where(p => p.Proponent != null)
+                .GroupBy(p => p.ProjectType)
+                .Select(g => new GroupedProjectTypesDTO
+                {
+                    Type = g.Key,
+                    Count = g.Count()
+                })
+                .OrderByDescending(x => x.Count)
+                .ToListAsync();
+
+            return Ok(result);
+        }
     }
 }

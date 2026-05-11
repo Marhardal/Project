@@ -1,0 +1,42 @@
+﻿<div style="width:800px; height:400px;">
+    <canvas id="monthChart" style="width:100%; height:100%;"></canvas>
+</div>
+
+<script>
+    (function initChart() {
+        const canvas = document.getElementById('monthChart');
+        if (!canvas) return;
+        const monthCtx = canvas.getContext('2d');
+
+        new Chart(monthCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan','Feb','Mar','Apr'],
+                datasets: [
+                {
+                    label: 'Approved',
+                    data: [3,5,4,6],
+                    backgroundColor: '#198754'
+                },
+                {
+                    label: 'Returned',
+                    data: [1,2,1,3],
+                    backgroundColor: '#dc3545'
+                },
+                {
+                    label: 'Under Review',
+                    data: [2,1,3,2],
+                    backgroundColor: '#ffc107'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { stacked: true },
+                    y: { stacked: true }
+                }
+            }
+        });
+    })();
+</script>

@@ -118,12 +118,24 @@
                         <div class="card-title">Projects Status</div>
                     </div>
                     <div class="col-4 text-end">
-                        <NavLink class="btn bt-sm btn-outline-primary" href="Project/Status">View</NavLink>
+                        <NavLink class="btn btn-sm btn-outline-primary" href="Project/Status">View</NavLink>
                     </div>
                 </div>
             </div>
             <div class="card-body">
-                @* <PieStatusChart /> *@
+                @if (GroupedProjects.Any())
+                {
+                    <ApexChart TItem="GroupedProjectTypesDTO"
+                               Title="Projects by Type">
+
+                        <ApexPointSeries TItem="GroupedProjectTypesDTO"
+                                         Items="GroupedProjects"
+                                         Name="Projects"
+                                         SeriesType="SeriesType.Pie"
+                                         XValue="e => e.Type.ToString()"
+                                         YValue="e => e.Count" />
+                    </ApexChart>
+                }
             </div>
         </div>
     </div>
@@ -136,15 +148,16 @@
                         <div class="card-title">Projects Status</div>
                     </div>
                     <div class="col-4 text-end">
-                        <NavLink class="btn bt-sm btn-outline-primary" href="Project/Status">View</NavLink>
+                        <NavLink class="btn btn-sm btn-outline-primary" href="Project/Status">View</NavLink>
                     </div>
                 </div>
             </div>
             <div class="card-body">
-                @* <PieStatusChart /> *@
+                @* <PieChart></PieChart> *@
             </div>
         </div>
     </div>
+
     <div class="col-md-4 col-sm-12 mt-sm-2">
         <div class="card">
             <div class="card-header">
@@ -221,9 +234,7 @@
         </div>
     </div>
 </div>
-@* <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-    Launch static backdrop modal
-</button> *@
+
 @if (showProfileModal)
 {
     <User Profile="@userProfile" />
@@ -242,6 +253,7 @@
     private bool modalShown;
     private List<ProjectbyProponentDTO>? ProjectbyProponents;
     private List<RecentProjectsDTO>? RecentProjects;
+    private List<GroupedProjectTypesDTO>? GroupedProjects;
 
     protected override async Task OnInitializedAsync()
     {
@@ -252,6 +264,10 @@
         ProjectbyProponents = await HomeService.GetProjectbyProponent();
 
         RecentProjects = await HomeService.GetRecentProjects();
+
+        GroupedProjects = await HomeService.GetGroupedProjects()
+                      ?? new List<GroupedProjectTypesDTO>();
+
 
         if (profile == null || profile.ID == Guid.Empty)
         {

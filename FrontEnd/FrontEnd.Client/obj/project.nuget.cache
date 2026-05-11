@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "+Bqjia3KSnY=",
+  "dgSpecHash": "BjeKjz4ETnI=",
   "success": true,
   "projectFilePath": "C:\\Users\\Martin\\source\\repos\\Project\\FrontEnd\\FrontEnd.Client\\FrontEnd.Client.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Martin\\.nuget\\packages\\blazor-apexcharts\\6.1.0\\blazor-apexcharts.6.1.0.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\humanizer.core.af\\2.14.1\\humanizer.core.af.2.14.1.nupkg.sha512",
@@ -90,6 +91,7 @@
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.extensions.fileproviders.abstractions\\10.0.7\\microsoft.extensions.fileproviders.abstractions.10.0.7.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.extensions.fileproviders.physical\\10.0.7\\microsoft.extensions.fileproviders.physical.10.0.7.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.extensions.filesystemglobbing\\10.0.7\\microsoft.extensions.filesystemglobbing.10.0.7.nupkg.sha512",
+    "C:\\Users\\Martin\\.nuget\\packages\\microsoft.extensions.http\\10.0.0\\microsoft.extensions.http.10.0.0.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.extensions.logging\\10.0.7\\microsoft.extensions.logging.10.0.7.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\10.0.7\\microsoft.extensions.logging.abstractions.10.0.7.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.extensions.options\\10.0.7\\microsoft.extensions.options.10.0.7.nupkg.sha512",

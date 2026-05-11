@@ -2,6 +2,30 @@
   "version": 3,
   "targets": {
     "net10.0": {
+      "Blazor-ApexCharts/6.1.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Components": "10.0.0",
+          "Microsoft.AspNetCore.Components.Web": "10.0.0",
+          "Microsoft.Extensions.Http": "10.0.0"
+        },
+        "compile": {
+          "lib/net10.0/Blazor-ApexCharts.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/Blazor-ApexCharts.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/Blazor-ApexCharts.props": {}
+        },
+        "buildMultiTargeting": {
+          "buildMultiTargeting/Blazor-ApexCharts.props": {}
+        }
+      },
       "Humanizer/2.14.1": {
         "type": "package",
         "dependencies": {
@@ -1441,6 +1465,30 @@
         },
         "runtime": {
           "lib/net10.0/Microsoft.Extensions.FileSystemGlobbing.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
+        }
+      },
+      "Microsoft.Extensions.Http/10.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "10.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0",
+          "Microsoft.Extensions.Diagnostics": "10.0.0",
+          "Microsoft.Extensions.Logging": "10.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.0",
+          "Microsoft.Extensions.Options": "10.0.0"
+        },
+        "compile": {
+          "lib/net10.0/Microsoft.Extensions.Http.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.Http.dll": {
             "related": ".xml"
           }
         },
@@ -1775,6 +1823,30 @@
       }
     },
     "net10.0/browser-wasm": {
+      "Blazor-ApexCharts/6.1.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Components": "10.0.0",
+          "Microsoft.AspNetCore.Components.Web": "10.0.0",
+          "Microsoft.Extensions.Http": "10.0.0"
+        },
+        "compile": {
+          "lib/net10.0/Blazor-ApexCharts.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/Blazor-ApexCharts.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/Blazor-ApexCharts.props": {}
+        },
+        "buildMultiTargeting": {
+          "buildMultiTargeting/Blazor-ApexCharts.props": {}
+        }
+      },
       "Humanizer/2.14.1": {
         "type": "package",
         "dependencies": {
@@ -3214,6 +3286,30 @@
         },
         "runtime": {
           "lib/net10.0/Microsoft.Extensions.FileSystemGlobbing.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
+        }
+      },
+      "Microsoft.Extensions.Http/10.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "10.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0",
+          "Microsoft.Extensions.Diagnostics": "10.0.0",
+          "Microsoft.Extensions.Logging": "10.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.0",
+          "Microsoft.Extensions.Options": "10.0.0"
+        },
+        "compile": {
+          "lib/net10.0/Microsoft.Extensions.Http.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.Extensions.Http.dll": {
             "related": ".xml"
           }
         },
@@ -3549,6 +3645,78 @@
     }
   },
   "libraries": {
+    "Blazor-ApexCharts/6.1.0": {
+      "sha512": "H2mkr7HEVk+BoQKcyoQtqq3ifoo/VxS7I8B35wO9tpiarGMdnAsL9pwcQBU4E/YnADNF+zOKTIaRxhd93Qr9HA==",
+      "type": "package",
+      "path": "blazor-apexcharts/6.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "README.md",
+        "apexchart_logo.png",
+        "blazor-apexcharts.6.1.0.nupkg.sha512",
+        "blazor-apexcharts.nuspec",
+        "build/Blazor-ApexCharts.props",
+        "build/Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+        "build/Microsoft.AspNetCore.StaticWebAssets.props",
+        "buildMultiTargeting/Blazor-ApexCharts.props",
+        "buildTransitive/Blazor-ApexCharts.props",
+        "lib/net10.0/Blazor-ApexCharts.dll",
+        "lib/net10.0/Blazor-ApexCharts.xml",
+        "lib/net8.0/Blazor-ApexCharts.dll",
+        "lib/net8.0/Blazor-ApexCharts.xml",
+        "lib/net9.0/Blazor-ApexCharts.dll",
+        "lib/net9.0/Blazor-ApexCharts.xml",
+        "staticwebassets/css/apexcharts.css",
+        "staticwebassets/js/apexcharts.esm.js",
+        "staticwebassets/js/blazor-apexcharts.js",
+        "staticwebassets/locales/ar.json",
+        "staticwebassets/locales/be-cyrl.json",
+        "staticwebassets/locales/be-latn.json",
+        "staticwebassets/locales/ca.json",
+        "staticwebassets/locales/cs.json",
+        "staticwebassets/locales/da.json",
+        "staticwebassets/locales/de.json",
+        "staticwebassets/locales/el.json",
+        "staticwebassets/locales/en.json",
+        "staticwebassets/locales/es.json",
+        "staticwebassets/locales/et.json",
+        "staticwebassets/locales/fa.json",
+        "staticwebassets/locales/fi.json",
+        "staticwebassets/locales/fr.json",
+        "staticwebassets/locales/he.json",
+        "staticwebassets/locales/hi.json",
+        "staticwebassets/locales/hr.json",
+        "staticwebassets/locales/hu.json",
+        "staticwebassets/locales/hy.json",
+        "staticwebassets/locales/id.json",
+        "staticwebassets/locales/it.json",
+        "staticwebassets/locales/ja.json",
+        "staticwebassets/locales/ka.json",
+        "staticwebassets/locales/ko.json",
+        "staticwebassets/locales/lt.json",
+        "staticwebassets/locales/lv.json",
+        "staticwebassets/locales/ms.json",
+        "staticwebassets/locales/nb.json",
+        "staticwebassets/locales/nl.json",
+        "staticwebassets/locales/pl.json",
+        "staticwebassets/locales/pt-br.json",
+        "staticwebassets/locales/pt.json",
+        "staticwebassets/locales/ru.json",
+        "staticwebassets/locales/sk.json",
+        "staticwebassets/locales/sl.json",
+        "staticwebassets/locales/sq.json",
+        "staticwebassets/locales/sr.json",
+        "staticwebassets/locales/sv.json",
+        "staticwebassets/locales/th.json",
+        "staticwebassets/locales/tr.json",
+        "staticwebassets/locales/uk.json",
+        "staticwebassets/locales/vi.json",
+        "staticwebassets/locales/zh-cn.json",
+        "staticwebassets/locales/zh-tw.json"
+      ]
+    },
     "Humanizer/2.14.1": {
       "sha512": "/FUTD3cEceAAmJSCPN9+J+VhGwmL/C12jvwlyM1DFXShEMsBzvLzLqSrJ2rb+k/W2znKw7JyflZgZpyE+tI7lA==",
       "type": "package",
@@ -6061,6 +6229,35 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "Microsoft.Extensions.Http/10.0.0": {
+      "sha512": "r+mSvm/Ryc/iYcc9zcUG5VP9EBB8PL1rgVU6macEaYk45vmGRk9PntM3aynFKN6s3Q4WW36kedTycIctctpTUQ==",
+      "type": "package",
+      "path": "microsoft.extensions.http/10.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/Microsoft.Extensions.Http.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/Microsoft.Extensions.Http.targets",
+        "lib/net10.0/Microsoft.Extensions.Http.dll",
+        "lib/net10.0/Microsoft.Extensions.Http.xml",
+        "lib/net462/Microsoft.Extensions.Http.dll",
+        "lib/net462/Microsoft.Extensions.Http.xml",
+        "lib/net8.0/Microsoft.Extensions.Http.dll",
+        "lib/net8.0/Microsoft.Extensions.Http.xml",
+        "lib/net9.0/Microsoft.Extensions.Http.dll",
+        "lib/net9.0/Microsoft.Extensions.Http.xml",
+        "lib/netstandard2.0/Microsoft.Extensions.Http.dll",
+        "lib/netstandard2.0/Microsoft.Extensions.Http.xml",
+        "microsoft.extensions.http.10.0.0.nupkg.sha512",
+        "microsoft.extensions.http.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "Microsoft.Extensions.Logging/10.0.7": {
       "sha512": "hOeRIQ63GkgiYCB/MIFp+LQs8aXpJXpB55t6Aj37ab7t2/6WeFcPXxYM9hdy/o5tffzwf8mhqzLJP6mjGYCxjw==",
       "type": "package",
@@ -6659,6 +6856,7 @@
   },
   "projectFileDependencyGroups": {
     "net10.0": [
+      "Blazor-ApexCharts >= 6.1.0",
       "Humanizer >= 2.14.1",
       "Microsoft.AspNetCore.App.Internal.Assets >= 10.0.7",
       "Microsoft.AspNetCore.Components.WebAssembly >= 10.0.7",
@@ -6720,6 +6918,10 @@
         "framework": "net10.0",
         "targetAlias": "net10.0",
         "dependencies": {
+          "Blazor-ApexCharts": {
+            "target": "Package",
+            "version": "[6.1.0, )"
+          },
           "Humanizer": {
             "target": "Package",
             "version": "[2.14.1, )"

@@ -1,0 +1,47 @@
+﻿@using System.Text.Json
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Web
+
+@* <canvas id="statusChart" width="400" height="200"></canvas> *@
+
+<script>
+    (function () {
+        const canvas = document.getElementById('statusChart');
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+
+        const chartConfig = {
+            type: 'pie',
+            data: {
+                labels: @((MarkupString)JsonSerializer.Serialize(Labels)),
+                datasets: [{
+                    data: @((MarkupString)JsonSerializer.Serialize(Data)),
+                    backgroundColor: @((MarkupString)JsonSerializer.Serialize(BackgroundColors))
+                }]
+            }
+        };
+
+        new Chart(ctx, chartConfig);
+    })();
+</script>
+
+@code {
+    [Parameter]
+    public IReadOnlyList<string> Labels { get; set; } = new[] { "Approved", "Returned", "Under Review", "Submitted" };
+
+    [Parameter]
+    public IReadOnlyList<int> Data { get; set; } = new[] { 12, 4, 6, 8 };
+
+    [Parameter]
+    public IReadOnlyList<string>? BackgroundColors { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (BackgroundColors is null || BackgroundColors.Count == 0)
+        {
+            BackgroundColors = new[] { "#198754", "#dc3545", "#ffc107", "#0dcaf0" };
+        }
+    }
+}
+

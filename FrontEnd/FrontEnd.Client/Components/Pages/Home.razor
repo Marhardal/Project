@@ -159,35 +159,23 @@
                 </div>
             </div>
             <div class="card-body">
-                <table class="table p-2 rounded-pill table-hover">
-                    <thead class="text-white bg-dark">
-                        <tr class="">
-                            <th scope="col">#</th>
-                            <th scope="col">Proponent</th>
-                            <th scope="col">Count</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td class="py-2">Mota-Engil</td>
-                            <td class="py-2">20</td>
-                            </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>MMC Limited</td>
-                            <td>5</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td>HDL Mining LTD </td>
-                            <td>10
-                            </td>
-                            
-                        </tr>
-                    </tbody>
-                </table>
 
+                <TableTemplate Items="ProjectbyProponents" Context="Project">
+                    <TableHeader>
+                       <th scope="col">#</th>
+                       <th scope="col">Proponent</th>
+                       <th scope="col">Count</th>
+                    </TableHeader>
+                    <RowTemplate Context="Project">
+                        @{
+                            int index = ProjectbyProponents.IndexOf(Project) + 1;
+                        }
+                        <td>@index</td>
+                        <td>@Project.Proponent</td>
+                        <td>@Project.Count</td>
+                    </RowTemplate>
+                </TableTemplate>
+                
                 @* <canvas id="pie" width="400" height="400"></canvas> *@
             </div>
         </div>
@@ -206,37 +194,29 @@
                 </div>
             </div>
             <div class="card-body">
-                <table class="table p-2 rounded-pill table-hover">
-                    <thead class="text-white bg-dark">
-                        <tr class="">
-                            <th scope="col">#</th>
-                            <th scope="col">Project</th>
-                            <th scope="col">Proponent</th>
-                            <th scope="col">Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td class="py-2">Mota-Engil</td>
-                            <td class="py-2">Mota-Engil</td>
-                            <td class="py-2">@DateTime.Now</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>MMC Limited</td>
-                            <td>MMC Limited</td>
-                            <td>@DateTime.Now</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td>HDL Mining LTD </td>
-                            <td>HDL Mining LTD </td>
-                            <td>@DateTime.Now</td>
-                        </tr>
-                    </tbody>
-                </table>
-
+                
+                <TableTemplate Items="RecentProjects" Context="Project">
+                    <TableHeader>
+                        <th scope="col">#</th>
+                        <th scope="col">Project</th>
+                        <th scope="col">Proponent</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Date</th>
+                    </TableHeader>
+                    <RowTemplate Context="Project">
+                        @{
+                            int index = RecentProjects.IndexOf(Project) + 1;
+                        }
+                        <td>@index</td>
+                        <td>
+                            <span class="d-inline-block text-truncate" style="max-width: 250px;"
+                                  title="@Project.Project">@Project.Project</span>
+                            </td>
+                        <td>@Project.Proponent</td>
+                        <td><StatusItem  Name="@Project.Status" Colour="@Project.Color"/></td>
+                        <td>@Project.Date.Humanize()</td>
+                    </RowTemplate>
+                </TableTemplate>
             </div>
         </div>
     </div>
@@ -260,12 +240,18 @@
     private UserProfileDTO userProfile = new();
     private bool showProfileModal;
     private bool modalShown;
+    private List<ProjectbyProponentDTO>? ProjectbyProponents;
+    private List<RecentProjectsDTO>? RecentProjects;
 
     protected override async Task OnInitializedAsync()
     {
         var userId = Guid.Parse("94f18329-f144-41bd-8f25-22b887f686e7");
 
         var profile = await UserProfileService.GetUserProfileAsync(userId);
+
+        ProjectbyProponents = await HomeService.GetProjectbyProponent();
+
+        RecentProjects = await HomeService.GetRecentProjects();
 
         if (profile == null || profile.ID == Guid.Empty)
         {

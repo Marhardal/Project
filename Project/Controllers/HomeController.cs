@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Project.Data;
 using Project.DTO;
+using Project.Migrations;
+using Project.Models;
 
 namespace Project.Controllers
 {
@@ -14,7 +16,7 @@ namespace Project.Controllers
             _context = context;
         }
 
-        [HttpGet("status-summary")]
+        [HttpGet("api/status-summary")]
         public async Task<ActionResult> Index()
         {
             var result = await _context.Projects
@@ -40,6 +42,47 @@ namespace Project.Controllers
                 .OrderBy(x => x.Type)
                 .ThenBy(x => x.Name)
                 .ToListAsync();
+
+            return Ok(result);
+        }
+
+        // GET: api/Proponents
+        [HttpGet("api/GetProjectbyProponent")]
+        public async Task<ActionResult<IEnumerable<ProjectbyProponentDTO>>> GetProjectbyProponent()
+        {
+            return await _context.Projects.Where(p => p.Proponent != null).GroupBy(p => p.Proponent.Name).OrderByDescending(p => p.Count())
+            .Select(g => new ProjectbyProponentDTO
+            {
+                Proponent = g.Key!,
+                Count = g.Count()
+            }).Take(5).ToListAsync();
+        }
+
+
+        [HttpGet("api/GetRecentProjects")]
+        public async Task<ActionResult<IEnumerable<RecentActivityDTO>>> GetRecentProject()
+        {
+            var trackings = await _context.Trackings
+                .Include(t => t.Project)
+                    .ThenInclude(p => p.Proponent)
+                .Include(t => t.Status)
+                .OrderByDescending(t => t.createdOn)
+                .Take(50)
+                .ToListAsync();
+
+            var result = trackings
+                .GroupBy(t => t.ProjectID)
+                .Select(g => g.First())
+                .Take(5)
+                .Select(t => new RecentActivityDTO
+                {
+                    Project = t.Project.Name,
+                    Proponent = t.Project.Proponent.Name,
+                    Status = t.Status.Name,
+                    Color = t.Status.Color,
+                    Date = t.createdOn
+                })
+                .ToList();
 
             return Ok(result);
         }

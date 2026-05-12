@@ -21,75 +21,46 @@
         </button>
     </div>
 </div>
-<div class="gap-2 my-2 row gap-lg-0">   
-    <div class="col-md-6 col-sm-12 col-lg-3">
-        @* <div class="card mb-sm-2 ">
-            <div class="row g-2">
-                <div class="mx-auto col-md-3 col-sm-6 col-lg-3 border-end align-content-between">
-                    <i class="bi bi-list fs-1"></i>
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h6 class="">Total Projects</h6>
-                        <p class="card-text">500 Projects</p>
-                    </div>
-                </div>
+@* <div class="gap-2 my-2 row gap-lg-0">   
+    @if (StatusSummaries.Any())
+    {
+        @foreach (var type in Enum.GetValues<ProjectType>())
+        {
+            var summary = StatusSummaries?.FirstOrDefault(s => s.Type == type);
+            <div class="col-md-6 col-sm-12 col-lg-3">
+                <DashCard Icon="bi bi-list fs-6" Title="@type.ToString()" Info="@summary.Total.ToString()" />
             </div>
-        </div> *@
-        <DashCard Icon="bi bi-list fs-6" Title="Proposal" Info="500" />
-    </div>
-    <div class="col-md-6 col-sm-12 col-lg-3">
-        <DashCard Icon="bi bi-clipboard2-minus fs-6" Title="ESMP" Info="10" />
-@*         <div class="card">
-            <div class="row g-2">
-                <div class="mx-auto col-md-4 border-end bg-info rounded-start-2 d-flex justify-content-center align-items-center">
-    <i class="bi bi-clipboard2-minus fs-1"></i>
-</div>
+        }
+    }
+</div> *@
+@if (StatusSummaries is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="gap-2 my-2 row gap-lg-0">
+        @foreach (var type in Enum.GetValues<ProjectType>())
+        {
+            var Summary = StatusSummaries
+                .Where(s => s.Type == type.ToString()).ToList();
 
-                <div class="col-md-8">
-                    <div class="card-body">
-                         <h6 class="card-title">Pending Projects</h6> 
-                        <p class="card-text">5 Projects still pending.</p>
-                    </div>
-                </div>
-            </div>
-        </div> *@
-    </div>
-    <div class="col-md-6 col-sm-12 col-lg-3">
-        @* <div class="card">
-            <div class="row">
-                <div class="mx-auto col-md-4 align-content-between justify-content-center border-end">
-                    <i class="bi bi-clipboard2-pulse fs-1"></i>
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title">In-Progress Projects</h5>
-                        <p class="card-text"></p>
-                    </div>
-                </div>
-            </div>
-        </div> *@
-        <DashCard Icon="bi bi-clipboard2-pulse fs-6" Title="Audit" Info="5" />
-    </div>
-    <div class="col-md-6 col-sm-12 col-lg-3">
-        @* <div class="card">
-            <div class="row g-2">
-                <div class="mx-auto col-md-4 border-end align-content-between">
-                   
-                    <i class="bi bi-clipboard2-x fs-1"></i>
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title">Canceled Projects</h5>
-                        <p class="card-text"></p>
-                    </div>
-                </div>
-            </div>
-        </div> *@
+            var Color = Summary.Select(s => s.Color).ToList();
 
-        <DashCard Icon="bi bi-clipboard2-pulse fs-6" Title="ESIA" Info="5" />
+            var Data = Summary.Select(s => s.Total).ToList();
+
+            var total = Summary
+                .Sum(s => s.Total);
+
+            <div class="col-md-6 col-sm-12 col-lg-3">
+                <DashCard Icon="bi bi-list fs-6"
+                          Title="@type.ToString()"
+                          Info="@total.ToString()" Colors="@Color" Data="@Data" />
+            </div>
+        }
     </div>
-</div>
+}
+
 <div class="my-2 row">
     <div class="col-md-12 col-sm-12 mt-sm-2">
         <div class="card">
@@ -265,6 +236,7 @@
     private List<RecentProjectsDTO>? RecentProjects;
     private List<GroupedProjectTypesDTO>? GroupedProjects;
     private List<ProjectStatusDTO>? ProjectStatuses;
+    private List<StatusSummaryDTO>? StatusSummaries;
 
     protected override async Task OnInitializedAsync()
     {
@@ -282,6 +254,12 @@
         ProjectStatuses = await HomeService.GetProjectStatuses()
                       ?? new List<ProjectStatusDTO>();
 
+        StatusSummaries = await HomeService.GetStatusSummary()  ?? new List<StatusSummaryDTO>();
+
+        // var types = Enum.GetValues<ProjectType>();
+        // var total = StatusSummaries
+        //         .Where(s => s.Type == types[0].ToString())
+        //         .Sum(s => s.Totals);
 
         if (profile == null || profile.ID == Guid.Empty)
         {

@@ -1,60 +1,79 @@
 ﻿
 <div class="card mb-sm-2">
-    @* <div class="row g-2">
-        <div class="text-center col-md-3 col-sm-4 col-lg-3 border-end justify-content-center align-items-center align-content-center" style="height: 80px; line-height: 80px;">
-            <i class="@Icon me-3"></i>
-        </div>
-        <div class="mx-auto col-md-8 col-sm-7 col-lg-8 text-center">
-            <div class="card-body">
-                <h6 class="">@Title</h6>
-                <p class="card-text">@Info</p>
-            </div>
-        </div>
-    </div> *@
+
     <div class="card-body d-flex flex-column justify-space-around">
-        @* <i class="@Icon mb-2" style="font-size: 2rem;"></i> *@
         <h6 class="mb-1">@Title</h6>
         <p class="card-text mb-0">@Info</p>
     </div>
-    
-        <div class="p-2">
-            <div class="progress-stacked">
-                <div class="progress" role="progressbar" aria-label="Segment one" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="width: 15%">
-                    <div class="progress-bar"></div>
-                </div>
-                <div class="progress" role="progressbar" aria-label="Segment two" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
-                    <div class="progress-bar bg-success"></div>
-                </div>
-                @* <div class="progress" role="progressbar" aria-label="Segment three" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
-            <div class="progress-bar bg-info"></div>
-        </div> *@
-            </div>
-            
-            <div class="row">
-                <div class="col-4">
-                    <i class="bi bi-chat-square-dots-fill me-2 fs-6" style="font-size: 1rem;"></i>
-                    <span>15%</span>
-                </div>
-                <div class="col-4">
-                    <i class="fa-solid fa-spinner fs-6 me-2"></i>
-                    @* <i class="fa-light fa-spinner me-2" style="font-size: 1rem;"></i> *@
-                    <span>30%</span>
-                </div>
-                <div class="col-4">
-                    <i class="bi bi-check-circle me-2 fs-6" style="font-size: 1rem;"></i>
-                    <span>20%</span>
-                </div>
-            </div>
-        </div>
-</div>
 
+    <div class="p-2">
+        <div class="progress-stacked">
+            @if (Data is not null && Data.Count > 0)
+            {
+                @for (var i = 0; i < Data.Count; i++)
+                {
+                    var value = Data[i];
+                    var percent = total > 0 ? (int)Math.Round((value * 100.0) / total) : 0;
+                    var color = GetColor(i);
+
+                    <div class="progress"
+                         role="progressbar"
+                         aria-label="Segment @((i + 1).ToString())"
+                         aria-valuenow="@percent"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         style="width: @percent%">
+                        <div class="progress-bar" style="background-color: @color;"></div>
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="row">
+            @if (Data is not null)
+            {
+                @for (var i = 0; i < Math.Min(Data.Count, 3); i++)
+                {
+                    var percent = total > 0 ? (int)Math.Round((Data[i] * 100.0) / total) : 0;
+                    var color = GetColor(i);
+                    <div class="col-4">
+                        <i class="@Icon me-2 fs-6" style="font-size: 1rem;"></i>
+                        <span class="text-truncate">
+                            <span class="@color"></span>@percent%
+                        </span>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
 
 @code {
     [Parameter]
     public required string Title { get; set; }
+
     [Parameter]
     public required string Info { get; set; }
+
     [Parameter]
     public required string Icon { get; set; }
+
+    [Parameter]
+    public IReadOnlyList<int> Data { get; set; } = Array.Empty<int>();
+
+    [Parameter]
+    public IReadOnlyList<string>? Colors { get; set; }
+
+    private int total => Data?.Sum() ?? 0;
+
+    private string GetColor(int index)
+    {
+        if (Colors is null || Colors.Count == 0)
+            return "";
+
+        // Colors are expected to be bootstrap classes like: bg-success, bg-primary, etc.
+        return index < Colors.Count ? Colors[index] : "";
+    }
 }
+
 

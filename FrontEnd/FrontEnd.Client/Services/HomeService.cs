@@ -14,7 +14,7 @@ namespace FrontEnd.Client.Services
             _logger = logger;
         }
 
-        public async Task<List<StatusSummaryDTO>> GetStatusSummary(Guid ProponentID)
+        public async Task<List<StatusSummaryDTO>> GetStatusSummary()
         {
             try
             {

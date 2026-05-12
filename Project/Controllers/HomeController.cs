@@ -17,31 +17,36 @@ namespace Project.Controllers
         }
 
         [HttpGet("api/status-summary")]
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult<IEnumerable<StatusSummaryDTO>>> Index()
         {
             var result = await _context.Projects
-                .Select(p => new
-                {
-                    Type = p.ProjectType,
-                    Name = p.Trackings
-                        .OrderByDescending(t => t.createdOn)
-                        .Select(t => t.Status!.Name)
-                        .FirstOrDefault()
-                })
-                .GroupBy(x => new
-                {
-                    x.Type,
-                    Name = x.Name ?? "No Status"
-                })
-                .Select(g => new
-                {
-                    Type = g.Key.Type.ToString(),
-                    Name = g.Key.Name,
-                    Totals = g.Count()
-                })
-                .OrderBy(x => x.Type)
-                .ThenBy(x => x.Name)
-                .ToListAsync();
+    .Select(p => new
+    {
+        Type = p.ProjectType,
+        Name = p.Trackings
+            .OrderByDescending(t => t.createdOn)
+            .Select(t => t.Status!.Name)
+            .FirstOrDefault(),
+        Color = p.Trackings
+            .OrderByDescending(t => t.createdOn)
+            .Select(t => t.Status!.Color)
+            .FirstOrDefault()
+    })
+    .GroupBy(x => new
+    {
+        x.Type,
+        Name = x.Name ?? "No Status"
+    })
+    .Select(g => new
+    {
+        Type = g.Key.Type.ToString(),
+        Name = g.Key.Name,
+        Total = g.Count(),
+        Color = g.Select(x => x.Color).FirstOrDefault()
+    })
+    .OrderBy(x => x.Type)
+    .ThenBy(x => x.Name)
+    .ToListAsync();
 
             return Ok(result);
         }

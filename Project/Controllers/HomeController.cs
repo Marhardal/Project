@@ -132,5 +132,35 @@ namespace Project.Controllers
 
             return Ok(result);
         }
+        [HttpGet("api/projects-by-month")]
+        public async Task<ActionResult<IEnumerable<ProjectMonthDTO>>> GetProjectsByMonth()
+        {
+            var startDate = DateTime.UtcNow.AddMonths(-11);
+
+            var result = await _context.Projects
+                .AsNoTracking()
+                .Where(p => p.SubmissionDate >= startDate
+                            && p.ProjectType != ProjectType.Proposal)
+                .GroupBy(p => new
+                {
+                    p.SubmissionDate.Year,
+                    p.SubmissionDate.Month,
+                    p.ProjectType
+                })
+                .Select(g => new ProjectMonthDTO
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    MonthName = new DateTime(g.Key.Year, g.Key.Month, 1).ToString("MMM"),
+                    Type = g.Key.ProjectType,
+                    Total = g.Count()
+                })
+                .OrderBy(x => x.Year)
+                .ThenBy(x => x.Month)
+                .ThenBy(x => x.Type)
+                .ToListAsync();
+
+            return Ok(result);
+        }
     }
 }

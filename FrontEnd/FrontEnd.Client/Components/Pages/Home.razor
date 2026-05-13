@@ -21,18 +21,6 @@
         </button>
     </div>
 </div>
-@* <div class="gap-2 my-2 row gap-lg-0">   
-    @if (StatusSummaries.Any())
-    {
-        @foreach (var type in Enum.GetValues<ProjectType>())
-        {
-            var summary = StatusSummaries?.FirstOrDefault(s => s.Type == type);
-            <div class="col-md-6 col-sm-12 col-lg-3">
-                <DashCard Icon="bi bi-list fs-6" Title="@type.ToString()" Info="@summary.Total.ToString()" />
-            </div>
-        }
-    }
-</div> *@
 @if (StatusSummaries is null)
 {
     <p>Loading...</p>
@@ -76,7 +64,32 @@ else
                 </div>
             </div>
             <div class="card-body">
-                @* <StackedChart/> *@
+                @if (GroupedProjects.Any())
+                {
+                    <ApexChart TItem="ProjectMonthDTO" >
+
+                        <ApexPointSeries TItem="ProjectMonthDTO"
+                                         Items="ProjectMonths"
+                                         Name="ESMP"
+                                         SeriesType="SeriesType.Line"
+                                         XValue="e => e.Type.ToString()"
+                                         YValue="e => e.Total" />
+
+                        <ApexPointSeries TItem="ProjectMonthDTO"
+                                         Items="ProjectMonths"
+                                         Name="ESIA"
+                                         SeriesType="SeriesType.Line"
+                                         XValue="e => e.Type.ToString()"
+                                         YValue="e => e.Total" />
+
+                        <ApexPointSeries TItem="ProjectMonthDTO"
+                                         Items="ProjectMonths"
+                                         Name="Audit"
+                                         SeriesType="SeriesType.Line"
+                                         XValue="e => e.Type.ToString()"
+                                         YValue="e => e.Total" />
+                    </ApexChart>
+                }
             </div>
         </div>
     </div>
@@ -237,6 +250,7 @@ else
     private List<GroupedProjectTypesDTO>? GroupedProjects;
     private List<ProjectStatusDTO>? ProjectStatuses;
     private List<StatusSummaryDTO>? StatusSummaries;
+    private List<ProjectMonthDTO>? ProjectMonths;
 
     protected override async Task OnInitializedAsync()
     {
@@ -256,10 +270,7 @@ else
 
         StatusSummaries = await HomeService.GetStatusSummary()  ?? new List<StatusSummaryDTO>();
 
-        // var types = Enum.GetValues<ProjectType>();
-        // var total = StatusSummaries
-        //         .Where(s => s.Type == types[0].ToString())
-        //         .Sum(s => s.Totals);
+        ProjectMonths = await HomeService.GetProjectsByMonth() ?? new List<ProjectMonthDTO>();
 
         if (profile == null || profile.ID == Guid.Empty)
         {

@@ -4,7 +4,7 @@
         <div class="d-flex justify-content-between align-items-start">
             <div class="d-flex align-items-center gap-2">
                 <div class="p-2 rounded bg-body-secondary">
-                    <i class="@Icon"></i>
+                    <i class="@getProjectType(Title) fs-6"></i>
                 </div>
             </div>
 
@@ -108,6 +108,38 @@
             return color;
 
         return $"#{color}";
+    }
+
+    private static string getProjectType(string? type)
+    {
+        if (string.IsNullOrWhiteSpace(type))
+            return string.Empty;
+        string icon = string.Empty;
+        // Accept either "#RRGGBB" / "#RGB" or "RRGGBB" / "RGB".
+        if (!string.IsNullOrEmpty(type))
+        {
+            switch (type)
+            {
+                case "Proposal":
+                    icon = "bi bi-file-earmark-pdf-fill";
+                    break;
+                case "ESIA":
+                    icon = "bi bi-globe-europe-africa";
+                    break;
+                case "Audit":
+                    icon = "bi bi-search";
+                    break;
+                case "ESMP":
+                    icon = "bi bi-cone-striped";
+                    break;
+                default:
+                    icon = type;
+                    break;
+            }
+        }
+        // return type;
+
+        return $"#{icon}";
     }
 }
 

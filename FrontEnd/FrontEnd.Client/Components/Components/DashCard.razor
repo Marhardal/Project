@@ -1,13 +1,24 @@
-﻿
-<div class="card mb-sm-2">
+﻿<div class="card h-100 border-0 shadow-sm rounded-3">
+    <ul class="list-group list-group-flush">
+         <li class="list-group-item">
+        <div class="d-flex justify-content-between align-items-start">
+            <div class="d-flex align-items-center gap-2">
+                <div class="p-2 rounded bg-body-secondary">
+                    <i class="@Icon"></i>
+                </div>
+            </div>
 
-    <div class="card-body d-flex flex-column justify-space-around">
-        <h6 class="mb-1">@Title</h6>
-        <p class="card-text mb-0">@Info</p>
-    </div>
-
-    <div class="p-2">
-        <div class="progress-stacked">
+            <h6 class="mb-0 fw-semibold p-2">@Title</h6>
+        </div>
+        </li>
+         <li class="list-group-item">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <small class="text-muted">Total</small>
+            <small class="fw-semibold">@Info</small>
+        </div>
+        </li>
+         <li class="list-group-item">
+        <div class="progress-stacked my-2" style="height: 10px;">
             @if (Data is not null && Data.Count > 0)
             {
                 @for (var i = 0; i < Data.Count; i++)
@@ -23,29 +34,30 @@
                          aria-valuemin="0"
                          aria-valuemax="100"
                          style="width: @percent%">
-                        <div class="progress-bar" style="background-color: @color;"></div>
+                        <div class="progress-bar" style="background-color:@color"></div>
                     </div>
                 }
             }
         </div>
-
-        <div class="row">
+        <div class="mt-3">
             @if (Data is not null)
             {
                 @for (var i = 0; i < Math.Min(Data.Count, 3); i++)
                 {
                     var percent = total > 0 ? (int)Math.Round((Data[i] * 100.0) / total) : 0;
                     var color = GetColor(i);
-                    <div class="col-4">
-                        <i class="@Icon me-2 fs-6" style="font-size: 1rem;"></i>
-                        <span class="text-truncate">
-                            <span class="@color"></span>@percent%
-                        </span>
+                    var name = GetStatus(i);
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <StatusItem Colour="@color" Name="@name" />
+
+                        <span class="fw-semibold small">@percent%</span>
                     </div>
                 }
             }
         </div>
-    </div>
+        </li>
+    </ul>
 </div>
 
 @code {
@@ -64,6 +76,9 @@
     [Parameter]
     public IReadOnlyList<string>? Colors { get; set; }
 
+    [Parameter]
+    public IReadOnlyList<string>? Status { get; set; }
+
     private int total => Data?.Sum() ?? 0;
 
     private string GetColor(int index)
@@ -71,8 +86,28 @@
         if (Colors is null || Colors.Count == 0)
             return "";
 
-        // Colors are expected to be bootstrap classes like: bg-success, bg-primary, etc.
-        return index < Colors.Count ? Colors[index] : "";
+        // Colors are expected to be CSS/hex colors (e.g. "#198754" or "198754").
+        return index < Colors.Count ? NormalizeColor(Colors[index]) : "";
+    }
+
+    private string GetStatus(int index)
+    {
+        if (Status is null || Status.Count == 0)
+            return "";
+
+        return index < Status.Count ? Status[index] : "";
+    }
+
+    private static string NormalizeColor(string? color)
+    {
+        if (string.IsNullOrWhiteSpace(color))
+            return string.Empty;
+
+        // Accept either "#RRGGBB" / "#RGB" or "RRGGBB" / "RGB".
+        if (color.StartsWith("#", StringComparison.Ordinal))
+            return color;
+
+        return $"#{color}";
     }
 }
 

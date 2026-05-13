@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "targets": {
     "net10.0": {
       "Blazor-ApexCharts/6.1.0": {
@@ -615,7 +615,7 @@
           }
         }
       },
-      "Microsoft.AspNetCore.App.Internal.Assets/10.0.7": {
+      "Microsoft.AspNetCore.App.Internal.Assets/10.0.8": {
         "type": "package",
         "build": {
           "build/Microsoft.AspNetCore.App.Internal.Assets.props": {},
@@ -992,21 +992,6 @@
           }
         }
       },
-      "Microsoft.DotNet.HotReload.WebAssembly.Browser/10.0.203": {
-        "type": "package",
-        "compile": {
-          "lib/net10.0/Microsoft.DotNet.HotReload.WebAssembly.Browser.dll": {}
-        },
-        "runtime": {
-          "lib/net10.0/Microsoft.DotNet.HotReload.WebAssembly.Browser.dll": {}
-        },
-        "build": {
-          "buildTransitive/Microsoft.DotNet.HotReload.WebAssembly.Browser.props": {}
-        },
-        "buildMultiTargeting": {
-          "buildMultiTargeting/Microsoft.DotNet.HotReload.WebAssembly.Browser.props": {}
-        }
-      },
       "Microsoft.EntityFrameworkCore/10.0.7": {
         "type": "package",
         "dependencies": {
@@ -1288,8 +1273,7 @@
         "dependencies": {
           "Blazor-ApexCharts": "6.1.0",
           "Humanizer": "2.14.1",
-          "Microsoft.AspNetCore.Components.WebAssembly": "10.0.7",
-          "Microsoft.DotNet.HotReload.WebAssembly.Browser": "10.0.203"
+          "Microsoft.AspNetCore.Components.WebAssembly": "10.0.7"
         },
         "compile": {
           "bin/placeholder/FrontEnd.Client.dll": {}
@@ -2119,10 +2103,10 @@
         "logo.png"
       ]
     },
-    "Microsoft.AspNetCore.App.Internal.Assets/10.0.7": {
-      "sha512": "ao3i+ks0uOQ7FWacI1hqHkUczebmXrGkUB63Xhkc34QbSzG9nYBlDv9v5l6rtCrHMsDW+13kZlpJrSj1HXddqg==",
+    "Microsoft.AspNetCore.App.Internal.Assets/10.0.8": {
+      "sha512": "v6KocthydFtUHBIRI29YsOHKOgsqcQubkNywVOxiYr4GSDSv+XO/AeyMJywlX+1tGUTGdydu/X7V+Tzeq4SsoA==",
       "type": "package",
-      "path": "microsoft.aspnetcore.app.internal.assets/10.0.7",
+      "path": "microsoft.aspnetcore.app.internal.assets/10.0.8",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2138,7 +2122,7 @@
         "build/Microsoft.AspNetCore.App.Internal.Assets.targets",
         "buildMultiTargeting/Microsoft.AspNetCore.App.Internal.Assets.targets",
         "buildTransitive/Microsoft.AspNetCore.App.Internal.Assets.targets",
-        "microsoft.aspnetcore.app.internal.assets.10.0.7.nupkg.sha512",
+        "microsoft.aspnetcore.app.internal.assets.10.0.8.nupkg.sha512",
         "microsoft.aspnetcore.app.internal.assets.nuspec"
       ]
     },
@@ -3270,25 +3254,6 @@
         "microsoft.codeanalysis.workspaces.msbuild.nuspec"
       ]
     },
-    "Microsoft.DotNet.HotReload.WebAssembly.Browser/10.0.203": {
-      "sha512": "OFnGv+vIMJdTX9U1gTIwOeE3isTt5MSy+hFpRvXceYZ2TBadvxWunKL1FHMBtY/fRXbJTtBKhByybknDQwhwgw==",
-      "type": "package",
-      "path": "microsoft.dotnet.hotreload.webassembly.browser/10.0.203",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "Icon.png",
-        "build/Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
-        "build/Microsoft.AspNetCore.StaticWebAssets.props",
-        "build/Microsoft.DotNet.HotReload.WebAssembly.Browser.props",
-        "buildMultiTargeting/Microsoft.DotNet.HotReload.WebAssembly.Browser.props",
-        "buildTransitive/Microsoft.DotNet.HotReload.WebAssembly.Browser.props",
-        "lib/net10.0/Microsoft.DotNet.HotReload.WebAssembly.Browser.dll",
-        "microsoft.dotnet.hotreload.webassembly.browser.10.0.203.nupkg.sha512",
-        "microsoft.dotnet.hotreload.webassembly.browser.nuspec",
-        "staticwebassets/Microsoft.DotNet.HotReload.WebAssembly.Browser.99zm1jdh75.lib.module.js"
-      ]
-    },
     "Microsoft.EntityFrameworkCore/10.0.7": {
       "sha512": "G6yclVO5/csPzzsymV0SemY2NDqE31CP5M3jprF5IuO9wJsh4aUOfYD8HCLuDmM1D1CfReegVic48O2r79d46Q==",
       "type": "package",
@@ -3670,7 +3635,7 @@
     "net10.0": [
       "Blazor-ApexCharts >= 6.1.0",
       "FrontEnd.Client >= 1.0.0",
-      "Microsoft.AspNetCore.App.Internal.Assets >= 10.0.7",
+      "Microsoft.AspNetCore.App.Internal.Assets >= 10.0.8",
       "Microsoft.AspNetCore.Components.WebAssembly.Server >= 10.0.7",
       "Microsoft.EntityFrameworkCore.Design >= 10.0.7"
     ]
@@ -3724,7 +3689,7 @@
         "auditLevel": "low",
         "auditMode": "all"
       },
-      "SdkAnalysisLevel": "10.0.200"
+      "SdkAnalysisLevel": "10.0.300"
     },
     "frameworks": {
       "net10.0": {
@@ -3738,7 +3703,7 @@
           "Microsoft.AspNetCore.App.Internal.Assets": {
             "suppressParent": "All",
             "target": "Package",
-            "version": "[10.0.7, )",
+            "version": "[10.0.8, )",
             "autoReferenced": true
           },
           "Microsoft.AspNetCore.Components.WebAssembly.Server": {
@@ -3771,7 +3736,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.AspNetCore": "(,10.0.32767]",
           "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

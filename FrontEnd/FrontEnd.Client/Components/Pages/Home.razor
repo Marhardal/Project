@@ -49,13 +49,13 @@ else
 
             var Data = Summary.Select(s => s.Total).ToList();
 
+            var Status = Summary.Select(s => s.Name).ToList();
+
             var total = Summary
                 .Sum(s => s.Total);
 
             <div class="col-md-6 col-sm-12 col-lg-3">
-                <DashCard Icon="bi bi-list fs-6"
-                          Title="@type.ToString()"
-                          Info="@total.ToString()" Colors="@Color" Data="@Data" />
+                <DashCard Icon="bi bi-list fs-6" Title="@type.ToString()" Info="@total.ToString()" Colors="@Color" Data="@Data" Status="@Status" />
             </div>
         }
     </div>

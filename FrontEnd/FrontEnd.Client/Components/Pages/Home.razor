@@ -50,7 +50,7 @@ else
 }
 
 <div class="my-2 row">
-    <div class="col-md-12 col-sm-12 mt-sm-2">
+    <div class="col-md-8 col-sm-12 mt-sm-2">
         <div class="card">
             <div class="card-header">
                 <div class="row">
@@ -67,26 +67,26 @@ else
                 @if (ProjectMonths.Any())
                 {
                     <ApexChart TItem="ProjectMonthDTO"
-                               Title="Projects Submitted Per Month">
+                               Height="300">
 
                         <ApexPointSeries TItem="ProjectMonthDTO"
                                          Items="ProjectMonths.Where(x => x.Type == ProjectType.ESMP)"
                                          Name="ESMP"
-                                         SeriesType="SeriesType.Line"
+                                         SeriesType="SeriesType.Bar"
                                          XValue="e => e.MonthName"
                                          YValue="e => e.Total" />
 
                         <ApexPointSeries TItem="ProjectMonthDTO"
                                          Items="ProjectMonths.Where(x => x.Type == ProjectType.ESIA)"
                                          Name="ESIA"
-                                         SeriesType="SeriesType.Line"
+                                         SeriesType="SeriesType.Bar"
                                          XValue="e => e.MonthName"
                                          YValue="e => e.Total" />
 
                         <ApexPointSeries TItem="ProjectMonthDTO"
                                          Items="ProjectMonths.Where(x => x.Type == ProjectType.Audit)"
                                          Name="Audit"
-                                         SeriesType="SeriesType.Line"
+                                         SeriesType="SeriesType.Bar"
                                          XValue="e => e.MonthName"
                                          YValue="e => e.Total" />
 
@@ -95,7 +95,7 @@ else
             </div>
         </div>
     </div>
-    
+    @* 
     <div class="col-md-6 col-sm-12 mt-sm-2">
         <div class="card">
             <div class="card-header">
@@ -124,8 +124,8 @@ else
             </div>
         </div>
     </div>
-    
-    <div class="col-md-6 col-sm-12 mt-sm-2">
+     *@
+    <div class="col-md-4 col-sm-12 mt-sm-2">
         <div class="card">
             <div class="card-header">
                 <div class="row">

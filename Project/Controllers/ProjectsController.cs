@@ -147,8 +147,6 @@ namespace Project.Controllers
                 })
                 .ToListAsync();
 
-            if (!projects.Any())
-                return NoContent();
 
             return Ok(projects);
         }

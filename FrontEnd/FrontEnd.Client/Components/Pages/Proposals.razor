@@ -251,6 +251,7 @@ else
         </div>
     </div>
 </div>
+
 @code {
     bool isloaded;
     bool isSubmitting;
@@ -263,7 +264,6 @@ else
     private List<ProjectType> projectTypes;
     [SupplyParameterFromForm]
     private ProjectDTO Proposal { get; set; } = new();
-    private EditContext? editContext;
 
     protected override async Task OnInitializedAsync()
     {

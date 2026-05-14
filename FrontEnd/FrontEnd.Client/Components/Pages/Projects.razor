@@ -112,7 +112,7 @@
                         </NavLink>
                         @* @onclick="() => editProposal(proposal)" *@
                         <button data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop" class="rounded btn btn-sm btn-outline-success">
+                                data-bs-target="#staticBackdrop" class="rounded btn btn-sm btn-outline-success" @onclick="() => editProject(project)">
                             <i class="bi bi-pencil-square"></i>
                         </button>
                         <NavLink class="rounded btn btn-sm btn-outline-danger">
@@ -142,52 +142,242 @@ else
     <p>Please enter some projects via Proposals.</p>
 }
 
+
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-         aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <EditForm method="post" Model="Proposal" OnValidSubmit="HandleUpdate"
+                      FormName="create">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Project</h1>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Proposal</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Project Name</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1"
-                               placeholder="Enter Project Name." required>
+                    <DataAnnotationsValidator />
+                  
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="Name" class="form-label">Project Name</label>
+                                <InputText @bind-Value="Proposal.Name" class="form-control" id="Name"
+                                           placeholder="Enter Project Name."></InputText>
+                                <ValidationMessage For="@(() => Proposal.Name)" class="text-danger" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+
+                            <div class="mb-3">
+                                <label for="ProponentID" class="form-label">Project Proponent</label>
+                                <InputSelect @bind-Value="Proposal.ProponentID" id="ProponentID" class="form-select"
+                                             aria-label="Default select example">
+                                    <option value="">-- Select Proponent --</option>
+                                    @foreach (var proponent in proponents)
+                                    {
+                                        <option value="@proponent.ID">@proponent.Name</option>
+                                    }
+                                </InputSelect>
+                                <ValidationMessage For="@(() => Proposal.ProponentID)" class="text-danger" />
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Project Proponent</label>
-                        <select class="form-select" aria-label="Default select example">
-                            <option selected>Select Project Proponent</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="Location" class="form-label">Location</label>
+                                <InputText @bind-Value="Proposal.Location" class="form-control" id="Location"
+                                           placeholder="Enter Project Location.">
+                                </InputText>
+                                <ValidationMessage For="@(() => Proposal.Location)" class="text-danger" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="SubmissionDate" class="form-label">Submission Date</label>
+                                <InputDate @bind-Value="Proposal.SubmissionDate" class="form-control"
+                                           id="SubmissionDate"></InputDate>
+                                <ValidationMessage For="@(() => Proposal.SubmissionDate)" class="text-danger" />
+                            </div>
+                        </div>
                     </div>
+                    @* @{
+                        var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
+                        var isApproved = selectedStatus?.Name == "Approved";
+                    }
+                    @if (isEditMode && Proposal?.Tracking != null)
+                    { *@
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="Status" class="form-label">Status</label>
+
+                                    <InputSelect @bind-Value="Proposal.Tracking.StatusID"
+                                                 id="Status"
+                                                 class="form-select">
+                                        <option value="">-- Select Status --</option>
+                                        @foreach (var status in statuses)
+                                        {
+                                            <option value="@status.ID">@status.Name</option>
+                                        }
+                                    </InputSelect>
+
+                                    <ValidationMessage For="@(() => Proposal.Tracking.StatusID)" class="text-danger" />
+                                </div>
+                            </div>
+
+                            
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="ProjectType" class="form-label">Type</label>
+
+                                        <InputSelect @bind-Value="Proposal.ProjectType"
+                                                     id="ProjectType"
+                                                     class="form-select">
+                                            <option value="">-- Select Project Type --</option>
+                                            @foreach (var type in Enum.GetValues<ProjectType>().Where(t => t != ProjectType.Proposal))
+                                            {
+                                                <option value="@type">@EnumHelper.GetDisplayName(type)</option>
+                                            }
+                                        </InputSelect>
+
+                                        <ValidationMessage For="@(() => Proposal.ProjectType)" class="text-danger" />
+                                    </div>
+                                </div>
+                        </div>
+                    @* } *@
                     <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Submission Date</label>
-                        <input type="date" class="form-control" id="exampleFormControlInput1" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Description</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" required></textarea>
+                        <label for="Description" class="form-label">Description</label>
+                        <InputTextArea @bind-Value="Proposal.Description" class="form-control" id="Description" rows="3"
+                                       placeholder="Enter Project Description."></InputTextArea>
+                        <ValidationMessage For="@(() => Proposal.Description)" class="text-danger" />
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Create</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
                 </div>
-            </div>
+
+            </EditForm>
         </div>
     </div>
+</div>
 
 @code {
-    List<ProjectDTO> projects = new List<ProjectDTO>();
+
+    [SupplyParameterFromForm]
+    private ProjectDTO Proposal { get; set; } = new();
+    List<ProjectDTO> projects = new();
+    private List<StatusDTO> statuses = new();
+    private List<ProjectType> projectTypes;
+    private List<ProponentsDTO> proponents = new();
+
+    private List<ProjectDTO> proposals = new();
+    private string submitMessage = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
-        projects = await ProjectService.GetProjectAsync(false);
+
+        // Fetch projects and proponents with null-checks to prevent null assignments
+        var projectResult = await ProjectService.GetProjectAsync(false);
+        projects = projectResult ?? new List<ProjectDTO>();
+        // projects = await ProjectService.GetProjectAsync(false) ?? new List<ProjectDTO>();
+
+        var proponentResult = await ProponentService.GetProponentsAsync();
+        proponents = proponentResult ?? new List<ProponentsDTO>();
+
     }
 
+    async Task editProject(ProjectDTO project)
+    {
+        var tracking = project.Trackings?
+            .OrderByDescending(t => t.createdOn)
+            .FirstOrDefault();
+        var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
+
+        if (selectedStatus?.Name == "Approved" && project.ProjectType == ProjectType.Proposal)
+        {
+            submitMessage = "Approved proposals must be assigned a valid project type.";
+            return;
+        }
+
+        var defaultStatusId = statuses.FirstOrDefault()?.ID ?? Guid.Empty;
+
+        Proposal = new ProjectDTO()
+        {
+            Id = project.Id,
+            Name = project.Name,
+            Location = project.Location,
+            ProponentID = project.ProponentID,
+            ProjectType = project.ProjectType,
+            Description = project.Description,
+            SubmissionDate = project.SubmissionDate,
+            createdOn = project.createdOn,
+            Tracking = new TrackingDTO()
+            {
+                StatusID = tracking?.StatusID ?? defaultStatusId
+            }
+        };
+
+        var statusResult = await StatusService.GetStatusAsync();
+        statuses = (statusResult ?? new List<StatusDTO>()).Where(s => s.SortOrder >= 3).ToList();
+
+        await JSRuntime.InvokeVoidAsync("showModal", "staticBackdrop");
+    }
     
+
+    async Task HandleUpdate()
+    {
+        // isSubmitting = true;
+        submitMessage = null;
+        try
+        {
+            var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
+
+            if (selectedStatus?.Name == "Approved" && Proposal.ProjectType == ProjectType.Proposal)
+            {
+                submitMessage = "Approved proposals must be assigned a valid project type.";
+                return;
+            }
+            // EditPerson.ProponentID = ;
+            // Proponent!.ProponentID = Guid.Parse(PropID);
+            Proposal.updatedOn = DateTime.Now;
+            var response = await ProjectService.UpdateProjectAsync(Proposal.Id, Proposal);
+            if (response.IsSuccessStatusCode)
+            {
+                // Refresh list
+
+                // Reset form
+                Proposal = new();
+
+                // await JSRuntime.InvokeVoidAsync("closeModal", "staticBackdrop");
+                // Close modal
+                // await JSRuntime.InvokeVoidAsync("bootstrap.Modal.getInstance", modalElement).AsTask();
+                // isEditMode = false;
+                // submitMessage = "Proposal updated successfully!";
+                // await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
+                await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
+
+                await JSRuntime.InvokeVoidAsync("SwalService.success", "Project updated successfully!");
+
+            }
+            else
+            {
+                submitMessage = $"Error {response.StatusCode}: {await response.Content.ReadAsStringAsync()}";
+            }
+        }
+        catch (Exception ex)
+        {
+            submitMessage = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            // isSubmitting = false;
+            projects = await ProjectService.GetProjectAsync(false);
+            StateHasChanged();
+        }
+        submitMessage = null;
+    }
+
 }

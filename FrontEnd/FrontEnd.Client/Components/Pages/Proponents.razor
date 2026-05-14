@@ -28,9 +28,9 @@
     <div class="col-md-5">
         <div class="my-2 input-group">
             <span class="input-group-text" id="basic-addon1">Search</span>
-            <input type="text" class="form-control" placeholder="Search"
-       @bind="searchQuery" @bind:event="oninput"
-        />
+            <input type="search" class="form-control" placeholder="Search"
+                   value="@searchQuery"
+                   @oninput="OnSearchChanged" />
         </div>
     </div>
 
@@ -119,7 +119,7 @@ else if (proponents?.Count > 0)
                     <li class="page-item"><a class="page-link" href="#">Next</a></li>
                 </ul>
             </nav> *@
-            <nav aria-label="...">
+            @* <nav aria-label="...">
                 <ul class="pagination">
                     <li class="page-item @(currentPage == 1 ? "disabled" : "")">
                         <a class="page-link" @onclick="() => GoToPage(currentPage - 1)">Previous</a>
@@ -137,7 +137,8 @@ else if (proponents?.Count > 0)
                         <a class="page-link" @onclick="() => GoToPage(currentPage + 1)">Next</a>
                     </li>
                 </ul>
-            </nav>
+            </nav> *@
+            <Paginator pageSize="pageSize" currentPage="currentPage" totalItems="filteredProponents.Count" OnPageChanged="Pages => currentPage = Pages" />
         </div>
     </div>
 }
@@ -217,7 +218,7 @@ else
     private string searchQuery = string.Empty;
     private int pageSize = 10;
     private int currentPage = 1;
-    private int totalPages => (int)Math.Ceiling(filteredProponents.Count / (double)pageSize);
+    // private int totalPages => (int)Math.Ceiling(filteredProponents.Count / (double)pageSize);
 
     private List<ProponentsDTO> filteredProponents =>
         proponents?
@@ -352,10 +353,5 @@ else
         StateHasChanged();
     }
 
-    private void GoToPage(int page)
-    {
-        if (page < 1 || page > totalPages) return;
-        currentPage = page;
-    }
 }
 

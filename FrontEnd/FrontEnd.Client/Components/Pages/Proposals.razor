@@ -12,12 +12,13 @@
         <div class="col-md-2">
             <div class="mb-3 input-group rounded-pill justify-content-end">
                 <span class="input-group-text" id="basic-addon1">Show</span>
-                <select class="form-control-sm" aria-label="Username" aria-describedby="basic-addon1">
-                    <option>10</option>
-                    <option>20</option>
-                    <option>30</option>
-                    <option>40</option>
-                    <option>50</option>
+                <select class="form-control-sm" @bind="pageSize" @bind:after="OnPageSizeChanged">
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
                 </select>
             </div>
         </div>
@@ -43,14 +44,15 @@
         <div class="col-md-12">
             <div class="mb-3 input-group">
                 <span class="input-group-text" id="basic-addon1">Search</span>
-                <input type="text" class="form-control" placeholder="Search" aria-label="Username"
-                       aria-describedby="basic-addon1">
+                <input type="search" class="form-control" placeholder="Search"
+                       value="@searchQuery"
+                       @oninput="OnSearchChanged" />
             </div>
         </div>
     </div>
 
     <div class="border rounded bg-body-tertiary">
-        <TableTemplate Items="proposals" Context="proposal">
+        <TableTemplate Items="pagedProposals" Context="proposal">
             <TableHeader>
                 <th scope="col">#</th>
                 <th scope="col">Name</th>
@@ -62,7 +64,7 @@
             </TableHeader>
             <RowTemplate Context="proposal">
                 @{
-                    int index = proposals.IndexOf(proposal) + 1;
+                    int index = (currentPage - 1) * pageSize + pagedProposals.IndexOf(proposal) + 1;
                 }
                 <td>@index</td>
                 <td>
@@ -97,17 +99,7 @@
         </TableTemplate>
 
         <div class="justify-content-center d-flex">
-            <nav aria-label="...">
-                <ul class="pagination">
-                    <li class="page-item"><a href="#" class="page-link">Previous</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item active">
-                        <a class="page-link" href="#" aria-current="page">2</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                </ul>
-            </nav>
+            <Paginator pageSize="pageSize" currentPage="currentPage" totalItems="filteredProposals.Count" OnPageChanged="Pages => currentPage = Pages" />
         </div>
     </div>    
 }
@@ -264,6 +256,31 @@ else
     private List<ProjectType> projectTypes;
     [SupplyParameterFromForm]
     private ProjectDTO Proposal { get; set; } = new();
+    private int pageSize = 10;
+    private int currentPage = 1;
+    private string searchQuery = string.Empty;
+
+    private int totalPages => (int)Math.Ceiling(filteredProposals.Count / (double)pageSize);
+
+    private List<ProjectDTO> filteredProposals => proposals?
+    .Where(p =>
+        string.IsNullOrWhiteSpace(searchQuery) ||
+        p.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+        p.Location.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+    .ToList() ?? new();
+
+    
+    private List<ProjectDTO> pagedProposals =>
+        filteredProposals
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+    private void OnPageSizeChanged()
+    {
+        currentPage = 1;
+        StateHasChanged();
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -407,4 +424,15 @@ else
 
         await JSRuntime.InvokeVoidAsync("showModal", "staticBackdrop");
     }
+
+    private Timer? _debounce;
+
+    private void OnSearchChanged(ChangeEventArgs e)
+    {
+        searchQuery = e.Value?.ToString() ?? string.Empty;
+        currentPage = 1; // reset to first page on new search
+        _debounce?.Dispose();
+        _debounce = new Timer(_ => InvokeAsync(StateHasChanged), null, 400, Timeout.Infinite);
+    }
+
 }

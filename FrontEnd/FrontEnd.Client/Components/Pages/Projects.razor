@@ -11,12 +11,13 @@
     <div class="col-md-2 col-sm-2 text-md-end">
         <div class="input-group rounded-pill justify-content-md-end">
             <span class="input-group-text" id="basic-addon1">Show</span>
-            <select class="form-control-sm" aria-label="Username" aria-describedby="basic-addon1">
-                <option>10</option>
-                <option>20</option>
-                <option>30</option>
-                <option>40</option>
-                <option>50</option>
+            <select class="form-control-sm" @bind="pageSize" @bind:after="OnPageSizeChanged">
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
             </select>
         </div>
     </div>
@@ -42,37 +43,37 @@
         <div class="col-md-7">
             <div class="mb-3 input-group">
                 <span class="input-group-text" id="basic-addon1">Search</span>
-                <input type="text" class="form-control" placeholder="Search" aria-label="Username"
-                aria-describedby="basic-addon1">
+                <input type="search" class="form-control" placeholder="Search"
+                       value="@searchQuery" @oninput="OnSearchChanged" />
             </div>
         </div>
         <div class="col-md-2">
             <div class="mb-3 input-group">
                 <label class="input-group-text" for="inputGroupSelect01">Type</label>
-                <select class="form-select" id="inputGroupSelect01">
-                    <option selected>Choose...</option>
-                    <option value="0">ESMP</option>
-                    <option value="1">Audit</option>
-                    <option value="2">ESIA</option>
+                <select class="form-select" @bind="selectedType" @bind:after="OnFilterChanged">
+                    <option value="">All</option>
+                    <option value="ESMP">ESMP</option>
+                    <option value="Audit">Audit</option>
+                    <option value="ESIA">ESIA</option>
                 </select>
             </div>
         </div>
         <div class="col-md-3">
             <div class="mb-3 input-group">
                 <label class="input-group-text" for="inputGroupSelect01">Status</label>
-                <select class="form-select" id="inputGroupSelect01">
-                    <option selected>Choose...</option>
-                    @* @foreach(var status in Statuses)
-                {
-                    <option value="@status.ID">@status.Name</option>
-                } *@
+                <select class="form-select" @bind="selectedStatus" @bind:after="OnFilterChanged">
+                    <option value="">All Statuses</option>
+                    @foreach (var status in statuses)
+                    {
+                        <option value="@status.ID">@status.Name</option>
+                    }
                 </select>
             </div>
         </div>
     </div>
 
     <div class="border rounded bg-body-tertiary">
-        <TableTemplate Items="projects" Context="project">
+        <TableTemplate Items="pagedProjects" Context="project">
             <TableHeader>
                 <th scope="col">#</th>
                 <th scope="col">Name</th>
@@ -86,7 +87,7 @@
 
             <RowTemplate Context="project">
                 @{
-                    int index = projects.IndexOf(project) + 1;
+                    int index = (currentPage - 1) * pageSize + pagedProjects.IndexOf(project) + 1;
                 }
                 <td>@index</td>
                 @* <td>@project.Name</td> *@
@@ -123,17 +124,7 @@
             </RowTemplate>
         </TableTemplate>
         <div class="justify-content-center d-flex">
-            <nav aria-label="...">
-                <ul class="pagination">
-                    <li class="page-item"><a href="#" class="page-link">Previous</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item active">
-                        <a class="page-link" href="#" aria-current="page">2</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                </ul>
-            </nav>
+            <Paginator pageSize="pageSize" currentPage="currentPage" totalItems="filteredProjects.Count" OnPageChanged="Pages => currentPage = Pages" />
         </div>
     </div>
 }
@@ -275,6 +266,44 @@ else
 
     private List<ProjectDTO> proposals = new();
     private string submitMessage = string.Empty;
+    private int pageSize = 10;
+    private int currentPage = 1;
+    private string searchQuery = string.Empty;
+    private ProjectType? selectedType = null;
+    private Guid? selectedStatus = null;
+    private int totalPages => (int)Math.Ceiling(filteredProjects .Count / (double)pageSize);
+    
+    private List<ProjectDTO> filteredProjects => projects?
+        .Where(p =>
+            (string.IsNullOrWhiteSpace(searchQuery) ||
+            p.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+            p.Location.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+            &&
+            (selectedType == null || p.ProjectType == selectedType)
+            &&
+            (selectedStatus == null || p.Trackings
+                .OrderByDescending(t => t.createdOn)
+                .FirstOrDefault()?.StatusID == selectedStatus))
+        .ToList() ?? new();
+
+    
+    private List<ProjectDTO> pagedProjects =>
+        filteredProjects
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+    private void OnPageSizeChanged()
+    {
+        currentPage = 1;
+        StateHasChanged();
+    }
+
+    private void OnFilterChanged()
+    {
+        currentPage = 1;
+        StateHasChanged();
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -287,6 +316,8 @@ else
         var proponentResult = await ProponentService.GetProponentsAsync();
         proponents = proponentResult ?? new List<ProponentsDTO>();
 
+        var statusResult = await StatusService.GetStatusAsync();
+        statuses = (statusResult ?? new List<StatusDTO>()).Where(s => s.SortOrder >= 3).ToList();
     }
 
     async Task editProject(ProjectDTO project)
@@ -326,7 +357,6 @@ else
         await JSRuntime.InvokeVoidAsync("showModal", "staticBackdrop");
     }
     
-
     async Task HandleUpdate()
     {
         // isSubmitting = true;
@@ -378,6 +408,16 @@ else
             StateHasChanged();
         }
         submitMessage = null;
+    }
+    
+    private Timer? _debounce;
+
+    private void OnSearchChanged(ChangeEventArgs e)
+    {
+        searchQuery = e.Value?.ToString() ?? string.Empty;
+        currentPage = 1; // reset to first page on new search
+        _debounce?.Dispose();
+        _debounce = new Timer(_ => InvokeAsync(StateHasChanged), null, 400, Timeout.Infinite);
     }
 
 }

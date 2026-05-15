@@ -1,4 +1,5 @@
 ﻿@page "/Project/Status"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
 <div class="my-4 row">
     <div class="col-md-4">
@@ -101,12 +102,29 @@
                 </div>
             </div>
             <div class="card-body">
-                <PieStatusChart/>
+                @if (ProjectStatuses.Any())
+                {
+                    <ApexChart TItem="ProjectStatusDTO">
+
+                        <ApexPointSeries TItem="ProjectStatusDTO"
+                                         Items="ProjectStatuses"
+                                         Name="Projects"
+                                         SeriesType="SeriesType.Pie"
+                                         XValue="e => e.Status"
+                                         YValue="e => e.Total" />
+                    </ApexChart>
+                }
             </div>
         </div>
     </div>
     </div>
 
 @code {
+    private List<ProjectStatusDTO>? ProjectStatuses;
 
+    protected override async Task OnInitializedAsync()
+    {
+        ProjectStatuses = await HomeService.GetProjectStatuses()
+                      ?? new List<ProjectStatusDTO>();
+    }
 }

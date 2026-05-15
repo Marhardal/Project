@@ -49,12 +49,51 @@ namespace Project.Controllers
                 UserName = identity?.Username,
                 Email = identity?.Email,
                 PhoneNumber = identity?.Phone,
+                TwoFactorEnabled = true,
             }, identity.Password);
 
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
             return Ok();
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginDTO dto)
+        {
+            var user = await userManager.FindByEmailAsync(dto.Email);
+
+            if (user == null)
+                return Unauthorized("Invalid login attempt");
+
+            var passwordValid = await userManager.CheckPasswordAsync(user, dto.Password);
+
+            if (!passwordValid)
+                return Unauthorized("Invalid login attempt");
+
+            if (await userManager.GetTwoFactorEnabledAsync(user))
+            {
+                var token = await userManager.GenerateTwoFactorTokenAsync(
+                    user,
+                    TokenOptions.DefaultEmailProvider
+                );
+
+                // Send token by email here
+
+                return Ok(new
+                {
+                    requiresTwoFactor = true,
+                    userId = user.Id
+                });
+            }
+
+            // create JWT / login normally here
+
+            return Ok(new
+            {
+                requiresTwoFactor = false,
+                message = "Login successful"
+            });
         }
     }
 }

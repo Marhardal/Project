@@ -1,0 +1,56 @@
+﻿@page "/Login"
+
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card">
+        <div class="card-body">
+            <EditForm method="post" Model="loginDTO" OnValidSubmit="HandleLogin" FormName="Login">
+                <DataAnnotationsValidator />
+                <img src="/Images/MEPA.png" class="img-fluid mx-auto d-block" alt="...">
+                @if (!string.IsNullOrEmpty(Message))
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @Message
+                    </div>
+                }
+                <h5 class="card-title text-center">Welcome Back!</h5>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Email address</label>
+                    <InputText type="email" class="form-control" id="exampleFormControlInput1"
+                               placeholder="name@example.com" @bind-Value="loginDTO.Email" />
+                    <ValidationMessage For="@(() => loginDTO.Email)" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <label for="exampleFormControlInput2" class="form-label">Password</label>
+                        <a class="nav-link" href="/ForgotPassword">Forgot Password?</a>
+                    </div>
+                    <InputText type="password" class="form-control" id="exampleFormControlInput2" placeholder="Password" @bind-Value="loginDTO.Password"/>
+                    <ValidationMessage For="@(() => loginDTO.Password)" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary w-100">Submit</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private LoginDTO loginDTO { get; set; } = new();
+    string Message = string.Empty;
+
+    async Task HandleLogin()
+    {
+        var response = await UserProfileService.LoginAsync(loginDTO);
+        if (response.IsSuccessStatusCode)
+        {
+            navigationManager.NavigateTo("/");
+        }
+        else
+        {
+            Message = "Check your credentials and try again.";
+        }
+    }
+
+}

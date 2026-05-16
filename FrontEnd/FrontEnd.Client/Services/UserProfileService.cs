@@ -96,5 +96,24 @@ public class UserProfileService
             return resp;
         }
     }
+
+    public async Task<HttpResponseMessage> LoginAsync(LoginDTO dto)
+    {
+        try
+        {
+            return await _http.PostAsJsonAsync("api/Identity/login", dto);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to create Profile via POST {Endpoint}", "api/Identity/login");
+            var resp = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+            {
+                Content = new StringContent(ex.Message)
+            };
+            return resp;
+        }
+    }
+
+
 }
 

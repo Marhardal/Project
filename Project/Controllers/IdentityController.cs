@@ -1,11 +1,13 @@
 ﻿using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Project.Data;
 using Project.DTO;
 using Project.Models;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxTokenParser;
+using Project.Services;
+using System.Net;
 
 namespace Project.Controllers
 {
@@ -15,6 +17,7 @@ namespace Project.Controllers
     {
         private readonly DBContext dbContext;
         private readonly UserManager<IdentityUser> userManager;
+        private AuthService authService;
 
         public IdentityController(DBContext _dbContext, UserManager<IdentityUser> _userManager)
         {
@@ -80,6 +83,12 @@ namespace Project.Controllers
 
                 // Send token by email here
 
+                EmailUtility.SendMail(
+                dto.Email,
+                "Reset your password",
+                $"Here is your OTP {token}"
+            );
+
                 return Ok(new
                 {
                     requiresTwoFactor = true,
@@ -94,6 +103,78 @@ namespace Project.Controllers
                 requiresTwoFactor = false,
                 message = "Login successful"
             });
+        }
+
+        [HttpPost("login-2fa")]
+        public async Task<IActionResult> Login2FA(Login2FADTO dto)
+        {
+            var user = await userManager.FindByIdAsync(dto.userID);
+
+            if (user == null)
+                return Unauthorized();
+
+            var valid = await userManager.VerifyTwoFactorTokenAsync(
+                user,
+                TokenOptions.DefaultEmailProvider,
+                dto.Code
+            );
+
+            if (!valid)
+                return Unauthorized("Invalid OTP");
+
+            // create JWT / login normally here
+            //var roles = await userManager.GetRolesAsync(user);
+            var token = authService.GenerateJwtToken(user);
+            return Ok(new
+            {
+                message = "Login successful"
+            });
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDTO dto)
+        {
+            var user = await userManager.FindByEmailAsync(dto.Email);
+
+            // Do not reveal whether email exists
+            if (user == null)
+                return Ok("If the email exists, a reset link has been sent.");
+
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+
+            var encodedToken = WebUtility.UrlEncode(token);
+
+            var resetLink =
+                $"https://yourfrontend.com/reset-password?email={dto.Email}&token={encodedToken}";
+
+            EmailUtility.SendMail(
+                dto.Email,
+                "Reset your password",
+                $"Click this link to reset your password: {resetLink}"
+
+            );
+
+            return Ok("If the email exists, a reset link has been sent.");
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDTO dto)
+        {
+            var user = await userManager.FindByEmailAsync(dto.Email);
+
+            if (user == null)
+                return BadRequest("Invalid reset request.");
+
+            var result = await userManager.ResetPasswordAsync(
+                user,
+                dto.Token,
+                dto.NewPassword
+            );
+
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            return Ok("Password has been reset successfully.");
         }
     }
 }

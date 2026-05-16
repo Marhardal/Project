@@ -83,7 +83,7 @@ namespace Project.Data
     new Status
     {
         ID = Guid.Parse("b7e2d4f9-3a11-42c7-9c8d-5f2a6b1e4d22"),
-        Name = "Under Review",
+        Name = "Review",
         Color = "#ffc107",
         SortOrder = 2
     },

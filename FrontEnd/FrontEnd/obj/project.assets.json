@@ -664,6 +664,32 @@
           "buildMultiTargeting/Microsoft.AspNetCore.App.Internal.Assets.targets": {}
         }
       },
+      "Microsoft.AspNetCore.Authorization/10.0.8": {
+        "type": "package",
+        "compile": {
+          "lib/net10.0/_._": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/_._": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Components.Authorization/10.0.8": {
+        "type": "package",
+        "compile": {
+          "lib/net10.0/_._": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/_._": {
+            "related": ".xml"
+          }
+        }
+      },
       "Microsoft.AspNetCore.Components.QuickGrid/10.0.8": {
         "type": "package",
         "compile": {
@@ -2291,6 +2317,40 @@
         "microsoft.aspnetcore.app.internal.assets.nuspec"
       ]
     },
+    "Microsoft.AspNetCore.Authorization/10.0.8": {
+      "sha512": "t+q60N2/+UIBnkuLRJWv1r02fhuwPI1fqUh0xnuWIjsVsU1szYcic0/LW+BcZ4ZaO3mMVVJP3H/F9bwfJgGboA==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.authorization/10.0.8",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net10.0/Microsoft.AspNetCore.Authorization.dll",
+        "lib/net10.0/Microsoft.AspNetCore.Authorization.xml",
+        "lib/net462/Microsoft.AspNetCore.Authorization.dll",
+        "lib/net462/Microsoft.AspNetCore.Authorization.xml",
+        "lib/netstandard2.0/Microsoft.AspNetCore.Authorization.dll",
+        "lib/netstandard2.0/Microsoft.AspNetCore.Authorization.xml",
+        "microsoft.aspnetcore.authorization.10.0.8.nupkg.sha512",
+        "microsoft.aspnetcore.authorization.nuspec"
+      ]
+    },
+    "Microsoft.AspNetCore.Components.Authorization/10.0.8": {
+      "sha512": "DHCCXl72lcYtFAADaCoNu3wAfyr6KsSX31zAV8Y70VSPme6c2dS2YBu2OaZtH9bpfuEXiGeulL92s7AtxfanBg==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.components.authorization/10.0.8",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "THIRD-PARTY-NOTICES.txt",
+        "lib/net10.0/Microsoft.AspNetCore.Components.Authorization.dll",
+        "lib/net10.0/Microsoft.AspNetCore.Components.Authorization.xml",
+        "microsoft.aspnetcore.components.authorization.10.0.8.nupkg.sha512",
+        "microsoft.aspnetcore.components.authorization.nuspec"
+      ]
+    },
     "Microsoft.AspNetCore.Components.QuickGrid/10.0.8": {
       "sha512": "eRU9wbb/lnDX82JcZUsbAHNcO3dhzzewqlhiZZZwp1fO6eeyDk/DW/w3FLxpnCWSXV48Lt4VGetRucJ0xe25WQ==",
       "type": "package",
@@ -3824,6 +3884,8 @@
       "Blazor-ApexCharts >= 6.1.0",
       "FrontEnd.Client >= 1.0.0",
       "Microsoft.AspNetCore.App.Internal.Assets >= 10.0.8",
+      "Microsoft.AspNetCore.Authorization >= 10.0.8",
+      "Microsoft.AspNetCore.Components.Authorization >= 10.0.8",
       "Microsoft.AspNetCore.Components.WebAssembly.Server >= 10.0.7",
       "Microsoft.EntityFrameworkCore.Design >= 10.0.7"
     ]
@@ -3893,6 +3955,14 @@
             "target": "Package",
             "version": "[10.0.8, )",
             "autoReferenced": true
+          },
+          "Microsoft.AspNetCore.Authorization": {
+            "target": "Package",
+            "version": "[10.0.8, )"
+          },
+          "Microsoft.AspNetCore.Components.Authorization": {
+            "target": "Package",
+            "version": "[10.0.8, )"
           },
           "Microsoft.AspNetCore.Components.WebAssembly.Server": {
             "target": "Package",
@@ -4341,5 +4411,27 @@
         }
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1510",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "PackageReference Microsoft.AspNetCore.Authorization will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
+      "libraryId": "Microsoft.AspNetCore.Authorization",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    },
+    {
+      "code": "NU1510",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "PackageReference Microsoft.AspNetCore.Components.Authorization will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
+      "libraryId": "Microsoft.AspNetCore.Components.Authorization",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    }
+  ]
 }

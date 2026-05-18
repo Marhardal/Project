@@ -1,13 +1,21 @@
-using System;
 using FrontEnd;
+using FrontEnd.Client.DTOs;
 using FrontEnd.Client.Services;
 using FrontEnd.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
+
+// In FrontEnd/Program.cs (server)
+builder.Services.AddAuthorization();          // ✅ full version for middleware pipeline
+builder.Services.AddAuthorizationCore();      // ✅ for Blazor components
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
 
 // Register a named HttpClient for general API use
 builder.Services.AddHttpClient("ApiClient", client =>
@@ -22,6 +30,8 @@ builder.Services.AddHttpClient<ProponentService>((sp, client) =>
     client.BaseAddress = new Uri("https://localhost:7120/");
     client.Timeout = TimeSpan.FromSeconds(100);
 });
+
+builder.Services.AddScoped<AuthStateService>();
 
 //builder.Services.AddHttpClient<StatusService>((sp, client) =>
 //{

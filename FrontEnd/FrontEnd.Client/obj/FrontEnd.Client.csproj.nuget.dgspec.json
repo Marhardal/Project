@@ -66,6 +66,10 @@
               "version": "[10.0.8, )",
               "autoReferenced": true
             },
+            "Microsoft.AspNetCore.Components.Authorization": {
+              "target": "Package",
+              "version": "[10.0.8, )"
+            },
             "Microsoft.AspNetCore.Components.QuickGrid": {
               "target": "Package",
               "version": "[10.0.8, )"

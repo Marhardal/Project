@@ -17,12 +17,13 @@ namespace Project.Controllers
     {
         private readonly DBContext dbContext;
         private readonly UserManager<IdentityUser> userManager;
-        private AuthService authService;
+        private readonly AuthService authService; // ✅ readonly
 
-        public IdentityController(DBContext _dbContext, UserManager<IdentityUser> _userManager)
+        public IdentityController(DBContext _dbContext, UserManager<IdentityUser> _userManager, AuthService _authService)
         {
             dbContext = _dbContext;
             userManager = _userManager;
+            authService = _authService; // ✅ assigned
         }
 
         // POST: api/Identity
@@ -62,7 +63,7 @@ namespace Project.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDTO dto)
+        public async Task<ActionResult<PreAuthResponseDTO>> Login(LoginDTO dto)
         {
             var user = await userManager.FindByEmailAsync(dto.Email);
 
@@ -84,15 +85,14 @@ namespace Project.Controllers
                 // Send token by email here
 
                 EmailUtility.SendMail(
-                dto.Email,
-                "Reset your password",
-                $"Here is your OTP {token}"
-            );
+                    dto.Email,
+                    "Reset your password",
+                    $"Here is your OTP {token}"
+                );
 
-                return Ok(new
+                return Ok(new PreAuthResponseDTO
                 {
-                    requiresTwoFactor = true,
-                    userId = user.Id
+                    UserId = user.Id
                 });
             }
 
@@ -106,10 +106,9 @@ namespace Project.Controllers
         }
 
         [HttpPost("login-2fa")]
-        public async Task<IActionResult> Login2FA(Login2FADTO dto)
+        public async Task<ActionResult<AuthDTO>> Login2FA(Login2FADTO dto)
         {
             var user = await userManager.FindByIdAsync(dto.userID);
-
             if (user == null)
                 return Unauthorized();
 
@@ -125,9 +124,10 @@ namespace Project.Controllers
             // create JWT / login normally here
             //var roles = await userManager.GetRolesAsync(user);
             var token = authService.GenerateJwtToken(user);
-            return Ok(new
+            return Ok(new AuthDTO
             {
-                message = "Login successful"
+                Token = token,
+                UserID = dto.userID
             });
         }
 

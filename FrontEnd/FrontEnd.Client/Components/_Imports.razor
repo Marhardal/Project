@@ -1,12 +1,16 @@
+@using ApexCharts
 @using FrontEnd.Client.Components.Components
 @using FrontEnd.Client.DTOs
 @using FrontEnd.Client.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.JSInterop
 @inject ProponentService ProponentService
 @inject ContactPersonService ContactPersonService
 @inject ProjectService ProjectService
 @inject StatusService StatusService
 @inject UserProfileService UserProfileService
 @inject HomeService HomeService
-@using Microsoft.JSInterop
 @inject IJSRuntime JSRuntime
-@using ApexCharts
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+@inject AuthStateService AuthState

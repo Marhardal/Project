@@ -1,4 +1,5 @@
-﻿using FrontEnd.Client.DTOs;
+﻿using FrontEnd.Client;
+using FrontEnd.Client.DTOs;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -97,23 +98,46 @@ public class UserProfileService
         }
     }
 
-    public async Task<HttpResponseMessage> LoginAsync(LoginDTO dto)
+    public async Task<PreAuthResponseDTO?> LoginAsync(LoginDTO dto)
     {
         try
         {
-            return await _http.PostAsJsonAsync("api/Identity/login", dto);
+            var result = await _http.PostAsJsonAsync("api/Identity/login", dto);
+
+            if (result.IsSuccessStatusCode)
+            {
+                return await result.Content.ReadFromJsonAsync<PreAuthResponseDTO>();
+            }
+
+            _logger.LogWarning("Login failed with status {StatusCode}", result.StatusCode);
+            return null;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to create Profile via POST {Endpoint}", "api/Identity/login");
-            var resp = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
-            {
-                Content = new StringContent(ex.Message)
-            };
-            return resp;
+            _logger.LogError(ex, "Failed to login via POST {Endpoint}", "api/Identity/login");
+            return null; // let the caller handle the failure
         }
     }
+    public async Task<AuthDTO?> VerifyOtpAsync(Login2FADTO dto)
+    {
+        try
+        {
+            var result = await _http.PostAsJsonAsync("api/Identity/login-2fa", dto);
 
+            if (result.IsSuccessStatusCode)
+            {
+                return await result.Content.ReadFromJsonAsync<AuthDTO>();
+            }
+
+            _logger.LogWarning("OTP verification failed with status {StatusCode}", result.StatusCode);
+            return null;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to verify OTP via POST {Endpoint}", "api/Identity/login-2fa");
+            return null;
+        }
+    }
 
 }
 

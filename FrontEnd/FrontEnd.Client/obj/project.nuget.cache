@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "TpZoW+FssLY=",
+  "dgSpecHash": "aXcMyBQrrF0=",
   "success": true,
   "projectFilePath": "C:\\Users\\Martin\\source\\repos\\Project\\FrontEnd\\FrontEnd.Client\\FrontEnd.Client.csproj",
   "expectedPackageFiles": [
@@ -62,6 +62,7 @@
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.authorization\\10.0.8\\microsoft.aspnetcore.authorization.10.0.8.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.components\\10.0.8\\microsoft.aspnetcore.components.10.0.8.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.components.analyzers\\10.0.8\\microsoft.aspnetcore.components.analyzers.10.0.8.nupkg.sha512",
+    "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.components.authorization\\10.0.8\\microsoft.aspnetcore.components.authorization.10.0.8.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.components.forms\\10.0.8\\microsoft.aspnetcore.components.forms.10.0.8.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.components.quickgrid\\10.0.8\\microsoft.aspnetcore.components.quickgrid.10.0.8.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.components.web\\10.0.8\\microsoft.aspnetcore.components.web.10.0.8.nupkg.sha512",

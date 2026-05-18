@@ -1,0 +1,95 @@
+﻿@page "/verify-otp"
+@* @attribute [AllowAnonymous]    *@
+@layout EmptyLayout            
+@rendermode InteractiveWebAssembly
+
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            <EditForm Model="FADTO" OnValidSubmit="HandleOtpVerification">
+                <DataAnnotationsValidator />
+                <img src="/Images/MEPA.png" class="img-fluid mx-auto d-block mb-3" alt="...">
+                <h5 class="card-title text-center mb-3">OTP</h5>
+                <h6 class="card-title text-center mb-3">Enter the code sent to your email.</h6>
+
+                @if (!string.IsNullOrEmpty(Message))
+                {
+                    <div class="alert alert-danger" role="alert">@Message</div>
+                }
+
+                <div class="mb-3">
+                    <label class="form-label">One Time Password</label>
+                    <InputText class="form-control" placeholder="Enter One Time Password."
+                               @bind-Value="FADTO.Code" />
+                    <ValidationMessage For="@(() => FADTO.Code)" class="text-danger" />
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+                    <a class="nav-link" href="/login">Back to login.</a>
+                    <a class="nav-link" href="/ForgotPassword">Resend code</a>
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary w-100">Submit</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Login2FADTO FADTO { get; set; } = new();
+    private string Message = string.Empty;
+    private bool isReady = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // var UserId = await JSRuntime.InvokeAsync<string?>("localStorage.getItem", "UserId");
+
+        // AuthState.UserId = JSRuntime.InvokeVoidAsync("localStorage.getItem", "UserId");
+        // ✅ Guard — if no userId, send back to login
+        // if (string.IsNullOrEmpty(AuthState.UserId) || string.IsNullOrEmpty(UserId))
+        // {
+        //     navigationManager.NavigateTo("/login");
+        // }
+    }
+
+    // ✅ JS interop is safe here — browser is loaded
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var UserId = await JSRuntime.InvokeAsync<string?>("localStorage.getItem", "UserId");
+
+            // AuthState.UserId = JSRuntime.InvokeVoidAsync("localStorage.getItem", "UserId");
+            // ✅ Guard — if no userId, send back to login
+            if (string.IsNullOrEmpty(UserId))
+            {
+                navigationManager.NavigateTo("/login");
+                return;
+            }
+            AuthState.UserId = UserId;
+            isReady = true;
+            StateHasChanged();
+        }
+    }
+
+    async Task HandleOtpVerification()
+    {
+        // ✅ Attach the stored UserId before sending
+        FADTO.userID = AuthState.UserId;
+
+        var result = await UserProfileService.VerifyOtpAsync(FADTO);
+
+        if (result is not null)
+        {
+            var customProvider = (AuthStateProvider)AuthStateProvider;
+            await customProvider.MarkUserAsAuthenticated(result.Token);
+            navigationManager.NavigateTo("/");
+        }
+        else
+        {
+            Message = "Invalid or expired OTP.";
+        }
+    }
+}

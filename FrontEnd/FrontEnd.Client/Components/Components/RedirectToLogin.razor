@@ -1,6 +1,17 @@
-﻿@code {
-    protected override void OnInitialized()
+﻿@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        navigationManager.NavigateTo("/Login");
+        if (firstRender)
+        {
+            var state = await AuthStateProvider.GetAuthenticationStateAsync();
+
+            if (!state.User.Identity?.IsAuthenticated ?? true)
+            {
+                navigationManager.NavigateTo("/Account/login");
+            }
+        }
     }
 }

@@ -1,6 +1,6 @@
-﻿@page "/Login"
+﻿@page "/Account/Login"
 @layout EmptyLayout
-@rendermode InteractiveWebAssembly
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
 <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
     <div class="card border-0 shadow">
@@ -67,7 +67,7 @@
             // j
             await Task.Delay(100);
             // Navigate after auth token is stored and auth state is updated
-            navigationManager.NavigateTo("/verify-otp", true);
+            navigationManager.NavigateTo("/Account/verify-otp", true);
             return;
         }
 

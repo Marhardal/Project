@@ -1,4 +1,6 @@
 ﻿@namespace FrontEnd.Client
+@using Microsoft.AspNetCore.Components.Web
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
 <CascadingAuthenticationState>
 <Router AppAssembly="typeof(Program).Assembly"

@@ -1,7 +1,6 @@
-﻿@page "/verify-otp"
-@* @attribute [AllowAnonymous]    *@
-@layout EmptyLayout            
-@rendermode InteractiveWebAssembly
+﻿@page "/Account/verify-otp"
+@layout EmptyLayout
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
 <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
     <div class="card border-0 shadow">
@@ -86,6 +85,7 @@
             var customProvider = (AuthStateProvider)AuthStateProvider;
             await customProvider.MarkUserAsAuthenticated(result.Token);
             navigationManager.NavigateTo("/");
+            return;
         }
         else
         {

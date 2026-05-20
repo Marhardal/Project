@@ -22,4 +22,5 @@ builder.Services.AddScoped<UserProfileService>();
 builder.Services.AddScoped<ReviewService>();
 builder.Services.AddScoped<HomeService>(); 
 builder.Services.AddScoped<AuthStateService>();
+builder.Services.AddScoped<NavigationHistoryService>();
 await builder.Build().RunAsync();

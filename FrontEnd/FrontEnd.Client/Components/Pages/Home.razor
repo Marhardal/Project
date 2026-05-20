@@ -72,25 +72,39 @@ else
                         <ApexPointSeries TItem="ProjectMonthDTO"
                                          Items="ProjectMonths.Where(x => x.Type == ProjectType.ESMP)"
                                          Name="ESMP"
-                                         SeriesType="SeriesType.Bar"
+                                         SeriesType="SeriesType.Line"
                                          XValue="e => e.MonthName"
                                          YValue="e => e.Total" />
 
                         <ApexPointSeries TItem="ProjectMonthDTO"
                                          Items="ProjectMonths.Where(x => x.Type == ProjectType.ESIA)"
                                          Name="ESIA"
-                                         SeriesType="SeriesType.Bar"
+                                         SeriesType="SeriesType.Line"
                                          XValue="e => e.MonthName"
                                          YValue="e => e.Total" />
 
                         <ApexPointSeries TItem="ProjectMonthDTO"
                                          Items="ProjectMonths.Where(x => x.Type == ProjectType.Audit)"
                                          Name="Audit"
-                                         SeriesType="SeriesType.Bar"
+                                         SeriesType="SeriesType.Line"
                                          XValue="e => e.MonthName"
                                          YValue="e => e.Total" />
 
                     </ApexChart>
+                    @* <ApexChart TItem="ProjectMonthDTO"
+                               Height="300">
+
+                        @foreach (var type in Enum.GetValues<ProjectType>())
+                        {
+                            <ApexPointSeries TItem="ProjectMonthDTO"
+                                             Items="ProjectMonths.Where(x => x.Type == type).ToList()"
+                                             Name="@type.ToString()"
+                                             SeriesType="SeriesType.Line"
+                                             XValue="e => e.MonthName"
+                                             YValue="e => e.Total" />
+                        }
+
+                    </ApexChart> *@
                 }
             </div>
         </div>

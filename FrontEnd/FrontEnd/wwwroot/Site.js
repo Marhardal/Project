@@ -69,3 +69,9 @@
         }).then(result => result.isConfirmed);
     }
 };
+
+window.Navigation = {
+    back: () => history.go(-1),
+    go: (steps) => history.go(steps),
+    forward: () => history.go(1),
+}

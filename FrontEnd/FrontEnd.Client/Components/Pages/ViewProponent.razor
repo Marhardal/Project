@@ -246,7 +246,7 @@
             </div>
         </div>
         <div class="p-2 bg-white rounded-bottom border-start border-end border-bottom">
-        <NavLink class="btn btn-sm btn-outline-primary" href="Proponents">Back</NavLink>
+        <button type="button" class="btn btn-sm btn-outline-primary" @onclick="() => GoBack()">Back</button>
  
 
             @* <NavLink type="button" class="btn btn-secondary btn-sm" href="Proponent/view">Proponent</NavLink> *@
@@ -427,4 +427,10 @@ else
         };
         isEditMode = true;
     }
+
+    private async Task GoBack()
+    {
+        await JSRuntime.InvokeVoidAsync("Navigation.back");
+    }
+
 }

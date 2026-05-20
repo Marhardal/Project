@@ -132,6 +132,6 @@ app.UseCors("AllowFrontend");
 
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(FrontEnd.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(FrontEnd.Client.Components._Imports).Assembly);
 
 app.Run();

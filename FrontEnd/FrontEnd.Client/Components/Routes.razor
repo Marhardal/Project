@@ -1,4 +1,4 @@
-﻿@namespace FrontEnd.Client
+﻿@* @namespace FrontEnd.Client
 @using Microsoft.AspNetCore.Components.Web
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
@@ -7,13 +7,32 @@
         AdditionalAssemblies="new[] { typeof(FrontEnd.Client.Components._Imports).Assembly }"
         NotFoundPage="typeof(FrontEnd.Client.Components.Pages.NotFound)">
     <Found Context="routeData">
-        @* <AuthorizeRouteView RouteData="@routeData">
+        <AuthorizeRouteView RouteData="@routeData">
                 <NotAuthorized>
                     <RedirectToLogin />  
                 </NotAuthorized>
-            </AuthorizeRouteView> *@
+            </AuthorizeRouteView>
         <RouteView RouteData="routeData" DefaultLayout="typeof(FrontEnd.Client.Components.Layout.MainLayout)" />
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
 </Router>
+</CascadingAuthenticationState> *@
+
+@namespace FrontEnd.Client
+@using Microsoft.AspNetCore.Components.Web
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(Program).Assembly"
+            AdditionalAssemblies="new[] { typeof(FrontEnd.Client.Components._Imports).Assembly }"
+            NotFoundPage="@typeof(FrontEnd.Client.Components.Pages.NotFound)">
+
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData"
+                       DefaultLayout="@typeof(FrontEnd.Client.Components.Layout.MainLayout)" />
+
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+
+    </Router>
 </CascadingAuthenticationState>

@@ -32,14 +32,14 @@
  @implements IDisposable
 
 @inject NavigationManager NavigationManager
-
-@* <AuthorizeView> *@
+@* 
+<AuthorizeView> *@
 <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu"
      aria-labelledby="sidebarMenuLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="sidebarMenuLabel">MEPA</h5> <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
     </div>
-    <div class="p-0 overflow-y-auto offcanvas-body d-md-flex flex-column pt-lg-3">
+    <div class="p-0 offcanvas-body d-md-flex flex-column pt-lg-3">
 
             <ul class="nav flex-column">
                 <li class="nav-item">
@@ -161,14 +161,14 @@
                 </NavLink>
             </li>
             <li class="nav-item">
-                <form action="Account/Logout" method="post">
-                    <AntiforgeryToken />
-                    <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                    <button type="submit" class="gap-2 nav-link d-flex align-items-center">
+                @* <form action="Account/Logout" method="post">
+                    <AntiforgeryToken /> *@
+                    @* <input type="hidden" name="ReturnUrl" value="@currentUrl" /> *@
+                    <button type="submit" class="gap-2 nav-link d-flex align-items-center" @onclick="() => LogoutAsync()">
                         <i class="bi bi-door-closed-fill text-black fs-6"></i>
                         Logout
                     </button>
-                </form>
+                @* </form> *@
             </li>
         </ul>
 </div>
@@ -192,5 +192,11 @@
     public void Dispose()
     {
         NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
+    protected async Task LogoutAsync()
+    {
+        var customProvider = (AuthStateProvider)AuthStateProvider;
+        await customProvider.MarkUserAsLoggedOut();
     }
 }

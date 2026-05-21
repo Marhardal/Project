@@ -1,5 +1,5 @@
 ﻿@page "/"
-@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
 
 <div class="flex-wrap pt-3 pb-2 mb-3 d-flex justify-content-between flex-md-nowrap align-items-center border-bottom">
     <h1 class="h2">Dashboard</h1>
@@ -270,33 +270,46 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var userId = Guid.Parse("94f18329-f144-41bd-8f25-22b887f686e7");
-
-        var profile = await UserProfileService.GetUserProfileAsync(userId);
-
-        ProjectbyProponents = await HomeService.GetProjectbyProponent();
-
-        RecentProjects = await HomeService.GetRecentProjects();
-
-        GroupedProjects = await HomeService.GetGroupedProjects()
-                      ?? new List<GroupedProjectTypesDTO>();
-
-        ProjectStatuses = await HomeService.GetProjectStatuses()
-                      ?? new List<ProjectStatusDTO>();
-
-        StatusSummaries = await HomeService.GetStatusSummary()  ?? new List<StatusSummaryDTO>();
-
-        ProjectMonths = await HomeService.GetProjectsByMonth() ?? new List<ProjectMonthDTO>();
-
-        if (profile == null || profile.ID == Guid.Empty)
+        await JSRuntime.InvokeVoidAsync("Spinner.show");
+        try
         {
-            userProfile = new UserProfileDTO();
-            showProfileModal = true;
+            var userId = Guid.Parse("94f18329-f144-41bd-8f25-22b887f686e7");
+
+            var profile = await UserProfileService.GetUserProfileAsync(userId);
+
+            ProjectbyProponents = await HomeService.GetProjectbyProponent();
+
+            RecentProjects = await HomeService.GetRecentProjects();
+
+            GroupedProjects = await HomeService.GetGroupedProjects()
+                          ?? new List<GroupedProjectTypesDTO>();
+
+            ProjectStatuses = await HomeService.GetProjectStatuses()
+                          ?? new List<ProjectStatusDTO>();
+
+            StatusSummaries = await HomeService.GetStatusSummary() ?? new List<StatusSummaryDTO>();
+
+            ProjectMonths = await HomeService.GetProjectsByMonth() ?? new List<ProjectMonthDTO>();
+
+            if (profile == null || profile.ID == Guid.Empty)
+            {
+                userProfile = new UserProfileDTO();
+                showProfileModal = true;
+            }
+            else
+            {
+                userProfile = profile;
+                showProfileModal = false;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            userProfile = profile;
-            showProfileModal = false;
+
+        }
+        finally
+        {
+            await Task.Delay(500);
+            await JSRuntime.InvokeVoidAsync("Spinner.hide");
         }
     }
 

@@ -1,5 +1,5 @@
 ﻿@page "/Project/View/{ProjectID}"
-@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
 
 <PageTitle>MEPA | Project Details</PageTitle>
 
@@ -355,10 +355,23 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (Guid.TryParse(ProjectID, out var projectId))
+        await JSRuntime.InvokeVoidAsync("Spinner.show");
+        try
         {
-            Project = await ProjectService.GetProjectAsync(projectId);
+            if (Guid.TryParse(ProjectID, out var projectId))
+            {
+                Project = await ProjectService.GetProjectAsync(projectId);
+            }
         }
+        catch (Exception ex)
+        {
+
+        }
+        finally
+        {
+            await JSRuntime.InvokeVoidAsync("Spinner.hide");
+        }
+
     }
 
     private async Task GoBack()

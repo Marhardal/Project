@@ -75,3 +75,8 @@ window.Navigation = {
     go: (steps) => history.go(steps),
     forward: () => history.go(1),
 }
+
+window.Spinner = {
+    show: () => document.getElementById('global-spinner').style.display = 'flex',
+    hide: () => document.getElementById('global-spinner').style.display = 'none',
+}

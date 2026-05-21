@@ -1,5 +1,5 @@
 ﻿@page "/proponents"
-@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
 
 <PageTitle>MEPA | Proponents</PageTitle>
 
@@ -57,14 +57,8 @@
         </div>
     </div>
 </div>
-@if (!loaded)
+@if (proponents?.Count > 0)
 {
-    <p class="text-center my-5 py-5">Loading proponents...</p>
-}
-
-else if (proponents?.Count > 0)
-{
-
     <div class="border rounded bg-body-tertiary">
         <div class="p-2 mt-2">
 
@@ -248,12 +242,19 @@ else
     }
     protected override async Task OnInitializedAsync()
     {
-        if (!loaded)
+        await JSRuntime.InvokeVoidAsync("Spinner.show");
+        try
         {
-            await Task.Delay(500);
             proponents = await ProponentService.GetProponentsAsync();
+        }
+        catch (Exception ex)
+        {
 
-            loaded = true;
+        }
+        finally
+        {
+            await Task.Delay(200);
+            await JSRuntime.InvokeVoidAsync("Spinner.hide");
         }
     }
 

@@ -272,7 +272,7 @@ else
     private ProjectType? selectedType = null;
     private Guid? selectedStatus = null;
     private int totalPages => (int)Math.Ceiling(filteredProjects .Count / (double)pageSize);
-    
+
     private List<ProjectDTO> filteredProjects => projects?
         .Where(p =>
             (string.IsNullOrWhiteSpace(searchQuery) ||
@@ -286,7 +286,7 @@ else
                 .FirstOrDefault()?.StatusID == selectedStatus))
         .ToList() ?? new();
 
-    
+
     private List<ProjectDTO> pagedProjects =>
         filteredProjects
             .Skip((currentPage - 1) * pageSize)
@@ -307,17 +307,30 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await JSRuntime.InvokeVoidAsync("Spinner.show");
+        try
+        {
+            // Fetch projects and proponents with null-checks to prevent null assignments
+            var projectResult = await ProjectService.GetProjectAsync(false);
+            projects = projectResult ?? new List<ProjectDTO>();
+            // projects = await ProjectService.GetProjectAsync(false) ?? new List<ProjectDTO>();
 
-        // Fetch projects and proponents with null-checks to prevent null assignments
-        var projectResult = await ProjectService.GetProjectAsync(false);
-        projects = projectResult ?? new List<ProjectDTO>();
-        // projects = await ProjectService.GetProjectAsync(false) ?? new List<ProjectDTO>();
+            var proponentResult = await ProponentService.GetProponentsAsync();
+            proponents = proponentResult ?? new List<ProponentsDTO>();
 
-        var proponentResult = await ProponentService.GetProponentsAsync();
-        proponents = proponentResult ?? new List<ProponentsDTO>();
+            var statusResult = await StatusService.GetStatusAsync();
+            statuses = (statusResult ?? new List<StatusDTO>()).Where(s => s.SortOrder >= 3).ToList();
+        }
+        catch (Exception ex)
+        {
 
-        var statusResult = await StatusService.GetStatusAsync();
-        statuses = (statusResult ?? new List<StatusDTO>()).Where(s => s.SortOrder >= 3).ToList();
+            // throw;
+        }
+        finally
+        {
+            await Task.Delay(200);
+            await JSRuntime.InvokeVoidAsync("Spinner.hide");
+        }
     }
 
     async Task editProject(ProjectDTO project)

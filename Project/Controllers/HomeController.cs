@@ -126,22 +126,32 @@ namespace Project.Controllers
         {
             var fromDate = From ?? DateTime.Now.AddDays(-7);
             var toDate = To ?? DateTime.Now;
-            var latestStatuses = await _context.Trackings.Where(p => p.Project.SubmissionDate >= fromDate && p.Project.SubmissionDate <= toDate)
-         .Include(t => t.Status)
-         .GroupBy(t => t.ProjectID)
-         .Select(g => g
-             .OrderByDescending(t => t.createdOn)
-             .First())
-         .ToListAsync();
 
+            var latestStatuses = await _context.Trackings
+                .Where(t => t.Project.SubmissionDate >= fromDate &&
+                            t.Project.SubmissionDate <= toDate)
+                .GroupBy(t => t.ProjectID)
+                .Select(g => g
+                    .OrderByDescending(t => t.createdOn)
+                    .Select(t => new
+                    {
+                        t.ProjectID,
+                        StatusName = t.Status.Name,
+                        // join Status inside Select
+                        t.Status.Color
+                    })
+                    .First())
+                .ToListAsync();
             var result = latestStatuses
-                .GroupBy(t => t.Status.Name)
-                .Select(g => new ProjectStatus
-                {
-                    Status = g.Key,
-                    Total = g.Count()
-                })
-                .ToList();
+    .GroupBy(t => t.StatusName ?? "No Status")
+    .Select(g => new ProjectStatus
+    {
+        Status = g.Key,
+        Total = g.Count(),
+        Color = g.First().Color
+    })
+    .OrderByDescending(x => x.Total)
+    .ToList();
 
             return Ok(result);
         }

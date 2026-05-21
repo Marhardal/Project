@@ -172,7 +172,17 @@ else
             <div class="card-body">
                 @if (ProjectStatuses.Any())
                 {
-                    <ApexChart TItem="ProjectStatusDTO">
+                    @* <ApexChart TItem="ProjectStatusDTO">
+
+                        <ApexPointSeries TItem="ProjectStatusDTO"
+                                         Items="ProjectStatuses"
+                                         Name="Projects"
+                                         SeriesType="SeriesType.Pie"
+                                         XValue="e => e.Status"
+                                         YValue="e => e.Total" />
+                    </ApexChart> *@
+                    <ApexChart TItem="ProjectStatusDTO"
+                               Options="chartOptions">
 
                         <ApexPointSeries TItem="ProjectStatusDTO"
                                          Items="ProjectStatuses"
@@ -288,7 +298,9 @@ else
     private DateTime? StartDate;
     private DateTime? EndDate;
     private string Label = "This Month";
+    private ApexChartOptions<ProjectStatusDTO> chartOptions;
 
+        
     protected override async Task OnInitializedAsync()
     {
         await JSRuntime.InvokeVoidAsync("Spinner.show");
@@ -393,6 +405,21 @@ else
             ProjectStatuses = await HomeService.GetProjectStatuses(StartDate, EndDate) ?? new List<ProjectStatusDTO>();
             StatusSummaries = await HomeService.GetStatusSummary(StartDate, EndDate) ?? new List<StatusSummaryDTO>();
             ProjectMonths = await HomeService.GetProjectsByMonth(StartDate, EndDate) ?? new List<ProjectMonthDTO>();
+            chartOptions = new ApexChartOptions<ProjectStatusDTO>
+            {
+                Colors = ProjectStatuses.Select(x => x.Color).ToList(),
+                Legend = new Legend
+                {
+                    Position = LegendPosition.Bottom
+                },
+                Tooltip = new Tooltip
+                {
+                    Y = new TooltipY
+                    {
+                        Formatter = "function(val) { return val + ' Projects' }"
+                    }
+                }
+            };
 
             if (profile == null || profile.ID == Guid.Empty)
             {

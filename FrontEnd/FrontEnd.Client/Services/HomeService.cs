@@ -14,11 +14,11 @@ namespace FrontEnd.Client.Services
             _logger = logger;
         }
 
-        public async Task<List<StatusSummaryDTO>> GetStatusSummary()
+        public async Task<List<StatusSummaryDTO>> GetStatusSummary(DateTime? from, DateTime? to)
         {
             try
             {
-                var result = await _http.GetFromJsonAsync<List<StatusSummaryDTO>>($"api/status-summary");
+                var result = await _http.GetFromJsonAsync<List<StatusSummaryDTO>>($"api/status-summary?From={from:yyyy-MM-dd}&To={to:yyyy-MM-dd}");
                 return result ?? new List<StatusSummaryDTO>();
             }
             catch (Exception ex)
@@ -39,11 +39,11 @@ namespace FrontEnd.Client.Services
             }
         }
 
-        public async Task<List<ProjectbyProponentDTO>> GetProjectbyProponent()
+        public async Task<List<ProjectbyProponentDTO>> GetProjectbyProponent(DateTime? from, DateTime? to)
         {
             try
             {
-                var result = await _http.GetFromJsonAsync<List<ProjectbyProponentDTO>>($"api/GetProjectbyProponent");
+                var result = await _http.GetFromJsonAsync<List<ProjectbyProponentDTO>>($"api/GetProjectbyProponent?From={from:yyyy-MM-dd}&To={to:yyyy-MM-dd}");
                 return result ?? new List<ProjectbyProponentDTO>();
             }
             catch (Exception ex)
@@ -64,11 +64,11 @@ namespace FrontEnd.Client.Services
             }
         }
 
-        public async Task<List<RecentProjectsDTO>> GetRecentProjects()
+        public async Task<List<RecentProjectsDTO>> GetRecentProjects(DateTime? from, DateTime? to)
         {
             try
             {
-                var result = await _http.GetFromJsonAsync<List<RecentProjectsDTO>>($"api/GetRecentProjects");
+                var result = await _http.GetFromJsonAsync<List<RecentProjectsDTO>>($"api/GetRecentProjects?From={from:yyyy-MM-dd}&To={to:yyyy-MM-dd}");
                 return result ?? new List<RecentProjectsDTO>();
             }
             catch (Exception ex)
@@ -89,11 +89,11 @@ namespace FrontEnd.Client.Services
             }
         }
 
-        public async Task<List<GroupedProjectTypesDTO>> GetGroupedProjects()
+        public async Task<List<GroupedProjectTypesDTO>> GetGroupedProjects(DateTime? from, DateTime? to)
         {
             try
             {
-                var result = await _http.GetFromJsonAsync<List<GroupedProjectTypesDTO>>($"api/GetGroupedProjects");
+                var result = await _http.GetFromJsonAsync<List<GroupedProjectTypesDTO>>($"api/GetGroupedProjects?From={from:yyyy-MM-dd}&To={to:yyyy-MM-dd}");
                 return result ?? new List<GroupedProjectTypesDTO>();
             }
             catch (Exception ex)
@@ -114,11 +114,11 @@ namespace FrontEnd.Client.Services
             }
         }
 
-        public async Task<List<ProjectStatusDTO>> GetProjectStatuses()
+        public async Task<List<ProjectStatusDTO>> GetProjectStatuses(DateTime? from, DateTime? to)
         {
             try
             {
-                var result = await _http.GetFromJsonAsync<List<ProjectStatusDTO>>($"api/GetProjectStatus");
+                var result = await _http.GetFromJsonAsync<List<ProjectStatusDTO>>($"api/GetProjectStatus?From={from:yyyy-MM-dd}&To={to:yyyy-MM-dd}");
                 return result ?? new List<ProjectStatusDTO>();
             }
             catch (Exception ex)
@@ -139,11 +139,11 @@ namespace FrontEnd.Client.Services
             }
         }
 
-        public async Task<List<ProjectMonthDTO>> GetProjectsByMonth()
+        public async Task<List<ProjectMonthDTO>> GetProjectsByMonth(DateTime? from, DateTime? to)
         {
             try
             {
-                var result = await _http.GetFromJsonAsync<List<ProjectMonthDTO>>($"api/projects-by-month");
+                var result = await _http.GetFromJsonAsync<List<ProjectMonthDTO>>($"api/projects-by-month?From={from:yyyy-MM-dd}&To={to:yyyy-MM-dd}");
                 return result ?? new List<ProjectMonthDTO>();
             }
             catch (Exception ex)

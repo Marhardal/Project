@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project.Data;
 using Project.DTO;
@@ -17,45 +18,51 @@ namespace Project.Controllers
         }
 
         [HttpGet("api/status-summary")]
-        public async Task<ActionResult<IEnumerable<StatusSummaryDTO>>> Index()
+        public async Task<ActionResult<IEnumerable<StatusSummaryDTO>>> Index(DateTime? From, DateTime? To)
         {
+            var fromDate = From ?? DateTime.Now.AddDays(-7);
+            var toDate = To ?? DateTime.Now;
+
             var result = await _context.Projects
-    .Select(p => new
-    {
-        Type = p.ProjectType,
-        Name = p.Trackings
-            .OrderByDescending(t => t.createdOn)
-            .Select(t => t.Status!.Name)
-            .FirstOrDefault(),
-        Color = p.Trackings
-            .OrderByDescending(t => t.createdOn)
-            .Select(t => t.Status!.Color)
-            .FirstOrDefault()
-    })
-    .GroupBy(x => new
-    {
-        x.Type,
-        Name = x.Name ?? "No Status"
-    })
-    .Select(g => new
-    {
-        Type = g.Key.Type.ToString(),
-        Name = g.Key.Name,
-        Total = g.Count(),
-        Color = g.Select(x => x.Color).FirstOrDefault()
-    })
-    .OrderBy(x => x.Type)
-    .ThenBy(x => x.Name)
-    .ToListAsync();
+                .Where(p => p.SubmissionDate >= fromDate && p.SubmissionDate <= toDate)
+                .Select(p => new
+                {
+                    Type = p.ProjectType,
+                    Name = p.Trackings
+                        .OrderByDescending(t => t.createdOn)
+                        .Select(t => t.Status!.Name)
+                        .FirstOrDefault(),
+                    Color = p.Trackings
+                        .OrderByDescending(t => t.createdOn)
+                        .Select(t => t.Status!.Color)
+                        .FirstOrDefault()
+                })
+                .GroupBy(x => new
+                {
+                    x.Type,
+                    Name = x.Name ?? "No Status"
+                })
+                .Select(g => new StatusSummaryDTO
+                {
+                    Type = g.Key.Type,
+                    Name = g.Key.Name,
+                    Total = g.Count(),
+                    Color = g.Select(x => x.Color).FirstOrDefault()
+                })
+                .OrderBy(x => x.Type)
+                .ThenBy(x => x.Name)
+                .ToListAsync();
 
             return Ok(result);
         }
-
         // GET: api/Proponents
         [HttpGet("api/GetProjectbyProponent")]
-        public async Task<ActionResult<IEnumerable<ProjectbyProponentDTO>>> GetProjectbyProponent()
+        public async Task<ActionResult<IEnumerable<ProjectbyProponentDTO>>> GetProjectbyProponent(DateTime? From, DateTime? To)
         {
-            return await _context.Projects.Where(p => p.Proponent != null).GroupBy(p => p.Proponent.Name).OrderByDescending(p => p.Count())
+            var fromDate = From ?? DateTime.Now.AddDays(-7);
+            var toDate = To ?? DateTime.Now;
+            return await _context.Projects.Where(p => p.Proponent != null && 
+            p.SubmissionDate >= fromDate && p.SubmissionDate <= toDate).GroupBy(p => p.Proponent.Name).OrderByDescending(p => p.Count())
             .Select(g => new ProjectbyProponentDTO
             {
                 Proponent = g.Key!,
@@ -65,8 +72,10 @@ namespace Project.Controllers
 
 
         [HttpGet("api/GetRecentProjects")]
-        public async Task<ActionResult<IEnumerable<RecentActivityDTO>>> GetRecentProject()
+        public async Task<ActionResult<IEnumerable<RecentActivityDTO>>> GetRecentProject(DateTime? From, DateTime? To)
         {
+            var fromDate = From ?? DateTime.Now.AddDays(-7);
+            var toDate = To ?? DateTime.Now;
             var trackings = await _context.Trackings
                 .Include(t => t.Project)
                     .ThenInclude(p => p.Proponent)
@@ -75,7 +84,7 @@ namespace Project.Controllers
                 .Take(50)
                 .ToListAsync();
 
-            var result = trackings
+            var result = trackings.Where(p => p.Project.SubmissionDate >= fromDate && p.Project.SubmissionDate <= toDate)
                 .GroupBy(t => t.ProjectID)
                 .Select(g => g.First())
                 .Take(5)
@@ -93,11 +102,13 @@ namespace Project.Controllers
         }
 
         [HttpGet("api/GetGroupedProjects")]
-        public async Task<ActionResult<IEnumerable<GroupedProjectTypesDTO>>> GetGroupedProjects()
+        public async Task<ActionResult<IEnumerable<GroupedProjectTypesDTO>>> GetGroupedProjects(DateTime? From, DateTime? To)
         {
+            var fromDate = From ?? DateTime.Now.AddDays(-7);
+            var toDate = To ?? DateTime.Now;
             var result = await _context.Projects
                 .AsNoTracking()
-                .Where(p => p.Proponent != null)
+                .Where(p => p.Proponent != null && p.SubmissionDate >= fromDate && p.SubmissionDate <= toDate)
                 .GroupBy(p => p.ProjectType)
                 .Select(g => new GroupedProjectTypesDTO
                 {
@@ -111,9 +122,11 @@ namespace Project.Controllers
         }
 
         [HttpGet("api/GetProjectStatus")]
-        public async Task<ActionResult<IEnumerable<ProjectStatus>>> GetProjectStatus()
+        public async Task<ActionResult<IEnumerable<ProjectStatus>>> GetProjectStatus(DateTime? From, DateTime? To)
         {
-            var latestStatuses = await _context.Trackings
+            var fromDate = From ?? DateTime.Now.AddDays(-7);
+            var toDate = To ?? DateTime.Now;
+            var latestStatuses = await _context.Trackings.Where(p => p.Project.SubmissionDate >= fromDate && p.Project.SubmissionDate <= toDate)
          .Include(t => t.Status)
          .GroupBy(t => t.ProjectID)
          .Select(g => g
@@ -133,13 +146,14 @@ namespace Project.Controllers
             return Ok(result);
         }
         [HttpGet("api/projects-by-month")]
-        public async Task<ActionResult<IEnumerable<ProjectMonthDTO>>> GetProjectsByMonth()
+        public async Task<ActionResult<IEnumerable<ProjectMonthDTO>>> GetProjectsByMonth(DateTime? From, DateTime? To)
         {
             var startDate = DateTime.UtcNow.AddMonths(-11);
-
+            var fromDate = From ?? DateTime.Now.AddDays(-7);
+            var toDate = To ?? DateTime.Now;
             var result = await _context.Projects
                 .AsNoTracking()
-                .Where(p => p.SubmissionDate >= startDate
+                .Where(p => p.SubmissionDate >= fromDate && p.SubmissionDate <= toDate
                             && p.ProjectType != ProjectType.Proposal)
                 .GroupBy(p => new
                 {

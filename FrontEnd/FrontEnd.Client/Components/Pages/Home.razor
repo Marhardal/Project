@@ -12,13 +12,31 @@
                               class="btn btn-sm btn-outline-secondary">
                 Export
             </button>
-        </div> <button type="button"
+        </div> 
+        @* <button type="button"
                        class="gap-1 btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center">
             <svg class="bi" aria-hidden="true">
                 <use xlink:href="#calendar3"></use>
             </svg>
             This week
+        </button> *@
+    <div class="btn-group">
+        <button type="button" class="btn btn-secondary dropdown-toggle btn-sm"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                data-bs-auto-close="outside">
+            <i class="bi bi-calendar3"></i>
+            @Label
         </button>
+        <div class="dropdown-menu dropdown-menu-end p-2" style="min-width:400px;">
+            <div class="input-group mb-2">
+                <span class="input-group-text">From</span>
+                <input type="date" class="form-control" @bind="StartDate" />
+                <span class="input-group-text">To</span>
+                <input type="date" class="form-control" @bind="EndDate" />
+            </div>
+            <button class="btn btn-secondary btn-sm w-100" @onclick="() => dashFilter(StartDate, EndDate)">Apply</button>
+        </div>
+    </div>
     </div>
 </div>
 @if (StatusSummaries is null)
@@ -31,7 +49,7 @@ else
         @foreach (var type in Enum.GetValues<ProjectType>())
         {
             var Summary = StatusSummaries
-                .Where(s => s.Type == type.ToString()).ToList();
+                .Where(s => s.Type == type).ToList();
 
             var Color = Summary.Select(s => s.Color).ToList();
 
@@ -267,40 +285,46 @@ else
     private List<ProjectStatusDTO>? ProjectStatuses;
     private List<StatusSummaryDTO>? StatusSummaries;
     private List<ProjectMonthDTO>? ProjectMonths;
+    private DateTime? StartDate;
+    private DateTime? EndDate;
+    private string Label = "This Month";
 
     protected override async Task OnInitializedAsync()
     {
         await JSRuntime.InvokeVoidAsync("Spinner.show");
+        StartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+        EndDate = DateTime.Today;
         try
         {
-            var userId = Guid.Parse("94f18329-f144-41bd-8f25-22b887f686e7");
+            // var userId = Guid.Parse("94f18329-f144-41bd-8f25-22b887f686e7");
 
-            var profile = await UserProfileService.GetUserProfileAsync(userId);
+            // var profile = await UserProfileService.GetUserProfileAsync(userId);
 
-            ProjectbyProponents = await HomeService.GetProjectbyProponent();
+            // ProjectbyProponents = await HomeService.GetProjectbyProponent();
 
-            RecentProjects = await HomeService.GetRecentProjects();
+            // RecentProjects = await HomeService.GetRecentProjects();
 
-            GroupedProjects = await HomeService.GetGroupedProjects()
-                          ?? new List<GroupedProjectTypesDTO>();
+            // GroupedProjects = await HomeService.GetGroupedProjects()
+            //               ?? new List<GroupedProjectTypesDTO>();
 
-            ProjectStatuses = await HomeService.GetProjectStatuses()
-                          ?? new List<ProjectStatusDTO>();
+            // ProjectStatuses = await HomeService.GetProjectStatuses()
+            //               ?? new List<ProjectStatusDTO>();
 
-            StatusSummaries = await HomeService.GetStatusSummary() ?? new List<StatusSummaryDTO>();
+            // StatusSummaries = await HomeService.GetStatusSummary(StartDate, EndDate) ?? new List<StatusSummaryDTO>();
 
-            ProjectMonths = await HomeService.GetProjectsByMonth() ?? new List<ProjectMonthDTO>();
+            // ProjectMonths = await HomeService.GetProjectsByMonth() ?? new List<ProjectMonthDTO>();
 
-            if (profile == null || profile.ID == Guid.Empty)
-            {
-                userProfile = new UserProfileDTO();
-                showProfileModal = true;
-            }
-            else
-            {
-                userProfile = profile;
-                showProfileModal = false;
-            }
+            // if (profile == null || profile.ID == Guid.Empty)
+            // {
+            //     userProfile = new UserProfileDTO();
+            //     showProfileModal = true;
+            // }
+            // else
+            // {
+            //     userProfile = profile;
+            //     showProfileModal = false;
+            // }
+            await LoadData();
         }
         catch (Exception ex)
         {
@@ -313,6 +337,29 @@ else
         }
     }
 
+    async Task dashFilter(DateTime? from, DateTime? to)
+    {
+        StartDate = from;
+        EndDate = to;
+
+        // ProjectbyProponents = await HomeService.GetProjectbyProponent();
+
+        // RecentProjects = await HomeService.GetRecentProjects();
+
+        // GroupedProjects = await HomeService.GetGroupedProjects()
+        //               ?? new List<GroupedProjectTypesDTO>();
+
+        // ProjectStatuses = await HomeService.GetProjectStatuses()
+        //               ?? new List<ProjectStatusDTO>();
+
+        // StatusSummaries = await HomeService.GetStatusSummary(StartDate, EndDate) ?? new List<StatusSummaryDTO>();
+
+        // ProjectMonths = await HomeService.GetProjectsByMonth() ?? new List<ProjectMonthDTO>();
+
+        // Label = $"{StartDate:MMM dd} - {EndDate:MMM dd}";
+        await LoadData();
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (showProfileModal && !modalShown)
@@ -323,6 +370,51 @@ else
                 "eval",
                 "document.getElementById('openProfileModalBtn')?.click();"
             );
+        }
+    }
+
+    private void Apply()
+    {
+        Label = $"{StartDate:MMM dd} - {EndDate:MMM dd}";
+        // fire an event or call your filter logic here
+    }
+
+    private async Task LoadData()
+    {
+        await JSRuntime.InvokeVoidAsync("Spinner.show");
+        try
+        {
+            var userId = Guid.Parse("94f18329-f144-41bd-8f25-22b887f686e7");
+            var profile = await UserProfileService.GetUserProfileAsync(userId);
+
+            ProjectbyProponents = await HomeService.GetProjectbyProponent(StartDate, EndDate);
+            RecentProjects = await HomeService.GetRecentProjects(StartDate, EndDate);
+            GroupedProjects = await HomeService.GetGroupedProjects(StartDate, EndDate) ?? new List<GroupedProjectTypesDTO>();
+            ProjectStatuses = await HomeService.GetProjectStatuses(StartDate, EndDate) ?? new List<ProjectStatusDTO>();
+            StatusSummaries = await HomeService.GetStatusSummary(StartDate, EndDate) ?? new List<StatusSummaryDTO>();
+            ProjectMonths = await HomeService.GetProjectsByMonth(StartDate, EndDate) ?? new List<ProjectMonthDTO>();
+
+            if (profile == null || profile.ID == Guid.Empty)
+            {
+                userProfile = new UserProfileDTO();
+                showProfileModal = true;
+            }
+            else
+            {
+                userProfile = profile;
+                showProfileModal = false;
+            }
+
+            Label = $"{StartDate:MMM dd} - {EndDate:MMM dd}";
+        }
+        catch (Exception ex)
+        {
+            // log ex
+        }
+        finally
+        {
+            await Task.Delay(500);
+            await JSRuntime.InvokeVoidAsync("Spinner.hide");
         }
     }
 }

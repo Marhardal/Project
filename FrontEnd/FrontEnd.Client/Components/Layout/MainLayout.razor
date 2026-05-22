@@ -198,3 +198,29 @@
         <span style="width:12px; height:12px; border-radius:50%; background:#BA7517; animation:typing-bounce 1.2s ease-in-out infinite; animation-delay:0.4s;"></span>
     </div>
 </div>
+
+        @code {
+    private DotNetObjectReference<MainLayout>? _objRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _objRef = DotNetObjectReference.Create(this);
+            await JSRuntime.InvokeVoidAsync("Inactivity.start", 30, _objRef);
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnInactive()
+    {
+        await JSRuntime.InvokeVoidAsync("Storage.clearToken");
+        navigationManager.NavigateTo("/login", forceLoad: true);
+    }
+
+    public void Dispose()
+    {
+        _objRef?.Dispose();
+        _ = JSRuntime.InvokeVoidAsync("Inactivity.stop");
+    }
+}

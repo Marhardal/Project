@@ -15,49 +15,40 @@ using System.Text.Json;
         }
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        try
-        {
-            var token = await _js.InvokeAsync<string?>("localStorage.getItem", "authToken");
+        // This will return null if token is expired
+        var token = await _js.InvokeAsync<string>("Storage.getToken");
 
-            if (string.IsNullOrEmpty(token))
-                return _anonymous;
+        if (string.IsNullOrEmpty(token))
+            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
 
-            var claims = ParseClaimsFromJwt(token);
-            var identity = new ClaimsIdentity(claims, "jwt");
-            return new AuthenticationState(new ClaimsPrincipal(identity));
-        }
-        catch (InvalidOperationException)
-        {
-            // ✅ Catches the SSR JS interop exception — return anonymous silently
-            return _anonymous;
-        }
-        catch (JSException)
-        {
-            return _anonymous;
-        }
-        catch
-        {
-            return _anonymous;
-        }
+        var claims = ParseClaimsFromJwt(token);
+        var identity = new ClaimsIdentity(claims, "jwt");
+        var user = new ClaimsPrincipal(identity);
+
+        return new AuthenticationState(user);
     }
     public async Task MarkUserAsAuthenticated(string token)
-        {
-            await _js.InvokeVoidAsync("localStorage.setItem", "authToken", token);
+    {
+        // Use Storage.setToken instead of localStorage.setItem directly
+        // This saves the token with an expiry timestamp
+        await _js.InvokeVoidAsync("Storage.setToken", token);
 
-            var claims = ParseClaimsFromJwt(token);
-            var identity = new ClaimsIdentity(claims, "jwt");
-            var user = new ClaimsPrincipal(identity);
+        var claims = ParseClaimsFromJwt(token);
+        var identity = new ClaimsIdentity(claims, "jwt");
+        var user = new ClaimsPrincipal(identity);
 
-            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
-        }
+        NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
+    }
 
-        public async Task MarkUserAsLoggedOut()
-        {
-            await _js.InvokeVoidAsync("localStorage.removeItem", "authToken");
-            NotifyAuthenticationStateChanged(Task.FromResult(_anonymous));
-        }
+    public async Task MarkUserAsLoggedOut()
+    {
+        await _js.InvokeVoidAsync("Storage.clearToken");
 
-        private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
+        var anonymous = new ClaimsPrincipal(new ClaimsIdentity());
+        NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(anonymous)));
+    }
+
+    private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
         {
             var payload = jwt.Split('.')[1];
             var jsonBytes = Convert.FromBase64String(PadBase64(payload));

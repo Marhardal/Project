@@ -80,3 +80,71 @@ window.Spinner = {
     show: () => document.getElementById('global-spinner').style.display = 'flex',
     hide: () => document.getElementById('global-spinner').style.display = 'none',
 }
+
+window.Storage = {
+    setToken: (token) => {
+        const payload = {
+            token: token,
+            expiry: new Date().getTime() + (30 * 60 * 1000) // 30 min from now
+        };
+        localStorage.setItem('authToken', JSON.stringify(payload));
+    },
+
+    getToken: () => {
+        const item = localStorage.getItem('authToken');
+        if (!item) return null;
+
+        const payload = JSON.parse(item);
+        if (new Date().getTime() > payload.expiry) {
+            localStorage.removeItem('authToken');
+            return null; // token expired
+        }
+
+        return payload.token;
+    },
+
+    clearToken: () => {
+        localStorage.removeItem('authToken');
+    }
+}
+
+window.Inactivity = {
+    _timer: null,
+    _dotnet: null,
+    _minutes: 30,
+
+    start: (minutes, dotnet) => {
+        Inactivity._minutes = minutes;
+        Inactivity._dotnet = dotnet;
+        Inactivity.reset();
+
+        ['mousemove', 'keydown', 'mousedown', 'touchstart', 'scroll', 'click']
+            .forEach(event =>
+                document.addEventListener(event, Inactivity.reset, true)
+            );
+    },
+
+    reset: () => {
+        clearTimeout(Inactivity._timer);
+        Inactivity._timer = setTimeout(() => {
+            Inactivity.logout();
+        }, Inactivity._minutes * 60 * 1000);
+    },
+
+    logout: () => {
+        // Clear token from local storage
+        localStorage.removeItem('authToken');
+        // or if you clear everything
+        localStorage.clear();
+
+        Inactivity._dotnet.invokeMethodAsync('OnInactive');
+    },
+
+    stop: () => {
+        clearTimeout(Inactivity._timer);
+        ['mousemove', 'keydown', 'mousedown', 'touchstart', 'scroll', 'click']
+            .forEach(event =>
+                document.removeEventListener(event, Inactivity.reset, true)
+            );
+    }
+}

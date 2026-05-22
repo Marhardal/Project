@@ -55,22 +55,37 @@
 
     async Task HandleLogin()
     {
-        PreAuthResponseDTO? response = await UserProfileService.LoginAsync(loginDTO);
 
-        if (response is not null)
+        await JSRuntime.InvokeVoidAsync("Spinner.show");
+        try
         {
-// Store the token in auth state so the OTP page can proceed.
-// Step 1 returns valid credentials + userId, but no token yet.
-            // OTP page needs the userId; it reads it from AuthState.UserId.
-            AuthState.UserId = response.UserId;
-            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "UserId", response.UserId);
-            // j
-            await Task.Delay(100);
-            // Navigate after auth token is stored and auth state is updated
-            navigationManager.NavigateTo("/Account/verify-otp", true);
-            return;
+            PreAuthResponseDTO? response = await UserProfileService.LoginAsync(loginDTO);
+
+            if (response is not null)
+            {
+                // Store the token in auth state so the OTP page can proceed.
+                // Step 1 returns valid credentials + userId, but no token yet.
+                // OTP page needs the userId; it reads it from AuthState.UserId.
+                AuthState.UserId = response.UserId;
+                await JSRuntime.InvokeVoidAsync("localStorage.setItem", "UserId", response.UserId);
+                // j
+                await Task.Delay(100);
+                // Navigate after auth token is stored and auth state is updated
+                navigationManager.NavigateTo("/Account/verify-otp", true);
+                return;
+            }
+
+            Message = "Check your credentials and try again.";
+        }
+        catch (Exception ex)
+        {
+
+            // throw;
+        }
+        finally
+        {
+            await JSRuntime.InvokeVoidAsync("Spinner.hide");
         }
 
-        Message = "Check your credentials and try again.";
     }
 }

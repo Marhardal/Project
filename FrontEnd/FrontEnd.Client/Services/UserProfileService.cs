@@ -81,6 +81,23 @@ public class UserProfileService
         }
     }
 
+    public async Task<HttpResponseMessage> UpdateProfileAsync(Guid UserID, UserProfileDTO dto)
+    {
+        try
+        {
+            return await _http.PutAsJsonAsync($"api/Users/{UserID}", dto);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to Update Profile via POST {Endpoint}", "api/Profile");
+            var resp = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+            {
+                Content = new StringContent(ex.Message)
+            };
+            return resp;
+        }
+    }
+
     public async Task<HttpResponseMessage> CreateUserAsync(IdentityDTO dto)
     {
         try
@@ -118,6 +135,7 @@ public class UserProfileService
             return null; // let the caller handle the failure
         }
     }
+
     public async Task<AuthDTO?> VerifyOtpAsync(Login2FADTO dto)
     {
         try

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FrontEnd.Client.DTOs;
+using System.ComponentModel.DataAnnotations;
 
 public class UserProfileDTO
 {
@@ -21,16 +22,5 @@ public class UserProfileDTO
 
 }
 
-public enum Title
-    {
-        Mr,
-        Mrs,
-        Miss
-    }
 
-    public enum Gender
-    {
-        Male,
-        Female
-    }
 

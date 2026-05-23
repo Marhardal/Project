@@ -85,7 +85,7 @@ else
                 @if (ProjectMonths.Any())
                 {
                     <ApexChart TItem="ProjectMonthDTO"
-                               Height="300">
+                               Height="300" @key="chartKey">
 
                         <ApexPointSeries TItem="ProjectMonthDTO"
                                          Items="ProjectMonths.Where(x => x.Type == ProjectType.ESMP)"
@@ -182,7 +182,7 @@ else
                                          YValue="e => e.Total" />
                     </ApexChart> *@
                     <ApexChart TItem="ProjectStatusDTO"
-                               Options="chartOptions">
+                               Options="chartOptions" @key="chartKey">
 
                         <ApexPointSeries TItem="ProjectStatusDTO"
                                          Items="ProjectStatuses"
@@ -286,6 +286,7 @@ else
 }
 
 @code {
+    private int chartKey = 0;
     private UserProfileDTO userProfile = new();
     private bool showProfileModal;
     private bool modalShown;
@@ -300,7 +301,7 @@ else
     private string Label = "This Month";
     private ApexChartOptions<ProjectStatusDTO> chartOptions;
 
-        
+
     protected override async Task OnInitializedAsync()
     {
         await JSRuntime.InvokeVoidAsync("Spinner.show");
@@ -420,6 +421,7 @@ else
                     }
                 }
             };
+            chartKey++;
 
             if (profile == null || profile.ID == Guid.Empty)
             {

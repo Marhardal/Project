@@ -1,4 +1,6 @@
-﻿@if (User != null)
+﻿@using FrontEnd.Client.DTOs
+
+@if (User != null)
 {
     <div class="container">
         
@@ -7,7 +9,7 @@
                 <div class="card-body">
                     <h5 class="card-title">@User.FirstName @User.Surname</h5>
                     <p class="card-text">Created @User.createdOn.ToString("MMMM yyyy")</p>
-                    <button class="btn btn-primary">Edit Profile</button>
+                    <button @onclick="() => {disabled = false;}" class="btn btn-primary">Edit Profile</button>
                     <button class="btn btn-secondary">Sign-Out</button>
                 </div>
             </div>
@@ -17,69 +19,91 @@
             <div class="card bg-body-tertiary">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
-                        <div class="d-flex flex-row">
-                            <div class="p-1">
-                                @* <img src="@User.IdentityDTO?.ProfilePictureUrl" class="rounded-circle" alt="Profile
-                            Picture"
-                        width="50" height="50"> *@
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-2">
                                 <i class="bi bi-info-circle-fill"></i>
+                                <h5 class="card-title mb-0">Personal Information</h5>
                             </div>
-                            <div class="p-1">
-                                <h5 class="card-title">Personal Information</h5>
-                            </div>
+                            <button @onclick="() => disabled = !disabled" class="btn btn-sm @(disabled == false ? "btn-warning" : "btn-primary")">
+                                @(disabled ? "Edit Profile" : "Cancel")
+                            </button>
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <div class="row mb-2 g-2">
-                            <div class="col-6">
-                                <label for="exampleInputEmail1" class="form-label">First Name</label>
-                                <input @bind-value="User.FirstName" class="form-control" id="exampleInputEmail1"
-                                       aria-describedby="emailHelp" disabled />
+                        <EditForm OnValidSubmit="UpdateUserAsync" Model="User" FormName="updateUser">
+                            <div class="row mb-2 g-2">
+                                <div class="col-6">
+                                    <label for="FirstName" class="form-label">First Name</label>
+                                    <InputText @bind-value="User.FirstName" class="form-control" id="FirstName" disabled="@disabled" />
+                                    <ValidationMessage For="@(() => User.FirstName)" class="text-danger" />
+                                </div>
+                                <div class="col-6">
+                                    <label for="Surname" class="form-label">Surname</label>
+                                    <InputText @bind-value="User.Surname" class="form-control" id="Surname" disabled="@disabled" />
+                                    <ValidationMessage For="@(() => User.Surname)" class="text-danger" />
+                                </div>
                             </div>
-                            <div class="col-6">
-                                <label for="exampleInputEmail1" class="form-label">Surname</label>
-                                <input @bind-value="User.Surname" class="form-control" id="exampleInputEmail1"
-                                       aria-describedby="emailHelp" disabled />
+                            <div class="row mb-2 g-2">
+                                <div class="col-6">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <InputText @bind-value="User.IdentityDTO.Email" type="email" id="email" class="form-control" disabled="@disabled" />
+                                    <ValidationMessage For="@(() => User.IdentityDTO.Email)" class="text-danger" />
+                                </div>
+                                <div class="col-6">
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <InputText @bind-value="User.IdentityDTO.Phone" id="phone" type="number" class="form-control" disabled="@disabled"  />
+                                    <ValidationMessage For="@(() => User.IdentityDTO.Phone)" class="text-danger" />
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mb-2 g-2">
-                            <div class="col-6">
-                                <label for="exampleInputEmail1" class="form-label">Email Address</label>
-                                <input @bind-value="User.IdentityDTO?.Email" class="form-control" id="exampleInputEmail1"
-                                       aria-describedby="emailHelp" disabled />
+                            <div class="row mb-2 g-2">
+                                <div class="col-6">
+                                    <label for="username" class="form-label">Username</label>
+                                    <InputText @bind-value="User.IdentityDTO.Username" class="form-control" id="username" disabled="@disabled" />
+                                    <ValidationMessage For="@(() => User.IdentityDTO.Username)" class="text-danger" />
+                                </div>
+                                <div class="col-6">
+                                    <label for="exampleInputEmail1" class="form-label">Title</label>
+                                    <InputSelect @bind-Value="User.Title" class=" form-select" id="title" disabled="@disabled">
+                                        <option>Select title.</option>
+                                        @foreach (var item in Enum.GetValues<FrontEnd.Client.DTOs.Title>())
+                                        {
+                                            <option value="@item">@EnumHelper.GetDisplayName(item)</option>
+                                        }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => User.Surname)" class="text-danger" />
+                                    
+                                </div>
                             </div>
-                            <div class="col-6">
-                                <label for="exampleInputEmail1" class="form-label">Phone Number</label>
-                                <input @bind-value="User.IdentityDTO?.Phone" class="form-control" id="exampleInputEmail1"
-                                       aria-describedby="emailHelp" disabled />
+                            <div class="row mb-2 g-2">
+                                <div class="col-md-6 col-sm-6">
+                                    <label for="DOB" class="form-label">Date of Birth</label>
+                                    <InputDate id="DOB" @bind-value="User.DOB" class="form-control" disabled="@disabled" />
+                                    <ValidationMessage For="@(() => User.DOB)" class="text-danger" />
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+    <label class="form-label">Gender</label>
+    <div>
+        <InputRadioGroup @bind-Value="User.Gender" Name="gender">
+            <div class="btn-group d-flex" role="group">
+                @foreach (var gender in Enum.GetValues<Gender>())
+                {
+                    <InputRadio class="btn-check"
+                                Name="gender"
+                                id="@gender"
+                                Value="@gender"
+                                disabled="@disabled" />
+                    <label class="btn btn-outline-secondary" for="@gender">
+                        @gender.ToString()
+                    </label>
+                }
+            </div>
+        </InputRadioGroup>
+        <ValidationMessage For="@(() => User.Gender)" class="text-danger" />
+    </div>
+</div>
                             </div>
-                        </div>
-                        <div class="row mb-2 g-2">
-                            <div class="col-6">
-                                <label for="exampleInputEmail1" class="form-label">Username</label>
-                                <input @bind-value="User.IdentityDTO?.Username" class="form-control" id="exampleInputEmail1"
-                                       aria-describedby="emailHelp" disabled />
-                            </div>
-                            <div class="col-6">
-                                <label for="exampleInputEmail1" class="form-label">Title</label>
-                                <select class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" disabled>
-                                    <option value="@User.Title.ToString()">@User.Title.ToString()</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mb-2 g-2">
-                            <div class="col-md-6 col-sm-6">
-                                <label for="exampleInputEmail1" class="form-label">Date of Birth</label>
-                                <input type="date" @bind-value="User.DOB" class="form-control" id="exampleInputEmail1"
-                                       aria-describedby="emailHelp" disabled />
-                            </div>
-                            <div class="col-md-6 col-sm-6">
-                                <label for="exampleInputEmail1" class="form-label">Gender</label>
-                                <select class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" disabled>
-                                    <option value="@User.Gender.ToString()">@User.Gender.ToString()</option>
-                                </select>
-                            </div>
-                        </div>
+                            <button type="submit" class="btn btn-primary" disabled="@disabled">Update</button>
+                        </EditForm>
                     </li>
                 </ul>
             </div>
@@ -175,10 +199,18 @@
     [Parameter]
     public string UserId { get; set; }
 
-    public UserProfileDTO? User { get; set; }
+    [SupplyParameterFromForm]
+    public UserProfileDTO? User { get; set; } = new();
+
+    private bool disabled = true;
 
     protected override async Task OnInitializedAsync()
     {
         User = await UserProfileService.GetUserProfileAsync(Guid.Parse(UserId));
+    }
+
+    async Task UpdateUserAsync()
+    {
+        
     }
 }

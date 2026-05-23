@@ -1,45 +1,4 @@
-﻿.bi {
-    display: inline-block;
-    width: 1rem;
-    height: 1rem;
-}
-
-@media (min-width: 768px) {
-    .sidebar .offcanvas-lg {
-        position: -webkit-sticky;
-        position: sticky;
-        top: 48px;
-    }
-
-    .navbar-search {
-        display: block;
-    }
-}
-
-.sidebar .nav-link {
-    font-size: .875rem;
-    font-weight: 500;
-}
-
-    .sidebar .nav-link.active {
-        color: #2470dc;
-    }
-
-.sidebar-heading {
-    font-size: .75rem;
-}
-
-.navbar-brand {
-    padding-top: .75rem;
-    padding-bottom: .75rem;
-    background-color: rgba(0, 0, 0, .25);
-    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
-}
-
-.navbar .form-control {
-    padding: .75rem 1rem;
-}
-
+﻿
 /*.swal2-container {
     z-index: 20000 !important;
 }
@@ -53,6 +12,34 @@
 
     40% {
         transform: translateY(-12px);
+        opacity: 1;
+    }
+}
+
+/* Login.razor.css */
+.submitting-dots span {
+    animation: dot-fade 1.2s ease-in-out infinite;
+    opacity: 0;
+}
+
+    .submitting-dots span:nth-child(1) {
+        animation-delay: 0s;
+    }
+
+    .submitting-dots span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .submitting-dots span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+@keyframes dot-fade {
+    0%, 80%, 100% {
+        opacity: 0;
+    }
+
+    40% {
         opacity: 1;
     }
 }

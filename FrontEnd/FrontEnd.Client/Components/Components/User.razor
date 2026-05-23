@@ -111,7 +111,8 @@
         try
         {
             userProfile.createdOn = DateTime.Now;
-            var userId = Guid.Parse("94f18329-f144-41bd-8f25-22b887f686e7");
+            var id = await JSRuntime.InvokeAsync<string?>("localStorage.getItem", "UserId");
+            var userId = Guid.Parse(id);
             userProfile.UserID = userId;
             userProfile.ID = Guid.NewGuid();
             var response = await UserProfileService.CreateProfileAsync(userProfile);

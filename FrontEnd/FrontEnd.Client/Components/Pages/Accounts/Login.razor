@@ -1,5 +1,6 @@
 ﻿@page "/Account/Login"
 @layout EmptyLayout
+@inject IJSRuntime JSRuntime
 @* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
 
 <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
@@ -36,7 +37,21 @@
                     </div>
 
                     <div class="mb-3">
-                        <button type="submit" class="btn btn-primary w-100">Submit</button>
+                    <button type="submit" class="btn btn-primary w-100" disabled="@isLoading">
+                        @if (isLoading)
+                        {
+                            <span>Signing in</span>
+                            <span class="submitting-dots">
+                                <span>.</span>
+                                <span>.</span>
+                                <span>.</span>
+                            </span>
+                        }
+                        else
+                        {
+                            <span>Sign in</span>
+                        }
+                    </button>
                     </div>
                 </EditForm>
         </div>
@@ -53,10 +68,12 @@
 
     private string Message = string.Empty;
 
+    private bool isLoading = false;
+
     async Task HandleLogin()
     {
-
-        await JSRuntime.InvokeVoidAsync("Spinner.show");
+        isLoading = true;
+        // await JSRuntime.InvokeVoidAsync("Spinner.show");
         try
         {
             PreAuthResponseDTO? response = await UserProfileService.LoginAsync(loginDTO);
@@ -84,7 +101,8 @@
         }
         finally
         {
-            await JSRuntime.InvokeVoidAsync("Spinner.hide");
+            isLoading = false;
+            // await JSRuntime.InvokeVoidAsync("Spinner.hide");
         }
 
     }

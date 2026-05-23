@@ -47,4 +47,21 @@ namespace FrontEnd.Client.DTOs
         Approved,
         Rejected
     }
+
+    public enum Title
+    {
+
+        [Display(Name = "Mr")]
+        Mr,
+        [Display(Name = "Mrs")]
+        Mrs,
+        [Display(Name = "Miss")]
+        Miss
+    }
+
+    public enum Gender
+    {
+        Male,
+        Female
+    }
 }

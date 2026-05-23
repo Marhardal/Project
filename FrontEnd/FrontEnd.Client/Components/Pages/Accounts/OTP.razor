@@ -29,7 +29,21 @@
                 </div>
 
                 <div class="mb-3">
-                    <button type="submit" class="btn btn-primary w-100">Submit</button>
+                    <button type="submit" class="btn btn-primary w-100" disabled="@isLoading">
+                        @if (isLoading)
+                        {
+                            <span>Submitting</span>
+                            <span class="submitting-dots">
+                                <span>.</span>
+                                <span>.</span>
+                                <span>.</span>
+                            </span>
+                        }
+                        else
+                        {
+                            <span>Submit</span>
+                        }
+                    </button>
                 </div>
             </EditForm>
         </div>
@@ -40,6 +54,7 @@
     private Login2FADTO FADTO { get; set; } = new();
     private string Message = string.Empty;
     private bool isReady = false;
+    private bool isLoading = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,21 +71,34 @@
     // ✅ JS interop is safe here — browser is loaded
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        isLoading = true;
+        try
         {
-            var UserId = await JSRuntime.InvokeAsync<string?>("localStorage.getItem", "UserId");
-
-            // AuthState.UserId = JSRuntime.InvokeVoidAsync("localStorage.getItem", "UserId");
-            // ✅ Guard — if no userId, send back to login
-            if (string.IsNullOrEmpty(UserId))
+            if (firstRender)
             {
-                navigationManager.NavigateTo("/login");
-                return;
+                var UserId = await JSRuntime.InvokeAsync<string?>("localStorage.getItem", "UserId");
+
+                // AuthState.UserId = JSRuntime.InvokeVoidAsync("localStorage.getItem", "UserId");
+                // ✅ Guard — if no userId, send back to login
+                if (string.IsNullOrEmpty(UserId))
+                {
+                    navigationManager.NavigateTo("/login");
+                    return;
+                }
+                AuthState.UserId = UserId;
+                isReady = true;
+                StateHasChanged();
             }
-            AuthState.UserId = UserId;
-            isReady = true;
-            StateHasChanged();
         }
+        catch (Exception ex)
+        {
+            // throw
+        }
+        finally
+        {
+            isLoading = false;
+        }
+        
     }
 
     async Task HandleOtpVerification()

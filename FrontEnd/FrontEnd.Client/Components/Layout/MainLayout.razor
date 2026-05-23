@@ -1,9 +1,9 @@
 ﻿@using FrontEnd.Client.Components.Pages.Accounts
 @inject UserProfileService UserProfileService
 @inject IJSRuntime JSRuntime
-@* @inherits LayoutComponentBase
+@inherits LayoutComponentBase
 
-<div class="page">
+@*<div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
@@ -26,7 +26,7 @@
 </div> *@
 
 @* @using ProjectManager.Components.Account.Pages *@
-@inherits LayoutComponentBase
+@* @inherits LayoutComponentBase *@
 
 @* <div class="container-fluid">
     <div class="row">
@@ -185,7 +185,8 @@
         </div>
     </Authorized>
     <NotAuthorized>
-        <Login />
+        @* <RedirectToLogin/> *@
+        <Login/>
     </NotAuthorized>
 </AuthorizeView>
 
@@ -215,7 +216,7 @@
     public async Task OnInactive()
     {
         await JSRuntime.InvokeVoidAsync("Storage.clearToken");
-        navigationManager.NavigateTo("/login", forceLoad: true);
+        navigationManager.NavigateTo("/Account/login", forceLoad: true);
     }
 
     public void Dispose()

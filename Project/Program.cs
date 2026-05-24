@@ -1,34 +1,59 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Tokens;
 using Project.Data;
 using Project.Services;
 using Scalar.AspNetCore;
+using System.Text;
+
+var MyAllowSpecificOrigins = "AllowFrontend";
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DBContext>(options =>
 {
-    // Use the connection string named "DefaultConnection" from appsettings.json
+    // Use the connection string named "DefaultConnection" from Jwt.json
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
 
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddEntityFrameworkStores<DBContext>();
-builder.Services.AddAuthentication();
-//builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
-//{
-//    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-//});
+
+var jwtKey = builder.Configuration["Jwt:Key"]
+    ?? throw new InvalidOperationException("JWT Key is not configured in appsettings.json");
+
+var jwtIssuer = builder.Configuration["Jwt:Issuer"]
+    ?? throw new InvalidOperationException("JWT Issuer is not configured");
+
+var jwtAudience = builder.Configuration["Jwt:Audience"]
+    ?? throw new InvalidOperationException("JWT Audience is not configured");
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtKey))
+        };
+    });
+
 
 // Add services to the container.
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddJwtBearer(...);
 
 builder.Services.AddScoped<AuthService>();
 
@@ -38,12 +63,15 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", policy =>
+    options.AddPolicy(MyAllowSpecificOrigins, policy =>
     {
-        policy.WithOrigins("https://localhost:7217") // ✅ FIXED
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+        policy
+            .WithOrigins(
+                "https://localhost:7217",
+                "http://localhost:5273"
+            )
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
 });
 
@@ -54,8 +82,6 @@ builder.Services.Configure<ScalarOptions>(options =>
 
 var app = builder.Build();
 
-app.MapIdentityApi<IdentityUser>();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -63,12 +89,16 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-app.UseCors("AllowFrontend");
-
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseRouting(); // 1. Routing first
 
+app.UseCors(MyAllowSpecificOrigins); // 2. CORS before auth
+
+app.UseAuthentication(); // 3. Authentication
+app.UseAuthorization();  // 4. Authorization
+
+app.MapIdentityApi<IdentityUser>(); // 5. Only once
 app.MapControllers();
 
 app.Run();

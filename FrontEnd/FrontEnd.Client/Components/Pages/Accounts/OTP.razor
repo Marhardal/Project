@@ -1,6 +1,6 @@
 ﻿@page "/Account/verify-otp"
 @layout EmptyLayout
-@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
 
 <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
     <div class="card border-0 shadow">
@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="d-flex justify-content-between mb-3">
-                    <a class="nav-link" href="/login">Back to login.</a>
+                    <a class="nav-link" href="Account/Login">Back to login.</a>
                     <a class="nav-link" href="/ForgotPassword">Resend code</a>
                 </div>
 
@@ -71,9 +71,6 @@
     // ✅ JS interop is safe here — browser is loaded
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        isLoading = true;
-        try
-        {
             if (firstRender)
             {
                 var UserId = await JSRuntime.InvokeAsync<string?>("localStorage.getItem", "UserId");
@@ -89,20 +86,16 @@
                 isReady = true;
                 StateHasChanged();
             }
-        }
-        catch (Exception ex)
-        {
-            // throw
-        }
-        finally
-        {
-            isLoading = false;
-        }
+       
         
     }
 
     async Task HandleOtpVerification()
     {
+
+isLoading = true;
+try
+{
         // ✅ Attach the stored UserId before sending
         FADTO.userID = AuthState.UserId;
 
@@ -113,11 +106,19 @@
             var customProvider = (AuthStateProvider)AuthStateProvider;
             await customProvider.MarkUserAsAuthenticated(result.Token);
             navigationManager.NavigateTo("/");
-            return;
         }
         else
         {
             Message = "Invalid or expired OTP.";
+        }
+        }
+        catch (Exception ex)
+        {
+            // throw
+        }
+        finally
+        {
+            isLoading = false;
         }
     }
 }

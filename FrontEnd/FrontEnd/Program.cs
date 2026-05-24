@@ -2,8 +2,11 @@ using FrontEnd;
 using FrontEnd.Client.DTOs;
 using FrontEnd.Client.Services;
 using FrontEnd.Components;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,92 +14,103 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
-// In FrontEnd/Program.cs (server)
-builder.Services.AddAuthorization();          // ✅ full version for middleware pipeline
-builder.Services.AddAuthorizationCore();      // ✅ for Blazor components
-builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
-
-// Register a named HttpClient for general API use
-builder.Services.AddHttpClient("ApiClient", client =>
-{
-    client.BaseAddress = new Uri("https://localhost:7120/");
-    client.Timeout = TimeSpan.FromSeconds(100);
-});
-
-// Register ProponentService with a typed HttpClient so it receives a configured HttpClient instance
-builder.Services.AddHttpClient<ProponentService>((sp, client) =>
-{
-    client.BaseAddress = new Uri("https://localhost:7120/");
-    client.Timeout = TimeSpan.FromSeconds(100);
-});
-
-builder.Services.AddScoped<AuthStateService>();
-
-//builder.Services.AddHttpClient<StatusService>((sp, client) =>
-//{
-//    client.BaseAddress = new Uri("https://localhost:7120/");
-//    client.Timeout = TimeSpan.FromSeconds(100);
-//});
-
-builder.Services.AddHttpClient<ContactPersonService>((sp, client) =>
-{
-    client.BaseAddress = new Uri("https://localhost:7120/");
-    client.Timeout = TimeSpan.FromSeconds(100);
-});
-
-builder.Services.AddHttpClient<ProjectService>((sp, client) =>
-{
-    client.BaseAddress = new Uri("https://localhost:7120/");
-    client.Timeout = TimeSpan.FromSeconds(100);
-});
-
-builder.Services.AddHttpClient<StatusService>((sp, client) =>
-{
-    client.BaseAddress = new Uri("https://localhost:7120/");
-    client.Timeout = TimeSpan.FromSeconds(100);
-});
-
-builder.Services.AddHttpClient<UserProfileService>((sp, client) =>
-{
-    client.BaseAddress = new Uri("https://localhost:7120/");
-    client.Timeout = TimeSpan.FromSeconds(100);
-});
-
-builder.Services.AddHttpClient<ReviewService>((sp, client) =>
-{
-    client.BaseAddress = new Uri("https://localhost:7120/");
-    client.Timeout = TimeSpan.FromSeconds(100);
-});
-
-builder.Services.AddHttpClient<HomeService>((sp, client) =>
-{
-    client.BaseAddress = new Uri("https://localhost:7120/");
-    client.Timeout = TimeSpan.FromSeconds(100);
-});
-
-// Register CORS and a named policy used by the middleware later in the pipeline.
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowBlazor", policy =>
+    options.AddPolicy("AllowFrontend", policy =>
     {
-        // Allow the Blazor WebAssembly client origin and enable credentials
-        policy.WithOrigins("https://localhost:7120")
+        policy.WithOrigins("https://localhost:7217", "https://localhost:5273")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
     });
 });
 
-builder.Services.AddCors(options =>
+// In FrontEnd/Program.cs (server)
+builder.Services.AddAuthorization();          // ✅ full version for middleware pipeline
+builder.Services.AddAuthorizationCore();      // ✅ for Blazor components
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+
+builder.Services.AddTransient<BearerTokenHandler>();
+
+// Register a named HttpClient for general API use
+builder.Services.AddHttpClient("ApiClient", client =>
 {
-    options.AddPolicy("AllowFrontend", policy =>
-    {
-        policy.WithOrigins("https://localhost:7217")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
+    client.Timeout = TimeSpan.FromSeconds(100);
 });
+
+// Register ProponentService with a typed HttpClient so it receives a configured HttpClient instance
+builder.Services.AddHttpClient<ProponentService>((sp, client) =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
+    client.Timeout = TimeSpan.FromSeconds(100);
+})
+.AddHttpMessageHandler<BearerTokenHandler>();
+
+
+builder.Services.AddScoped<AuthStateService>();
+
+//builder.Services.AddHttpClient<StatusService>((sp, client) =>
+//{
+//    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
+//    client.Timeout = TimeSpan.FromSeconds(100);
+//});
+
+builder.Services.AddHttpClient<ContactPersonService>((sp, client) =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
+    client.Timeout = TimeSpan.FromSeconds(100);
+})
+.AddHttpMessageHandler<BearerTokenHandler>(); 
+
+builder.Services.AddHttpClient<ProjectService>((sp, client) =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
+    client.Timeout = TimeSpan.FromSeconds(100);
+})
+.AddHttpMessageHandler<BearerTokenHandler>();
+
+builder.Services.AddHttpClient<StatusService>((sp, client) =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
+    client.Timeout = TimeSpan.FromSeconds(100);
+})
+.AddHttpMessageHandler<BearerTokenHandler>();
+
+builder.Services.AddHttpClient<UserProfileService>((sp, client) =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
+    client.Timeout = TimeSpan.FromSeconds(100);
+});
+//.AddHttpMessageHandler<BearerTokenHandler>();
+
+builder.Services.AddHttpClient<ReviewService>((sp, client) =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
+    client.Timeout = TimeSpan.FromSeconds(100);
+})
+.AddHttpMessageHandler<BearerTokenHandler>();
+
+builder.Services.AddHttpClient<HomeService>((sp, client) =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
+    client.Timeout = TimeSpan.FromSeconds(100);
+})
+.AddHttpMessageHandler<BearerTokenHandler>();
+
+// Register CORS and a named policy used by the middleware later in the pipeline.
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowBlazor", policy =>
+//    {
+//        // Allow the Blazor WebAssembly client origin and enable credentials
+//        policy.WithOrigins("https://localhost:7120")
+//              .AllowAnyHeader()
+//              .AllowAnyMethod()
+//              .AllowCredentials();
+//    });
+//});
 
 // ProponentService is provided via AddHttpClient<ProponentService>() above, which registers
 // a typed client and ensures HttpClient is configured with BaseAddress. Do not re-register
@@ -126,7 +140,7 @@ app.UseAntiforgery();
 app.MapStaticAssets();
 
 // Ensure CORS middleware runs before mapping endpoints so the policy is applied
-app.UseCors("AllowBlazor");
+//app.UseCors("AllowBlazor");
 
 app.UseCors("AllowFrontend");
 

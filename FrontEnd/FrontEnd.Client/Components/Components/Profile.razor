@@ -31,6 +31,13 @@
                     </li>
                     <li class="list-group-item">
                         <EditForm OnValidSubmit="UpdateUserAsync" Model="User" FormName="updateUser">
+                            <DataAnnotationsValidator/>
+                            @if (!string.IsNullOrEmpty(submitMessage))
+                            {
+                                <div class="alert alert-danger my-2" role="alert">
+                                    @submitMessage
+                                </div>
+                            }
                             <div class="row mb-2 g-2">
                                 <div class="col-6">
                                     <label for="FirstName" class="form-label">First Name</label>
@@ -102,7 +109,21 @@
     </div>
 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary" disabled="@disabled">Update</button>
+                            <button type="submit" class="btn btn-primary w-100" disabled="@isLoading">
+                            @if (isLoading)
+                            {
+                                <span>Submitting</span>
+                                <span class="submitting-dots">
+                                    <span>.</span>
+                                    <span>.</span>
+                                    <span>.</span>
+                                </span>
+                            }
+                            else
+                            {
+                                <span>Submit</span>
+                            }
+                        </button>
                         </EditForm>
                     </li>
                 </ul>
@@ -199,18 +220,93 @@
     [Parameter]
     public string UserId { get; set; }
 
-    [SupplyParameterFromForm]
-    public UserProfileDTO? User { get; set; } = new();
+    // [SupplyParameterFromForm]
+    public UpdateUserProfileDTO? User { get; set; }
+
+    // public UserProfileDTO? ProfileDTO { get; set; }
+
+    private string submitMessage;
 
     private bool disabled = true;
 
-    protected override async Task OnInitializedAsync()
+    private bool isLoading = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        User = await UserProfileService.GetUserProfileAsync(Guid.Parse(UserId));
+        if (firstRender)
+        {
+            await LoadProfile();
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadProfile()
+    {
+        await JSRuntime.InvokeVoidAsync("Spinner.show");
+        try
+        {
+            if (string.IsNullOrEmpty(UserId))
+            {
+                UserId = await JSRuntime.InvokeAsync<string?>("localStorage.getItem", "UserId");
+            }
+            User = await UserProfileService.GetUserProfileAsync(Guid.Parse(UserId));
+
+            if (User is null) return;
+
+            // User = new UpdateUserProfileDTO
+            // {
+            //     ID = ProfileDTO.ID,
+            //     UserID = ProfileDTO.UserID,
+            //     FirstName = ProfileDTO.FirstName,
+            //     Surname = ProfileDTO.Surname,
+            //     DOB = ProfileDTO.DOB,
+            //     Gender = ProfileDTO.Gender,
+            //     Title = ProfileDTO.Title,
+            //     UpdateOn = DateTime.Now,
+            //     createdOn = ProfileDTO.createdOn
+            // };
+
+            // User.IdentityDTO.Email = ProfileDTO.IdentityDTO.Email;
+            // User.IdentityDTO.Phone = ProfileDTO.IdentityDTO.Phone;
+            // User.IdentityDTO.Username = ProfileDTO.IdentityDTO.Username;
+        }
+        catch (Exception ex)
+        {
+            submitMessage = $"Failed to load profile. {ex.Message}";
+        }
+        finally
+        {
+            await JSRuntime.InvokeVoidAsync("Spinner.hide");
+        }
     }
 
     async Task UpdateUserAsync()
     {
-        
+        isLoading = true;
+        try
+        {
+            User.UserID = Guid.Parse(UserId);
+            var responce = await UserProfileService.UpdateProfileAsync(User.ID, User);
+            if (responce.IsSuccessStatusCode)
+            {
+                // submitMessage = "User Profile Updated.";
+                await JSRuntime.InvokeVoidAsync("SwalService.success", "User Profile Updated!");
+            }
+            else
+            {
+                var error = await responce.Content.ReadAsStringAsync();
+                submitMessage = $"Failed to Update User Profile. {error}";
+                return;
+            }
+        }
+        catch
+        {
+
+        }
+        finally
+        {
+            isLoading = false;
+            disabled = true;
+        }
     }
 }

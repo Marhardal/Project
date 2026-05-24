@@ -89,10 +89,12 @@
                 await Task.Delay(100);
                 // Navigate after auth token is stored and auth state is updated
                 navigationManager.NavigateTo("/Account/verify-otp", true);
-                return;
+                // return;
             }
-
-            Message = "Check your credentials and try again.";
+            else
+            {
+                Message = "Check your credentials and try again.";
+            }
         }
         catch (Exception ex)
         {

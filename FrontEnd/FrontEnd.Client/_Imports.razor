@@ -1,14 +1,32 @@
 ﻿@using System.Net.Http
 @using System.Net.Http.Json
+@using ApexCharts
+@using FrontEnd.Client
+@using FrontEnd.Client.Components.Components
+@using FrontEnd.Client.DTOs
 @using FrontEnd.Client.Services
+@using Humanizer
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
-@using static Microsoft.AspNetCore.Components.Web.RenderMode
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.JSInterop
-@using FrontEnd.Client
-@using Humanizer
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@inject ProponentService ProponentService
+@inject ContactPersonService ContactPersonService
+@inject ProjectService ProjectService
+@inject StatusService StatusService
+@inject UserProfileService UserProfileService
+@inject HomeService HomeService
+@inject IJSRuntime JSRuntime
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+@inject AuthStateService AuthState
+@inject ProponentService ProponentService
+@inject ContactPersonService ContactPersonService
+@inject ReviewService ReviewService
 @inject ProponentService ProponentService
 @inject ContactPersonService ContactPersonService
 @inject ReviewService ReviewService

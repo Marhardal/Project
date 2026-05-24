@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Project.Data;
 using Project.Models;
+using System.Security.Claims;
 
 namespace Project.Controllers
 {
@@ -221,6 +222,11 @@ namespace Project.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProjectModel(Guid id, ProjectModel projectModel)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId is null)
+                return Unauthorized();
+
             if (id != projectModel.Id)
             {
                 return BadRequest();
@@ -231,7 +237,7 @@ namespace Project.Controllers
             {
                 StatusID = projectModel.Tracking.StatusID,
                 ProjectID = projectModel.Id,
-                userID = "94f18329-f144-41bd-8f25-22b887f686e7",
+                userID = userId,
                 assignedDate = DateTime.UtcNow,
                 createdOn = DateTime.UtcNow,
                 updatedOn = DateTime.UtcNow,
@@ -261,13 +267,18 @@ namespace Project.Controllers
         [HttpPost]
         public async Task<ActionResult<ProjectModel>> PostProjectModel(ProjectModel projectModel)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId is null)
+                return Unauthorized();
+
             _context.Projects.Add(projectModel);
             var firstStatus = await _context.Statuses.OrderBy(s => s.SortOrder).FirstOrDefaultAsync();
             TrackingModel tracking = new TrackingModel()
             {
                 StatusID = firstStatus.ID,
                 ProjectID = projectModel.Id,
-                userID = "94f18329-f144-41bd-8f25-22b887f686e7",
+                userID = userId,
                 assignedDate = DateTime.UtcNow,
                 createdOn = DateTime.UtcNow,
                 updatedOn = DateTime.UtcNow,

@@ -1,7 +1,7 @@
 ﻿@page "/Settings"
 @using FrontEnd.Client.Components
 
-<PageTitle>MEPA | Settings</PageTitle>
+<PageTitle>Settings</PageTitle>
 
 <div class="container">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -23,7 +23,10 @@
     </ul>
     <div class="py-2 bg-white tab-content border-start border-bottom rounded-bottom border-end mt--1" id="myTabContent">
         <div class="tab-pane fade show active " id="details-tab-pane" role="tabpanel" aria-labelledby="details-tab" tabindex="0">
-            <Profile UserId="94f18329-f144-41bd-8f25-22b887f686e7" />
+            @* @if (!string.IsNullOrEmpty(userID))
+            { *@
+                <Profile UserId="@userID" />
+            @* } *@
         </div>
         <div class="tab-pane fade" id="Status-tab-pane" role="tabpanel" aria-labelledby="Status-tab" tabindex="0">
             <Statuses/>
@@ -35,5 +38,18 @@
     </div>
 
 @code {
+    string userID = string.Empty;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var id = await JSRuntime.InvokeAsync<string?>("localStorage.getItem", "UserId");
+        var userId = id;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var id = await JSRuntime.InvokeAsync<string?>("localStorage.getItem", "UserId");
+        var userId = id;
+    }
 
 }

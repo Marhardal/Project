@@ -8,7 +8,7 @@ namespace Project.Models
         public Guid ID { get; set; } = Guid.NewGuid();
         [Required]
         public string UserID { get; set; } = default!;
-        public IdentityUser identityUser { get; set; } = default!;
+        public IdentityUser? identityUser { get; set; } = default!;
         [Required]
         public string? FirstName { get; set; }
         [Required]

@@ -54,7 +54,7 @@ namespace Project.Controllers
                 Email = identity?.Email,
                 PhoneNumber = identity?.Phone,
                 TwoFactorEnabled = true,
-            }, identity.Password);
+            }, identity.Password.Password);
 
             if (!result.Succeeded)
                 return BadRequest(result.Errors);

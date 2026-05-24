@@ -1,6 +1,8 @@
 ﻿@page "/"
 @* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
 
+<PageTitle>Home</PageTitle>
+
 <div class="flex-wrap pt-3 pb-2 mb-3 d-flex justify-content-between flex-md-nowrap align-items-center border-bottom">
     <h1 class="h2">Dashboard</h1>
     <div class="mb-2 btn-toolbar mb-md-0">
@@ -287,7 +289,7 @@ else
 
 @code {
     private int chartKey = 0;
-    private UserProfileDTO userProfile = new();
+    private UpdateUserProfileDTO userProfile = new();
     private bool showProfileModal;
     private bool modalShown;
     private List<ProjectbyProponentDTO>? ProjectbyProponents;
@@ -300,7 +302,6 @@ else
     private DateTime? EndDate;
     private string Label = "This Month";
     private ApexChartOptions<ProjectStatusDTO> chartOptions;
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -397,7 +398,10 @@ else
         await JSRuntime.InvokeVoidAsync("Spinner.show");
         try
         {
-            var userId = Guid.Parse("94f18329-f144-41bd-8f25-22b887f686e7");
+
+            var id = await JSRuntime.InvokeAsync<string?>("localStorage.getItem", "UserId");
+            // var userId = Guid.Parse(id);
+            var userId = Guid.Parse(id);
             var profile = await UserProfileService.GetUserProfileAsync(userId);
 
             ProjectbyProponents = await HomeService.GetProjectbyProponent(StartDate, EndDate);
@@ -425,7 +429,7 @@ else
 
             if (profile == null || profile.ID == Guid.Empty)
             {
-                userProfile = new UserProfileDTO();
+                userProfile = new UpdateUserProfileDTO();
                 showProfileModal = true;
             }
             else

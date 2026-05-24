@@ -1,7 +1,7 @@
 ﻿@page "/Proposals"
 @* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
 
-<PageTitle>MEPA | Proposals</PageTitle>
+<PageTitle>Proposals</PageTitle>
 
 @if (proposals != null && proposals.Count > 0)
 {
@@ -306,7 +306,7 @@ else
             await Task.Delay(200);
             await JSRuntime.InvokeVoidAsync("Spinner.hide");
         }
-       
+
     }
 
     async Task HandleSubmission()
@@ -321,7 +321,7 @@ else
             var response = await ProjectService.CreateProjectAsync(Proposal);
             if (response.IsSuccessStatusCode)
             {
-                
+
                 await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
 
                 await JSRuntime.InvokeVoidAsync("SwalService.success", "Added a Proposal Successfull.");
@@ -346,8 +346,8 @@ else
 
     }
 
-    async Task HandleUpdate()
-    {
+    async Task HandleUpdate(){
+    
         isSubmitting = true;
         submitMessage = null;
         try
@@ -378,13 +378,14 @@ else
                 // submitMessage = "Proposal updated successfully!"; 
                 // await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
                 await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
-                
+
                 await JSRuntime.InvokeVoidAsync("SwalService.success", "Proposal updated successfully!");
-         
+
             }
             else
             {
                 submitMessage = $"Error {response.StatusCode}: {await response.Content.ReadAsStringAsync()}";
+                return;
             }
         }
         catch (Exception ex)
@@ -393,10 +394,10 @@ else
         }
         finally
         {
+        // submitMessage = null;
             isSubmitting = false;
             StateHasChanged();
         }
-        submitMessage = null;
     }
 
     async Task editProposal(ProjectDTO project)

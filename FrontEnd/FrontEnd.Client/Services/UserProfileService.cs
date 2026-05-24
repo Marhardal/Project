@@ -39,12 +39,12 @@ public class UserProfileService
         }
     }
 
-    public async Task<UserProfileDTO> GetUserProfileAsync(Guid userId)
+    public async Task<UpdateUserProfileDTO> GetUserProfileAsync(Guid userId)
     {
         try
         {
-            var result = await _http.GetFromJsonAsync<UserProfileDTO>($"api/Users/{userId}");
-            return result ?? new UserProfileDTO();
+            var result = await _http.GetFromJsonAsync<UpdateUserProfileDTO>($"api/Users/{userId}");
+            return result ?? new UpdateUserProfileDTO();
         }
         catch (Exception ex)
         {
@@ -60,7 +60,7 @@ public class UserProfileService
             }
 
             // Return empty list to avoid bubbling exceptions to the UI lifecycle.
-            return new UserProfileDTO();
+            return new UpdateUserProfileDTO();
         }
     }
 
@@ -81,11 +81,11 @@ public class UserProfileService
         }
     }
 
-    public async Task<HttpResponseMessage> UpdateProfileAsync(Guid UserID, UserProfileDTO dto)
+    public async Task<HttpResponseMessage> UpdateProfileAsync(Guid ID, UpdateUserProfileDTO dto)
     {
         try
         {
-            return await _http.PutAsJsonAsync($"api/Users/{UserID}", dto);
+            return await _http.PutAsJsonAsync($"api/Users/{ID}", dto);
         }
         catch (Exception ex)
         {

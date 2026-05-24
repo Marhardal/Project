@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-public class IdentityDTO
+public class UpdateIdentityDTO
 {
     [Required]
     public string? Email { get; set; }
@@ -11,6 +11,4 @@ public class IdentityDTO
     public int AccessFailedCount { get; set; }
     public bool LockoutEnabled { get; set; }
     public bool TwoFactorEnabled { get; set; }
-    
-    public PasswordDTO? Password { get; set; }
 }

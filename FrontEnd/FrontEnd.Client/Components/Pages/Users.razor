@@ -130,15 +130,15 @@
                     </div>
                     <div class="mb-3">
                         <label for="Name" class="form-label">Password</label>
-                        <InputText @bind-Value="Identity.Password" class="form-control" id="Name"
+                        <InputText @bind-Value="Identity.Password.Password" class="form-control" id="Name"
                                    placeholder="Enter User Password."></InputText>
-                        <ValidationMessage For="@(() => Identity.Password)" class="text-danger" />
+                        <ValidationMessage For="@(() => Identity.Password.Password)" class="text-danger" />
                     </div>
                     <div class="mb-3">
                         <label for="Name" class="form-label">Confirm Password</label>
-                        <InputText @bind-Value="Identity.ConfirmPassword" class="form-control" id="Name"
+                        <InputText @bind-Value="Identity.Password.ConfirmPassword" class="form-control" id="Name"
                                    placeholder="Confirm User Password."></InputText>
-                        <ValidationMessage For="@(() => Identity.ConfirmPassword)" class="text-danger" />
+                        <ValidationMessage For="@(() => Identity.Password.ConfirmPassword)" class="text-danger" />
                     </div>
                 </div>
                 <div class="modal-footer">

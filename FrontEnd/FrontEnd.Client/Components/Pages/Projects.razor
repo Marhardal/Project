@@ -1,8 +1,8 @@
 ﻿@page "/Projects"
-@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
 
 
-<PageTitle>MEPA | Projects</PageTitle>
+<PageTitle>Projects</PageTitle>
 @* 994190633 *@
 <div class="row">
     <div class="col-md-8">
@@ -146,7 +146,12 @@ else
                 </div>
                 <div class="modal-body">
                     <DataAnnotationsValidator />
-                  
+                    @if (!string.IsNullOrEmpty(submitMessage))
+                    {
+                        <div class="alert alert-danger my-2" role="alert">
+                            @submitMessage
+                        </div>
+                    }
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -247,7 +252,21 @@ else
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Update</button>
+                    <button type="submit" class="btn btn-primary" disabled="@isLoading">
+                        @if (isLoading)
+                        {
+                            <span>Updating</span>
+                            <span class="submitting-dots">
+                                <span>.</span>
+                                <span>.</span>
+                                <span>.</span>
+                            </span>
+                        }
+                        else
+                        {
+                            <span>Update</span>
+                        }
+                    </button>
                 </div>
 
             </EditForm>
@@ -272,6 +291,7 @@ else
     private ProjectType? selectedType = null;
     private Guid? selectedStatus = null;
     private int totalPages => (int)Math.Ceiling(filteredProjects .Count / (double)pageSize);
+    bool isLoading = false;
 
     private List<ProjectDTO> filteredProjects => projects?
         .Where(p =>
@@ -335,6 +355,7 @@ else
 
     async Task editProject(ProjectDTO project)
     {
+        submitMessage = null;
         var tracking = project.Trackings?
             .OrderByDescending(t => t.createdOn)
             .FirstOrDefault();
@@ -372,7 +393,7 @@ else
     
     async Task HandleUpdate()
     {
-        // isSubmitting = true;
+        isLoading = true;
         submitMessage = null;
         try
         {
@@ -416,11 +437,11 @@ else
         }
         finally
         {
-            // isSubmitting = false;
+            isLoading = false;
             projects = await ProjectService.GetProjectAsync(false);
             StateHasChanged();
         }
-        submitMessage = null;
+        // submitMessage = null;
     }
     
     private Timer? _debounce;

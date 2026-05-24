@@ -1,5 +1,7 @@
 ﻿using FrontEnd.Client.DTOs;
+using Microsoft.JSInterop;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace FrontEnd.Client.Services
@@ -9,7 +11,7 @@ namespace FrontEnd.Client.Services
         private readonly HttpClient _http;
         private readonly ILogger<ProponentService> _logger;
 
-        public ProponentService(HttpClient http, ILogger<ProponentService> logger)
+        public ProponentService(HttpClient http, ILogger<ProponentService> logger, IJSRuntime js)
         {
             _http = http;
             _logger = logger;

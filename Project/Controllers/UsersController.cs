@@ -14,6 +14,7 @@ namespace Project.Controllers
         private readonly DBContext _context;
 
         private readonly UserManager<IdentityUser> _userManager;
+
         public UsersController(DBContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;

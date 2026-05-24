@@ -25,79 +25,9 @@ builder.Services.AddCors(options =>
     });
 });
 
-// In FrontEnd/Program.cs (server)
-builder.Services.AddAuthorization();          // ✅ full version for middleware pipeline
-builder.Services.AddAuthorizationCore();      // ✅ for Blazor components
-builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
-
-builder.Services.AddTransient<BearerTokenHandler>();
-
-// Register a named HttpClient for general API use
-builder.Services.AddHttpClient("ApiClient", client =>
-{
-    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
-    client.Timeout = TimeSpan.FromSeconds(100);
-});
-
-// Register ProponentService with a typed HttpClient so it receives a configured HttpClient instance
-builder.Services.AddHttpClient<ProponentService>((sp, client) =>
-{
-    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
-    client.Timeout = TimeSpan.FromSeconds(100);
-})
-.AddHttpMessageHandler<BearerTokenHandler>();
-
-
-builder.Services.AddScoped<AuthStateService>();
-
-//builder.Services.AddHttpClient<StatusService>((sp, client) =>
-//{
-//    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
-//    client.Timeout = TimeSpan.FromSeconds(100);
-//});
-
-builder.Services.AddHttpClient<ContactPersonService>((sp, client) =>
-{
-    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
-    client.Timeout = TimeSpan.FromSeconds(100);
-})
-.AddHttpMessageHandler<BearerTokenHandler>(); 
-
-builder.Services.AddHttpClient<ProjectService>((sp, client) =>
-{
-    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
-    client.Timeout = TimeSpan.FromSeconds(100);
-})
-.AddHttpMessageHandler<BearerTokenHandler>();
-
-builder.Services.AddHttpClient<StatusService>((sp, client) =>
-{
-    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
-    client.Timeout = TimeSpan.FromSeconds(100);
-})
-.AddHttpMessageHandler<BearerTokenHandler>();
-
-builder.Services.AddHttpClient<UserProfileService>((sp, client) =>
-{
-    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
-    client.Timeout = TimeSpan.FromSeconds(100);
-});
-//.AddHttpMessageHandler<BearerTokenHandler>();
-
-builder.Services.AddHttpClient<ReviewService>((sp, client) =>
-{
-    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
-    client.Timeout = TimeSpan.FromSeconds(100);
-})
-.AddHttpMessageHandler<BearerTokenHandler>();
-
-builder.Services.AddHttpClient<HomeService>((sp, client) =>
-{
-    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
-    client.Timeout = TimeSpan.FromSeconds(100);
-})
-.AddHttpMessageHandler<BearerTokenHandler>();
+// Server host should not register browser-only services (IJSRuntime-backed)
+// Keep authorization for the server endpoints/middleware only
+builder.Services.AddAuthorization();
 
 // Register CORS and a named policy used by the middleware later in the pipeline.
 //builder.Services.AddCors(options =>

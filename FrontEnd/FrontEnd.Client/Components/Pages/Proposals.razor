@@ -80,7 +80,7 @@
                 <td class="py-2">
                     <StatusItem Name="@status?.Name" Colour="@status?.Color"></StatusItem>
                 </td>
-                <td class="py-2">@proposal.SubmissionDate.ToString("yyyy-MMM, dd")</td>
+                <td class="py-2">@proposal.createdOn.ToString("yyyy-MMM, dd")</td>
                 <td class="py-2">
                     <div class="d-flex gap-1 justify-content-end ">
                         <NavLink class="rounded btn btn-sm btn-outline-warning" href="@($"Project/View/{proposal.Id}")">

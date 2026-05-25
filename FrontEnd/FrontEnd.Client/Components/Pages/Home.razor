@@ -87,7 +87,7 @@ else
                 @if (ProjectMonths.Any())
                 {
                     <ApexChart TItem="ProjectMonthDTO"
-                               Height="300" @key="chartKey">
+                               Height="300" @key="chartKey"  Options="lineChartOptions">
 
                         <ApexPointSeries TItem="ProjectMonthDTO"
                                          Items="ProjectMonths.Where(x => x.Type == ProjectType.ESMP)"
@@ -450,4 +450,25 @@ else
             await JSRuntime.InvokeVoidAsync("Spinner.hide");
         }
     }
+
+private ApexChartOptions<ProjectMonthDTO> lineChartOptions = new()
+    {
+        Stroke = new Stroke
+        {
+            Curve = Curve.Smooth, // or Curve.Straight
+            Width = new List<double> { 2, 2, 2 }
+        },
+        Markers = new Markers
+        {
+            Size = 5,
+            StrokeWidth = 2,
+            FillOpacity = 1,
+            Shape = MarkerShape.Circle
+        },
+        Legend = new Legend
+        {
+            Position = LegendPosition.Bottom
+        }
+    };
+}
 }

@@ -1,5 +1,4 @@
 ﻿@page "/Settings"
-@using FrontEnd.Client.Components
 
 <PageTitle>Settings</PageTitle>
 
@@ -14,22 +13,14 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="Role-tab" data-bs-toggle="tab" data-bs-target="#Role-tab-pane" type="button" role="tab" aria-controls="Role-tab-pane" aria-selected="false">Permissions</button>
         </li>
-        @* <li class="nav-item" role="presentation">
-            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Contact</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="disabled-tab" data-bs-toggle="tab" data-bs-target="#disabled-tab-pane" type="button" role="tab" aria-controls="disabled-tab-pane" aria-selected="false" disabled>Disabled</button>
-        </li> *@
     </ul>
     <div class="py-2 bg-white tab-content border-start border-bottom rounded-bottom border-end mt--1" id="myTabContent">
         <div class="tab-pane fade show active " id="details-tab-pane" role="tabpanel" aria-labelledby="details-tab" tabindex="0">
-            @* @if (!string.IsNullOrEmpty(userID))
-            { *@
                 <Profile UserId="@userID" />
-            @* } *@
         </div>
         <div class="tab-pane fade" id="Status-tab-pane" role="tabpanel" aria-labelledby="Status-tab" tabindex="0">
             <Statuses/>
+          
         </div>
         <div class="tab-pane fade" id="Role-tab-pane" role="tabpanel" aria-labelledby="Role-tab" tabindex="0">
             
@@ -39,6 +30,12 @@
 
 @code {
     string userID = string.Empty;
+    private List<StatusDTO>? allStatuses;
+    [SupplyParameterFromForm]
+    public StatusDTO? Status { get; set; } = new();
+    private bool isSaving = false;
+    bool isEditMode = false;
+    string submitMessage = string.Empty;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -49,7 +46,12 @@
     protected override async Task OnInitializedAsync()
     {
         var id = await JSRuntime.InvokeAsync<string?>("localStorage.getItem", "UserId");
+        allStatuses = await StatusService.GetStatusAsync();
         var userId = id;
     }
 
+    private async Task HandleSubmission()
+    {
+        // await SaveStatusAsync();
+    }
 }

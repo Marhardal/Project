@@ -1,16 +1,14 @@
-﻿@page "/status"
-@using FrontEnd.Client.Services
+﻿
 @inject StatusService StatusService
 
 
 <div class="px-2 py-2 mb-2 row">
     <div class="col-md-6">
-        <h5>Proponent Projects</h5>
+        <h5>Status Projects</h5>
     </div>
     <div class="col-md-6 text-end">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#statusModal"
-                >
-            <span class="pr-2"><i class="bi bi-plus-square"></i></span>&nbsp;Add
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            <i class="bi bi-plus-square me-2"></i>Add
         </button>
     </div>
 </div>
@@ -21,17 +19,17 @@
     <div class="border rounded bg-body-tertiary">
         <div class="p-2 mt-2">
 
-<TableTemplate Items="allStatuses" Context="status">
+            <TableTemplate Items="allStatuses" Context="status">
 
-    <TableHeader>
-        <th>#</th>
-                <th>Status</th>
-                <th>Color</th>
-                <th>Created On</th>
-                <th>Updated On</th>
-                <th></th>
-        </TableHeader>
-        <RowTemplate Context="status">
+                <TableHeader>
+                    <th>#</th>
+                    <th>Status</th>
+                    <th>Color</th>
+                    <th>Created On</th>
+                    <th>Updated On</th>
+                    <th></th>
+                </TableHeader>
+                <RowTemplate Context="status">
                     @{
                         int index = allStatuses.IndexOf(status) + 1;
                     }
@@ -46,120 +44,84 @@
                     <td>@status.createdOn</td>
                     <td>@status.updatedOn</td>
                     <td>
-            <div class="d-flex gap-1 justify-content-center">
-                        <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#statusModal">
-                            <i class="bi bi-pencil-square"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger ">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                        </div>
-                    </td>
-        </RowTemplate>
-        </TableTemplate>
-        </div>
-        </div>
-}
-@* <div class="border rounded bg-body-tertiary">
-    <table class="table table-hover">
-        <thead class="text-white bg-dark">
-            <tr>
-                <th>#</th>
-                <th>Status</th>
-                <th>Color</th>
-                <th>Created On</th>
-                <th>Updated On</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @* @if (allStatuses == null)
-            {
-                <tr>
-                    <td colspan="6" class="py-4 text-center">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </td>
-                </tr>
-            }
-            else if (allStatuses.Count == 0)
-            {
-                <tr>
-                    <td colspan="6" class="py-4 text-center">No statuses found.</td>
-                </tr>
-            }
-            else
-            {
-                @for (int i = 0; i < allStatuses.Count; i++)
-                {
-                    <tr @key="allStatuses[i].ID">
-                        <th scope="row"><span class="d-flex align-items-center py-2">@(@i + 1)</span></th>
-                        <td><span class="d-flex align-items-center py-2">@allStatuses[i].Name</span></td>
-                        <td>
-                            <span class="d-flex align-items-center py-2">
-                            <span class="rounded border @allStatuses[i].Color" style="width:20px;height:20px;display:inline-block;"></span></span>
-                        </td>
-                        <td><span class="d-flex align-items-center py-2">@allStatuses[i].createdOn.ToString("yyyy-MM-dd HH:mm")</span></td>
-                        <td><span class="d-flex align-items-center py-2">@allStatuses[i].updatedOn.ToString("yyyy-MM-dd HH:mm")</span></td>
-                        <td class="text-end">
-                            <button class="btn btn-outline-success p-2" data-bs-toggle="modal" data-bs-target="#statusModal"
-                                    @onclick="() => ShowModal(true, allStatuses[i].ID)">
+                        <div class="d-flex gap-1 justify-content-center">
+                            <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop" @onclick="() => editStatus(status)">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
-                            <button class="btn btn-outline-danger p-2" @onclick="async () => await DeleteStatusAsync(allStatuses[i].ID)">
+                            <button class="btn btn-sm btn-outline-danger">
                                 <i class="bi bi-trash"></i>
                             </button>
-                        </td>
-                    </tr>
-                }
-            } 
-        
-        </tbody>
-    </table>
-</div> *@
-
-<!-- Modal -->
-@* <div class="modal fade" id="statusModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <EditForm Model="@Status" OnValidSubmit="@SaveStatusAsync" FormName="statusForm">
-                <DataAnnotationsValidator />
-                <ValidationSummary class="text-danger" />
-                <div class="modal-header">
-                    <h5 class="modal-title" id="statusModalLabel">Create Status</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Status Name</label>
-                        <InputText @bind-Value="@Status.Name" id="name" class="form-control" placeholder="Enter Status Name." />
-                        <ValidationMessage For="() => Status.Name" class="text-danger" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Select Color</label>
-                        <div class="d-flex flex-wrap gap-2">
-                            @foreach (var item in Colors)
-                            {
-                                <UpsertStatusItem Name="@item.Name" Colour="@item.Class" IsSelected="Status.Color == item.Class" id="color" OnSelected="OnColorSelected" />
-                            }
                         </div>
-                    </div>
-                </div>
-<div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" disabled="@isSaving">Create @(isSaving ? "..." : "")</button>
-                </div>
-            </EditForm>
+                    </td>
+                </RowTemplate>
+            </TableTemplate>
         </div>
     </div>
-</div> *@
+}
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <EditForm method="post" Model="@Status" OnInvalidSubmit="HandleSubmission" FormName="create">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">@(isEditMode ? "Edit Status" : "Create Status") </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <DataAnnotationsValidator />
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Status Name</label>
+                        <InputText id="Name" @bind-Value="Status.Name" class="form-control"
+                                   placeholder="Enter Status Name."></InputText>
+                        <ValidationMessage For="@(() => Status.Name)" class="text-danger" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Color" class="form-label">Color</label>
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="color" id="Color" value="@Status.Color"
+                                   @oninput="e => Status.Color = e.Value?.ToString() ?? Status.Color"
+                                   class="form-control form-control-color" title="Choose your color" />
+                            <InputText @bind-Value="Status.Color" class="form-control"
+                                       placeholder="#rrggbb" disabled />
+                        </div>
+                        <ValidationMessage For="@(() => Status.Color)" class="text-danger" />
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(submitMessage))
+                    {
+                        <div class="alert @(submitMessage?.Contains("Error") == true ? "alert-danger" : "alert-success") alert-dismissible fade show"
+                             role="alert">
+                            @submitMessage
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">
+                        @(isEditMode ? "Update" : "Create")
+                    </button>
+
+                </div>
+            </EditForm>
+
+        </div>
+    </div>
+</div>
 
 @code {
     private List<StatusDTO> allStatuses;
-    // private Status Status;
+
     private bool isSaving = false;
-    // private HubConnection connection;
+    bool isEditMode = false;
+
+    [SupplyParameterFromForm]
+    public StatusDTO? Status { get; set; } = new();
+
+    string submitMessage = string.Empty;
 
     private void OnColorSelected(string color)
     {
@@ -170,20 +132,39 @@
     {
         allStatuses = await StatusService.GetStatusAsync();
 
-    //     SignalR setup
-    //     connection = new HubConnectionBuilder()
-    //         .WithUrl(Navigation.ToAbsoluteUri("/statushub"))
-    //         .WithAutomaticReconnect()
-    //         .Build();
+        //     SignalR setup
+        //     connection = new HubConnectionBuilder()
+        //         .WithUrl(Navigation.ToAbsoluteUri("/statushub"))
+        //         .WithAutomaticReconnect()
+        //         .Build();
 
-    //     connection.On("StatusUpdated", async () =>
-    //     {
-    //         allStatuses = await _context.Statuses.ToListAsync();
-    //         StateHasChanged();
-    //     });
+        //     connection.On("StatusUpdated", async () =>
+        //     {
+        //         allStatuses = await _context.Statuses.ToListAsync();
+        //         StateHasChanged();
+        //     });
 
-    //     await connection.StartAsync();
-     }
+        //     await connection.StartAsync();
+    }
+
+    private async Task HandleSubmission()
+    {
+        // await SaveStatusAsync();
+    }
+
+    private async Task HandleUpdate()
+    {
+        // await SaveStatusAsync();
+    }
+
+    private async Task editStatus(StatusDTO statusDTO)
+    {
+        Status.Name = statusDTO.Name;
+        Status.Color = statusDTO.Color;
+        Status.createdOn = statusDTO.createdOn;
+        Status.updatedOn = DateTime.Now;
+        isEditMode = true;
+    }
 
     // private async Task ShowModal(bool isEdit, Guid? id = null)
     // {

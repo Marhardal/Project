@@ -11,11 +11,24 @@ var MyAllowSpecificOrigins = "AllowFrontend";
 
 var builder = WebApplication.CreateBuilder(args);
 
+var DefaultConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<DBContext>(options =>
-{
-    // Use the connection string named "DefaultConnection" from Jwt.json
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+    options.UseSqlServer(DefaultConnection, sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorNumbersToAdd: null
+        );
+        sqlOptions.CommandTimeout(60);
+    })
+//    options =>
+//{
+//    // Use the connection string named "DefaultConnection" from Jwt.json
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+//}
+);
 
 builder.Services.AddAuthorization();
 

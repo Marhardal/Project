@@ -1,5 +1,6 @@
 ﻿
 using FrontEnd.Client.DTOs;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace FrontEnd.Client.Services
@@ -35,6 +36,41 @@ namespace FrontEnd.Client.Services
                     _logger.LogError("Inner exception: {Inner}", ex.InnerException.Message);
                 }
                 return new List<StatusDTO>();
+            }
+        }
+
+
+        public async Task<HttpResponseMessage> CreateStatusAsync(StatusDTO dto)
+        {
+            try
+            {
+                return await _http.PostAsJsonAsync("api/Status", dto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to create proponent via POST {Endpoint}", "api/Status");
+                var resp = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+                {
+                    Content = new StringContent(ex.Message)
+                };
+                return resp;
+            }
+        }
+
+        public async Task<HttpResponseMessage> UpdateStatusAsync(Guid id, StatusDTO dto)
+        {
+            try
+            {
+                return await _http.PutAsJsonAsync($"api/Status/{id}", dto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to update proponent via POST {Endpoint}", "api/Status");
+                var resp = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+                {
+                    Content = new StringContent(ex.Message)
+                };
+                return resp;
             }
         }
 

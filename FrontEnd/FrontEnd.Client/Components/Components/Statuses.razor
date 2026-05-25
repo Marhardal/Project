@@ -25,7 +25,7 @@
                     <th>#</th>
                     <th>Status</th>
                     <th>Color</th>
-                    <th>Created On</th>
+                    @* <th>Created On</th> *@
                     <th>Updated On</th>
                     <th></th>
                 </TableHeader>
@@ -41,7 +41,7 @@
                         </span>
                     </td>
 
-                    <td>@status.createdOn</td>
+                    @* <td>@status.createdOn</td> *@
                     <td>@status.updatedOn</td>
                     <td>
                         <div class="d-flex gap-1 justify-content-center">
@@ -63,7 +63,7 @@
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <EditForm method="post" Model="@Status" OnInvalidSubmit="HandleSubmission" FormName="create">
+            <EditForm Model="@Status" OnInvalidSubmit="HandleUpdate" FormName="create">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">@(isEditMode ? "Edit Status" : "Create Status") </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -101,8 +101,23 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">
-                        @(isEditMode ? "Update" : "Create")
+                    <button type="submit" class="btn btn-primary" disabled="@isSaving" @onclick="isEditMode ? HandleUpdate : HandleSubmission">
+                        @if (isSaving)
+                        {
+                            control = isEditMode ? "Updating" : "Creating";
+                            <span>@control</span>
+                            <span class="submitting-dots">
+                                <span>.</span>
+                                <span>.</span>
+                                <span>.</span>
+                            </span>
+                        }
+                        else
+                        {
+                            control = isEditMode ? "Update" : "Create";
+                            <span>@control</span>
+                        }
+                        @* @control *@
                     </button>
 
                 </div>
@@ -113,12 +128,13 @@
 </div>
 
 @code {
+    private string control = string.Empty;
     private List<StatusDTO> allStatuses;
 
     private bool isSaving = false;
     bool isEditMode = false;
 
-    [SupplyParameterFromForm]
+    // [SupplyParameterFromForm]
     public StatusDTO? Status { get; set; } = new();
 
     string submitMessage = string.Empty;
@@ -149,16 +165,64 @@
 
     private async Task HandleSubmission()
     {
-        // await SaveStatusAsync();
+        isSaving = true;
+        submitMessage = null;
+        try
+        {
+
+        }
+        catch (Exception ex)
+        {
+
+            throw;
+        }
+        finally
+        {
+            isEditMode = false;
+            isSaving = false;
+            submitMessage = string.Empty;
+        }
     }
 
-    private async Task HandleUpdate()
+    async Task HandleUpdate()
     {
-        // await SaveStatusAsync();
+
+        isSaving = true;
+        submitMessage = null;
+        try
+        {
+            var response = await StatusService.UpdateStatusAsync(Status.ID, Status);
+            if (response.IsSuccessStatusCode)
+            {
+                allStatuses = await StatusService.GetStatusAsync();
+                isEditMode = false;
+                Status = new StatusDTO();
+                await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
+                await JSRuntime.InvokeVoidAsync("SwalService.success", "Status updated successfully!");
+            }
+            else
+            {
+                submitMessage = $"Error {response.StatusCode}: {await response.Content.ReadAsStringAsync()}";
+                return;
+            }
+
+        }
+        catch (Exception ex)
+        {
+
+            throw;
+        }
+        finally
+        {
+            isEditMode = false;
+            isSaving = false;
+            // submitMessage = string.Empty;
+        }
     }
 
     private async Task editStatus(StatusDTO statusDTO)
     {
+        Status.ID = statusDTO.ID;
         Status.Name = statusDTO.Name;
         Status.Color = statusDTO.Color;
         Status.createdOn = statusDTO.createdOn;

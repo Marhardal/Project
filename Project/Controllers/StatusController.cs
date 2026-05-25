@@ -45,8 +45,12 @@ namespace Project.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStatus(Guid id, Status status)
-        {
+       {
             if (id != status.ID)
+            {
+                return BadRequest();
+            }
+            if (!StatusExists(id))
             {
                 return BadRequest();
             }

@@ -138,11 +138,11 @@
 
 <AuthorizeView>
     <Authorized>
-        <header class="p-0 shadow navbar sticky-top bg-dark flex-md-nowrap" data-bs-theme="dark">
-            <a class="px-3 text-white navbar-brand col-md-3 col-lg-2 me-0 fs-6" href="#">MEPA</a>
+        <header class="p-0 py-2 border rounded m-2 navbar sticky-top flex-md-nowrap" data-bs-theme="dark">
+            <a class="px-3 text-black navbar-brand col-md-3 col-lg-2 me-0 fs-6" href="#">MEPA</a>
             <ul class="flex-row navbar-nav d-md-none">
                 <li class="nav-item text-nowrap">
-                    <button class="px-3 text-white nav-link" type="button" data-bs-toggle="collapse"
+                    <button class="px-3 nav-link" type="button" data-bs-toggle="collapse"
                             data-bs-target="#navbarSearch" aria-controls="navbarSearch" aria-expanded="false"
                             aria-label="Toggle search">
                         <svg class="bi" aria-hidden="true">
@@ -151,7 +151,7 @@
                     </button>
                 </li>
                 <li class="nav-item text-nowrap">
-                    <button class="px-3 text-white nav-link" type="button" data-bs-toggle="offcanvas"
+                    <button class="px-3 nav-link" type="button" data-bs-toggle="offcanvas"
                             data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
                             aria-label="Toggle navigation">
                         <svg class="bi" aria-hidden="true">
@@ -160,21 +160,34 @@
                     </button>
                 </li>
             </ul>
-            <div id="navbarSearch" class="navbar-search w-100 collapse">
+            @* <div id="navbarSearch" class="navbar-search w-100 collapse">
                 <input class="border-0 form-control w-100 rounded-0" type="text" placeholder="Search"
                        aria-label="Search">
+            </div> *@
+            <div class="px-3 ">
+                <div class="dropdown ">
+                    <button class="btn btn-sm border text-black dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Martin
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end dropdown-menu-start">
+                        <li><NavLink class="dropdown-item" href="/settings">Profile</NavLink></li>
+                        @* <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li> *@
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#">Logout</a></li>
+                    </ul>
+                </div>
             </div>
         </header>
-        <div class="container-fluid">
+        <div class="container-fluid mx-2">
             <div class="row">
-                <div class="p-0 sidebar col-md-3 col-lg-2 bg-body-tertiary d-flex flex-column">
+<div class="p-0 rounded border sidebar col-md-3 col-lg-2 d-flex flex-column h-100">
                     <NavMenu />
                 </div>
-                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-body-secondary d-flex flex-column"
+                <main class="col-md-9 ms-sm-auto col-lg-10 d-flex flex-column"
                       style="min-height: 92vh;">
-                    <div class="container my-2">
+                    <div class="container-fluid p-2 mb-2 rounded-start bg-body-secondary" style="min-height: 90%; min-width: 100%;">
                         @Body
-                        
                     </div>
                     <div class="p-3 mt-auto top-1 text-center text-muted border-top">
                         <small>&copy; @DateTime.Now.Year MEPA</small>

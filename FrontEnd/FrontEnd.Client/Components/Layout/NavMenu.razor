@@ -1,40 +1,13 @@
-﻿@* <div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">FrontEnd</a>
-    </div>
-</div>
-
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
- *@
-
- @implements IDisposable
+﻿ @implements IDisposable
 
 @inject NavigationManager NavigationManager
 @* 
+
+// Tip: NavLink automatically applies an 'active' class when the current URL matches.
+// If you need custom active styles, use NavLink's 'class' with a function or set 'Match'.
+
 <AuthorizeView> *@
-<div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu"
+<div class="offcanvas-md offcanvas-end py-2" tabindex="-1" id="sidebarMenu"
      aria-labelledby="sidebarMenuLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="sidebarMenuLabel">MEPA</h5> <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
@@ -43,7 +16,7 @@
 
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <NavLink class="gap-2 nav-link d-flex align-items-center active" aria-current="page" href="/">
+                <NavLink class="gap-2 nav-link d-flex align-items-center" aria-current="page" href="/" Match="NavLinkMatch.All">
                         <svg class="bi" aria-hidden="true">
                             <use xlink:href="#house-fill"></use>
                         </svg>
@@ -55,7 +28,7 @@
                         @* <svg class="bi" aria-hidden="true">
                             <use xlink:href="#file-earmark"></use>
                         </svg> *@
-                        <i class="bi bi-building-fill fs-6 text-black"></i>
+                        <i class="bi bi-building-fill fs-6 "></i>
                         Proponent
                     </NavLink>
                 </li>
@@ -64,13 +37,13 @@
                         @* <svg class="bi" aria-hidden="true">
                             <use xlink:href="#file-earmark"></use>
                         </svg> *@
-                        <i class="bi bi-book-half fs-6 text-black"></i>
+                        <i class="bi bi-book-half fs-6 "></i>
                         Proposal
                     </NavLink>
                 </li>
                 <li class="nav-item">
                     <NavLink class="gap-2 nav-link d-flex align-items-center" href="/Projects">
-                        <i class="bi bi-book-fill fs-6 text-black"></i>
+                        <i class="bi bi-book-fill fs-6 "></i>
                         <span class="me-1">Projects</span>
                     </NavLink>
                 </li>
@@ -79,7 +52,7 @@
                         @* <svg class="bi" aria-hidden="true">
                             <use xlink:href="#people"></use>
                         </svg> *@
-                        <i class="bi bi-people-fill fs-6 text-black"></i>
+                        <i class="bi bi-people-fill fs-6"></i>
                         Users
                     </NavLink>
                 </li>
@@ -88,7 +61,7 @@
                         @* <svg class="bi" aria-hidden="true">
                             <use xlink:href="#puzzle"></use>
                         </svg> 
-                        <i class="bi bi-shield-lock-fill fs-6 text-black"></i>
+                        <i class="bi bi-shield-lock-fill fs-6 "></i>
                         Roles
                     </NavLink>
                 </li> *@
@@ -105,13 +78,13 @@
             <ul class="mb-auto nav flex-column">
                 <li class="nav-item">
                     <NavLink class="gap-2 nav-link d-flex align-items-center" href="/Tracking">
-                        <i class="bi bi-bar-chart-line-fill fs-6 text-black"></i>
+                        <i class="bi bi-bar-chart-line-fill fs-6 "></i>
                         Tracking
                     </NavLink>
                 </li>
             <li class="nav-item">
                     <NavLink class="gap-2 nav-link d-flex align-items-center" href="Month/Project">
-                        <i class="bi bi-calendar2-check-fill fs-6 text-black"></i>
+                        <i class="bi bi-calendar2-check-fill fs-6 "></i>
                         Projects per Month
                 </NavLink>
             </li>
@@ -120,7 +93,7 @@
                     @* <svg class="bi" aria-hidden="true">
                         <use xlink:href="#file-earmark-text"></use>
                     </svg> *@
-                        <i class="bi bi-diagram-3-fill fs-6 text-black"></i>
+                        <i class="bi bi-diagram-3-fill fs-6 "></i>
                         Projects by Proponent
                 </NavLink>
             </li>
@@ -129,7 +102,7 @@
                     @* <svg class="bi" aria-hidden="true">
                         <use xlink:href="#file-earmark-text"></use>
                     </svg> *@
-                        <i class="bi bi-pie-chart-fill fs-6 text-black"></i>
+                        <i class="bi bi-pie-chart-fill fs-6 "></i>
                         Projects Status
                 </NavLink>
             </li>
@@ -165,7 +138,7 @@
                     <AntiforgeryToken /> *@
                     @* <input type="hidden" name="ReturnUrl" value="@currentUrl" /> *@
                     <button type="submit" class="gap-2 nav-link d-flex align-items-center" @onclick="() => LogoutAsync()">
-                        <i class="bi bi-door-closed-fill text-black fs-6"></i>
+                        <i class="bi bi-door-closed-fill  fs-6"></i>
                         Logout
                     </button>
                 @* </form> *@

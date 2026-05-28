@@ -17,9 +17,10 @@
             <ul class="nav flex-column">
                 <li class="nav-item">
                 <NavLink class="gap-2 nav-link d-flex align-items-center" aria-current="page" href="/" Match="NavLinkMatch.All">
-                        <svg class="bi" aria-hidden="true">
+                        @* <svg class="bi" aria-hidden="true">
                             <use xlink:href="#house-fill"></use>
-                        </svg>
+                        </svg> *@
+                    <i class="fa-solid fa-house"></i>
                         Dashboard
                     </NavLink>
                 </li>
@@ -28,7 +29,7 @@
                         @* <svg class="bi" aria-hidden="true">
                             <use xlink:href="#file-earmark"></use>
                         </svg> *@
-                        <i class="bi bi-building-fill fs-6 "></i>
+                    <i class="fa-solid fa-building"></i>
                         Proponent
                     </NavLink>
                 </li>
@@ -37,13 +38,13 @@
                         @* <svg class="bi" aria-hidden="true">
                             <use xlink:href="#file-earmark"></use>
                         </svg> *@
-                        <i class="bi bi-book-half fs-6 "></i>
+                    <i class="fa-solid fa-pen-fancy"></i>
                         Proposal
                     </NavLink>
                 </li>
                 <li class="nav-item">
                     <NavLink class="gap-2 nav-link d-flex align-items-center" href="/Projects">
-                        <i class="bi bi-book-fill fs-6 "></i>
+                    <i class="fa-solid fa-landmark-flag"></i>
                         <span class="me-1">Projects</span>
                     </NavLink>
                 </li>
@@ -51,8 +52,7 @@
                     <NavLink class="gap-2 nav-link d-flex align-items-center" href="/Users">
                         @* <svg class="bi" aria-hidden="true">
                             <use xlink:href="#people"></use>
-                        </svg> *@
-                        <i class="bi bi-people-fill fs-6"></i>
+                        </svg> *@<i class="fa-solid fa-user-group"></i>
                         Users
                     </NavLink>
                 </li>
@@ -127,9 +127,10 @@
         <ul class="mt-auto nav flex-column">
             <li class="nav-item">
                     <NavLink class="gap-2 nav-link d-flex align-items-center" href="/Settings">
-                    <svg class="bi" aria-hidden="true">
+                    @* <svg class="bi" aria-hidden="true">
                         <use xlink:href="#gear-wide-connected"></use>
-                    </svg>
+                    </svg> *@
+                    <i class="fa-solid fa-gear"></i>
                     Settings
                 </NavLink>
             </li>
@@ -137,8 +138,8 @@
                 @* <form action="Account/Logout" method="post">
                     <AntiforgeryToken /> *@
                     @* <input type="hidden" name="ReturnUrl" value="@currentUrl" /> *@
-                    <button type="submit" class="gap-2 nav-link d-flex align-items-center" @onclick="() => LogoutAsync()">
-                        <i class="bi bi-door-closed-fill  fs-6"></i>
+                    <button type="submit" class="gap-2 nav-link d-flex align-items-center w-100" @onclick="() => LogoutAsync()">
+                    <i class="fa-solid fa-door-closed"></i>
                         Logout
                     </button>
                 @* </form> *@

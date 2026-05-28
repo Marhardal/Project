@@ -1,10 +1,4 @@
-﻿
-/*.swal2-container {
-    z-index: 20000 !important;
-}
-*/
-
-@keyframes typing-bounce {
+﻿@keyframes typing-bounce {
     0%, 80%, 100% {
         transform: translateY(0);
         opacity: 0.4;

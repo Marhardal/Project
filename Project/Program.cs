@@ -2,12 +2,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using OfficeOpenXml;
 using Project.Data;
 using Project.Services;
 using Scalar.AspNetCore;
 using System.Text;
-using OfficeOpenXml;
+using QuestPDF.Infrastructure;
 
 var MyAllowSpecificOrigins = "AllowFrontend";
 
@@ -97,6 +96,8 @@ builder.Services.Configure<ScalarOptions>(options =>
 {
     options.WithOpenApiRoutePattern("/openapi/v1.json");
 });
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var app = builder.Build();
 

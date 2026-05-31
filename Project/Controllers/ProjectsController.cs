@@ -4,6 +4,7 @@ using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using Project.Data;
 using Project.Models;
+using QuestPDF.Fluent;
 using System.Drawing;
 using System.Security.Claims;
 
@@ -308,7 +309,7 @@ namespace Project.Controllers
             return NoContent();
         }
 
-        [HttpGet("/api/export/projects")]
+        [HttpGet("/api/export/projects/excel")]
         public async Task<IActionResult> ExportProjects(string filter = null, bool proposal = true)
         {
             var query = _context.Projects
@@ -412,6 +413,89 @@ namespace Project.Controllers
                 $"Projects_{DateTime.Now:yyyyMMddHHmmss}.xlsx"
             );
         }
+
+        [HttpGet("/api/export/projects/pdf")]
+        public async Task<IActionResult> ExportProjectsPDF(string filter = null, bool proposal = true)
+        {
+            var query = _context.Projects
+                .Where(p => proposal
+                    ? p.ProjectType == ProjectType.Proposal
+                    : p.ProjectType != ProjectType.Proposal)
+                .Include(p => p.Proponent)
+                .Include(p => p.Trackings)
+                    .ThenInclude(t => t.Status)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(i => i.Name.Contains(filter) || i.Location.Contains(filter));
+            }
+
+            var projects = await query.ToListAsync();
+
+            if (!projects.Any())
+            {
+                return NotFound("No projects found.");
+            }
+
+            var stream = new MemoryStream();
+
+            Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Margin(30);
+                    page.Header().Text("Projects Report").FontSize(18).Bold();
+                    page.Content().Table(table =>
+                    {
+                        table.ColumnsDefinition(columns =>
+                        {
+                            columns.RelativeColumn(3); // Name
+                            columns.RelativeColumn(2); // Location
+                            columns.RelativeColumn(2); // Type
+                            columns.RelativeColumn(2); // Status
+                        });
+
+                        table.Header(header =>
+                        {
+                            header.Cell().Border(1).Padding(2).Text("Name").Bold();
+                            header.Cell().Border(1).Padding(2).Text("Location").Bold();
+                            header.Cell().Border(1).Padding(2).Text("Type").Bold();
+                            header.Cell().Border(1).Padding(2).Text("Status").Bold();
+                        });
+
+                        foreach (var project in projects)
+                        {
+                            table.Cell().Border(1).Padding(2).Text(project.Name);
+                            table.Cell().Border(1).Padding(2).Text(project.Location);
+                            table.Cell().Border(1).Padding(2).Text(project.ProjectType.ToString());
+                            table.Cell().Border(1).Padding(2).Text(project.Trackings
+        .OrderByDescending(t => t.createdOn)
+        .FirstOrDefault()?.Status?.Name ?? "-");
+                        }
+                    });
+
+                    page.Footer().AlignCenter()
+                        .Text(x =>
+                        {
+                            x.Span("Page ");
+                            x.CurrentPageNumber();
+                            x.Span(" of ");
+                            x.TotalPages();
+                        });
+                });
+            })
+            .GeneratePdf(stream);
+
+            var fileBytes = stream.ToArray();
+
+            return File(
+                fileBytes,
+                "application/pdf",
+                $"Projects_{DateTime.Now:yyyyMMddHHmmss}.pdf"
+            );
+        }
+
         private bool ProjectModelExists(Guid id)
         {
             return _context.Projects.Any(e => e.Id == id);

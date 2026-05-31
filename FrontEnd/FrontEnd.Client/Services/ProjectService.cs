@@ -91,9 +91,20 @@ namespace FrontEnd.Client.Services
                 return resp;
             }
         }
-        public async Task<byte[]> ExportProposalAsync(string? filter = null, bool isProposal = true)
+        public async Task<byte[]> ExportProjectAsync(string? filter = null, bool isProposal = true)
         {
-            var url = $"api/export/projects?filter={filter}&Proposal={isProposal}";
+            var url = $"api/export/projects/excel?filter={filter}&Proposal={isProposal}";
+
+            var response = await _http.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return Array.Empty<byte>();
+
+            return await response.Content.ReadAsByteArrayAsync();
+        }
+        public async Task<byte[]> ExportProjectPDFAsync(string? filter = null, bool isProposal = true)
+        {
+            var url = $"api/export/projects/pdf?filter={filter}&Proposal={isProposal}";
 
             var response = await _http.GetAsync(url);
 

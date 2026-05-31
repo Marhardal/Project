@@ -29,7 +29,7 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end dropdown-menu-start">
                     <li>
-                        <button type="button" class="btn btn-sm dropdown-item">
+                        <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createPDF()">
                             <i class="fa-solid fa-file-pdf"></i>PDF
                         </button>
                     </li>
@@ -460,10 +460,19 @@ else
 
     async Task createExcel()
     {
-        var bytes = await ProjectService.ExportProposalAsync(searchQuery);
+        var bytes = await ProjectService.ExportProjectAsync(searchQuery);
         await JSRuntime.InvokeVoidAsync("downloadFile",
             $"Projects_{DateTime.Now:yyyyMMdd}.xlsx",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            bytes);
+    }
+
+    async Task createPDF()
+    {
+        var bytes = await ProjectService.ExportProjectPDFAsync(searchQuery);
+        await JSRuntime.InvokeVoidAsync("downloadFile",
+            $"Projects_{DateTime.Now:yyyyMMdd}.pdf",
+            "application/pdf",
             bytes);
     }
 

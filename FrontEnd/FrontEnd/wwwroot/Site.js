@@ -148,3 +148,16 @@ window.Inactivity = {
             );
     }
 }
+
+window.downloadFile = (fileName, contentType, bytes) => {
+    console.log('downloadFile called', fileName, bytes?.length);
+    const blob = new Blob([new Uint8Array(bytes)], { type: contentType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}

@@ -2,14 +2,19 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using OfficeOpenXml;
 using Project.Data;
 using Project.Services;
 using Scalar.AspNetCore;
 using System.Text;
+using OfficeOpenXml;
 
 var MyAllowSpecificOrigins = "AllowFrontend";
 
 var builder = WebApplication.CreateBuilder(args);
+
+// set EPPlus license once at startup
+//ExcelPackage.License = LicenseContext.NonCommercial;
 
 var DefaultConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 

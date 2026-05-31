@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using Project.Data;
 using Project.Models;
+using System.Drawing;
 using System.Security.Claims;
 
 namespace Project.Controllers
@@ -305,6 +308,110 @@ namespace Project.Controllers
             return NoContent();
         }
 
+        [HttpGet("/api/export/projects")]
+        public async Task<IActionResult> ExportProjects(string filter = null, bool proposal = true)
+        {
+            var query = _context.Projects
+    .Where(p => proposal
+        ? p.ProjectType == ProjectType.Proposal
+        : p.ProjectType != ProjectType.Proposal)
+    .Include(p => p.Proponent)
+    .Include(p => p.Trackings)
+        .ThenInclude(t => t.Status)
+    .AsQueryable();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(i => i.Name.Contains(filter) || i.Location.Contains(filter));
+            }
+
+            var projects = await query.ToListAsync();
+
+            if (!projects.Any())
+            {
+                return NotFound("No projects found.");
+            }
+            ExcelPackage.License.SetNonCommercialOrganization("MEPA");
+
+            using var package = new ExcelPackage();
+            var sheet = package.Workbook.Worksheets.Add("Projects");
+
+            // Headers
+            sheet.Cells[1, 1].Value = "#";
+            sheet.Cells[1, 2].Value = "Project";
+            sheet.Cells[1, 3].Value = "Proponent";
+            sheet.Cells[1, 4].Value = "Type";
+            sheet.Cells[1, 5].Value = "Status";
+            sheet.Cells[1, 6].Value = "Submission Date";
+
+            // Style headers
+            using (var range = sheet.Cells[1, 1, 1, 6])
+            {
+                range.Style.Font.Bold = true;
+                range.Style.Font.Color.SetColor(Color.White);
+                range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                range.Style.Fill.BackgroundColor.SetColor(Color.DarkBlue);
+                range.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            }
+
+            // Data rows
+            int row = 2;
+            for (int i = 0; i < projects.Count; i++)
+            {
+                var project = projects[i];
+                var latestStatus = project.Trackings
+                    .OrderByDescending(t => t.createdOn)
+                    .Select(t => t.Status?.Name)
+                    .FirstOrDefault() ?? "No Status";
+
+                sheet.Cells[row, 1].Value = i + 1;
+                sheet.Cells[row, 2].Value = project.Name;
+                sheet.Cells[row, 3].Value = project.Proponent?.Name;
+                sheet.Cells[row, 4].Value = project.ProjectType.ToString();
+                sheet.Cells[row, 5].Value = latestStatus;
+                sheet.Cells[row, 6].Value = project.SubmissionDate.ToString("dd MMM yyyy");
+
+                // Alternate row colors
+                if (row % 2 == 0)
+                {
+                    using var range = sheet.Cells[row, 1, row, 6];
+                    range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    range.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                }
+
+                row++;
+            }
+
+            // Add totals row
+            sheet.Cells[row, 1].Value = "Total";
+            sheet.Cells[row, 2].Value = projects.Count;
+            using (var totalRange = sheet.Cells[row, 1, row, 6])
+            {
+                totalRange.Style.Font.Bold = true;
+                totalRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                totalRange.Style.Fill.BackgroundColor.SetColor(Color.LightBlue);
+            }
+
+            // Auto fit columns
+            sheet.Cells[sheet.Dimension.Address].AutoFitColumns();
+
+            // Add border to all cells
+            using (var allCells = sheet.Cells[1, 1, row, 6])
+            {
+                allCells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                allCells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                allCells.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                allCells.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            }
+
+            var fileBytes = await package.GetAsByteArrayAsync();
+
+            return File(
+                fileBytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"Projects_{DateTime.Now:yyyyMMddHHmmss}.xlsx"
+            );
+        }
         private bool ProjectModelExists(Guid id)
         {
             return _context.Projects.Any(e => e.Id == id);

@@ -1,6 +1,9 @@
 ﻿using FrontEnd.Client.DTOs;
+using Microsoft.JSInterop;
 using System.Net;
 using System.Net.Http.Json;
+using static System.Net.WebRequestMethods;
+
 
 namespace FrontEnd.Client.Services
 {
@@ -88,6 +91,16 @@ namespace FrontEnd.Client.Services
                 return resp;
             }
         }
+        public async Task<byte[]> ExportProposalAsync(string? filter = null, bool isProposal = true)
+        {
+            var url = $"api/export/projects?filter={filter}&Proposal={isProposal}";
 
+            var response = await _http.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return Array.Empty<byte>();
+
+            return await response.Content.ReadAsByteArrayAsync();
+        }
     }
 }

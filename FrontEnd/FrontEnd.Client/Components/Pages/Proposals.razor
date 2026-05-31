@@ -23,14 +23,21 @@
             </div>
         </div>
         <div class="col-md-2 text-end">
-            <div class="dropdown-center">
-                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+            <div class="dropdown">
+                <button class="btn btn-secondary border text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Export
                 </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">PDF</a></li>
-                    <li><a class="dropdown-item" href="#">Excel</a></li>
+                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end dropdown-menu-start">
+                    <li>
+                        <button type="button" class="btn btn-sm dropdown-item">
+                            <i class="fa-solid fa-file-pdf"></i>PDF
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createExcel()">
+                            <i class="fa-solid fa-file-excel"></i>Excel
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -347,7 +354,7 @@ else
     }
 
     async Task HandleUpdate(){
-    
+
         isSubmitting = true;
         submitMessage = null;
         try
@@ -394,7 +401,7 @@ else
         }
         finally
         {
-        // submitMessage = null;
+            // submitMessage = null;
             isSubmitting = false;
             StateHasChanged();
         }
@@ -435,7 +442,7 @@ else
         statuses = (statusResult ?? new List<StatusDTO>()).OrderBy(s => s.SortOrder)
     .Take(3).ToList();
 
-    // var types = ProjectType
+        // var types = ProjectType
         isEditMode = true;
 
         await JSRuntime.InvokeVoidAsync("showModal", "staticBackdrop");
@@ -449,6 +456,15 @@ else
         currentPage = 1; // reset to first page on new search
         _debounce?.Dispose();
         _debounce = new Timer(_ => InvokeAsync(StateHasChanged), null, 400, Timeout.Infinite);
+    }
+
+    async Task createExcel()
+    {
+        var bytes = await ProjectService.ExportProposalAsync(searchQuery);
+        await JSRuntime.InvokeVoidAsync("downloadFile",
+            $"Projects_{DateTime.Now:yyyyMMdd}.xlsx",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            bytes);
     }
 
 }

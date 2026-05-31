@@ -91,9 +91,9 @@ namespace FrontEnd.Client.Services
                 return resp;
             }
         }
-        public async Task<byte[]> ExportProjectAsync(string? filter = null, bool isProposal = true)
+        public async Task<byte[]> ExportProjectAsync(ProjectType? type = null, string? filter = null, string? statusID = null)
         {
-            var url = $"api/export/projects/excel?filter={filter}&Proposal={isProposal}";
+            var url = $"api/export/projects/excel?filter={filter}&statusID={statusID}&type={type}";
 
             var response = await _http.GetAsync(url);
 
@@ -102,9 +102,9 @@ namespace FrontEnd.Client.Services
 
             return await response.Content.ReadAsByteArrayAsync();
         }
-        public async Task<byte[]> ExportProjectPDFAsync(string? filter = null, bool isProposal = true)
+        public async Task<byte[]> ExportProjectPDFAsync(ProjectType? type = null, string? filter = null, string? statusID = null)
         {
-            var url = $"api/export/projects/pdf?filter={filter}&Proposal={isProposal}";
+            var url = $"api/export/projects/pdf?filter={filter}&statusID={statusID}&type={type}";
 
             var response = await _http.GetAsync(url);
 

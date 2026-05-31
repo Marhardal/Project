@@ -25,7 +25,7 @@
                     <th>#</th>
                     <th>Status</th>
                     <th>Color</th>
-                    @* <th>Created On</th> *@
+                    <th>Sort Order</th>
                     <th>Updated On</th>
                     <th></th>
                 </TableHeader>
@@ -40,8 +40,7 @@
                             <span class="rounded border" style="width:20px;height:20px;display:inline-block; background-color: @status.Color;"></span>
                         </span>
                     </td>
-
-                    @* <td>@status.createdOn</td> *@
+                    <td>@status.SortOrder</td>
                     <td>@status.updatedOn</td>
                     <td>
                         <div class="d-flex gap-1 justify-content-center">
@@ -87,6 +86,14 @@
                                        placeholder="#rrggbb" disabled />
                         </div>
                         <ValidationMessage For="@(() => Status.Color)" class="text-danger" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="SortOrder" class="form-label">Sort Order</label>
+                        <div class="d-flex align-items-center gap-2">
+                            <InputNumber id="SortOrder" @bind-Value="Status.SortOrder" class="form-control"
+                                         placeholder="Enter Status Sort Order."></InputNumber>
+                        </div>
+                        <ValidationMessage For="@(() => Status.SortOrder)" class="text-danger" />
                     </div>
 
                     @if (!string.IsNullOrEmpty(submitMessage))
@@ -225,6 +232,7 @@
         Status.ID = statusDTO.ID;
         Status.Name = statusDTO.Name;
         Status.Color = statusDTO.Color;
+        Status.SortOrder = statusDTO.SortOrder;
         Status.createdOn = statusDTO.createdOn;
         Status.updatedOn = DateTime.Now;
         isEditMode = true;

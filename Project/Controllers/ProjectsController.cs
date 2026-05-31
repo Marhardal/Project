@@ -310,16 +310,24 @@ namespace Project.Controllers
         }
 
         [HttpGet("/api/export/projects/excel")]
-        public async Task<IActionResult> ExportProjects(string filter = null, bool proposal = true)
+        public async Task<IActionResult> ExportProjects(ProjectType? type = null, string filter = null, string statusID = null)
         {
             var query = _context.Projects
-    .Where(p => proposal
-        ? p.ProjectType == ProjectType.Proposal
-        : p.ProjectType != ProjectType.Proposal)
-    .Include(p => p.Proponent)
-    .Include(p => p.Trackings)
-        .ThenInclude(t => t.Status)
-    .AsQueryable();
+                .Where(p => type == null
+                    ? p.ProjectType != ProjectType.Proposal
+                    : p.ProjectType == type)
+                .Include(p => p.Proponent)
+                .Include(p => p.Trackings)
+                    .ThenInclude(t => t.Status)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(statusID) && Guid.TryParse(statusID, out var parsedStatusId))
+            {
+                query = query.Where(p => p.Trackings
+                    .OrderByDescending(t => t.createdOn)
+                    .Select(t => t.Status.ID)
+                    .FirstOrDefault() == parsedStatusId);
+            }
 
             if (!string.IsNullOrEmpty(filter))
             {
@@ -415,16 +423,24 @@ namespace Project.Controllers
         }
 
         [HttpGet("/api/export/projects/pdf")]
-        public async Task<IActionResult> ExportProjectsPDF(string filter = null, bool proposal = true)
+        public async Task<IActionResult> ExportProjectsPDF(ProjectType? type = null, string? filter = null, string? statusID = null)
         {
             var query = _context.Projects
-                .Where(p => proposal
-                    ? p.ProjectType == ProjectType.Proposal
-                    : p.ProjectType != ProjectType.Proposal)
+                .Where(p => type == null
+                    ? p.ProjectType != ProjectType.Proposal
+                    : p.ProjectType == ProjectType.Proposal)
                 .Include(p => p.Proponent)
                 .Include(p => p.Trackings)
                     .ThenInclude(t => t.Status)
                 .AsQueryable();
+
+            if (!string.IsNullOrEmpty(statusID) && Guid.TryParse(statusID, out var parsedStatusId))
+            {
+                query = query.Where(p => p.Trackings
+                    .OrderByDescending(t => t.createdOn)
+                    .Select(t => t.Status.ID)
+                    .FirstOrDefault() == parsedStatusId);
+            }
 
             if (!string.IsNullOrEmpty(filter))
             {

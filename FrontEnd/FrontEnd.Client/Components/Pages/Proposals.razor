@@ -460,16 +460,16 @@ else
 
     async Task createExcel()
     {
-        var bytes = await ProjectService.ExportProjectAsync(searchQuery);
+        var bytes = await ProjectService.ExportProjectAsync(ProjectType.Proposal, searchQuery);
         await JSRuntime.InvokeVoidAsync("downloadFile",
-            $"Projects_{DateTime.Now:yyyyMMdd}.xlsx",
+            $"Proposals_{DateTime.Now:yyyyMMdd}.xlsx",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             bytes);
     }
 
     async Task createPDF()
     {
-        var bytes = await ProjectService.ExportProjectPDFAsync(searchQuery);
+        var bytes = await ProjectService.ExportProjectPDFAsync(ProjectType.Proposal, searchQuery);
         await JSRuntime.InvokeVoidAsync("downloadFile",
             $"Projects_{DateTime.Now:yyyyMMdd}.pdf",
             "application/pdf",

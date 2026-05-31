@@ -22,13 +22,22 @@
         </div>
     </div>
     <div class="col-md-2 col-sm-2 text-md-end">
+
         <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-               Export
+            <button class="btn btn-secondary border text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Export
             </button>
-            <ul class="dropdown-menu dropdown-menu-dark">
-                <li><a class="dropdown-item" href="#">Excel</a></li>
-                <li><a class="dropdown-item active" href="#">PDF</a></li>
+            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end dropdown-menu-start">
+                <li>
+                    <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createPDF()">
+                        <i class="fa-solid fa-file-pdf"></i>PDF
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createExcel()">
+                        <i class="fa-solid fa-file-excel"></i>Excel
+                    </button>
+                </li>
             </ul>
         </div>
     </div>
@@ -52,9 +61,10 @@
                 <label class="input-group-text" for="inputGroupSelect01">Type</label>
                 <select class="form-select" @bind="selectedType" @bind:after="OnFilterChanged">
                     <option value="">All</option>
-                    <option value="ESMP">ESMP</option>
-                    <option value="Audit">Audit</option>
-                    <option value="ESIA">ESIA</option>
+                    @foreach (var type in Enum.GetValues<ProjectType>().Where(t => t != ProjectType.Proposal))
+                    {
+                        <option value="@type">@EnumHelper.GetDisplayName(type)</option>
+                    }
                 </select>
             </div>
         </div>
@@ -105,7 +115,7 @@
                 <td class="py-2">
                     <StatusItem Name="@status?.Name" Colour="@status?.Color"></StatusItem>
                 </td>
-                <td>@project?.SubmissionDate.ToString("yyyy-MM, dd")</td>
+                <td>@project?.SubmissionDate.ToString("yyyy-MMM, dd")</td>
                 <td class="py-2">
                     <div class="d-flex gap-1 justify-content-end ">
                         <NavLink class="rounded btn btn-sm btn-outline-warning" href="@($"Project/View/{project.Id}")">
@@ -454,4 +464,21 @@ else
         _debounce = new Timer(_ => InvokeAsync(StateHasChanged), null, 400, Timeout.Infinite);
     }
 
+    async Task createExcel()
+    {
+        var bytes = await ProjectService.ExportProjectAsync(selectedType, searchQuery, selectedStatus.ToString());
+        await JSRuntime.InvokeVoidAsync("downloadFile",
+            $"Projects_{DateTime.Now:yyyyMMdd}.xlsx",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            bytes);
+    }
+
+    async Task createPDF()
+    {
+        var bytes = await ProjectService.ExportProjectPDFAsync(selectedType, searchQuery, selectedStatus.ToString());
+        await JSRuntime.InvokeVoidAsync("downloadFile",
+            $"Projects_{DateTime.Now:yyyyMMdd}.pdf",
+            "application/pdf",
+            bytes);
+    }
 }

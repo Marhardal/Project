@@ -36,15 +36,21 @@
 
     <div class="col-md-3 col-12">
         <div class="d-flex flex-wrap gap-2 justify-content-end">
-            <div class="dropdown-center small flex-grow-1 flex-md-grow-0">
-                <!-- Grows to fill space on mobile -->
-                <button class="btn btn-secondary dropdown-toggle w-100 w-md-auto" type="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="dropdown">
+                <button class="btn btn-secondary border text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Export
                 </button>
-                <ul class="dropdown-menu dropdown-menu-sm">
-                    <li><a class="dropdown-item" href="#">PDF</a></li>
-                    <li><a class="dropdown-item" href="#">Excel</a></li>
+                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end dropdown-menu-start">
+                    <li>
+                        <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createPDF()">
+                            <i class="fa-solid fa-file-pdf"></i>PDF
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createExcel()">
+                            <i class="fa-solid fa-file-excel"></i>Excel
+                        </button>
+                    </li>
                 </ul>
             </div>
             <div class="flex-grow-1 flex-md-grow-0">
@@ -322,6 +328,26 @@ else
         currentPage = 1;
         StateHasChanged();
     }
+
+    async Task createExcel()
+    {
+        var bytes = await ProponentService.ExportProponentsExcelAsync(searchQuery);
+        await JSRuntime.InvokeVoidAsync("downloadFile",
+            $"Proponents_{DateTime.Now:yyyyMMdd}.xlsx",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            bytes);
+    }
+
+    async Task createPDF()
+    {
+        // var bytes = await ProponentService.ExportProjectPDFAsync(searchQuery);
+        // await JSRuntime.InvokeVoidAsync("downloadFile",
+        //     $"Projects_{DateTime.Now:yyyyMMdd}.pdf",
+        //     "application/pdf",
+        //     bytes);
+    }
+
+
 
 }
 

@@ -88,5 +88,17 @@ namespace FrontEnd.Client.Services
                 return resp;
             }
         }
+
+        public async Task<byte[]> ExportProponentsExcelAsync(string? filter = null)
+        {
+            var url = $"api/export/proponents/excel?filter={filter}";
+
+            var response = await _http.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return Array.Empty<byte>();
+
+            return await response.Content.ReadAsByteArrayAsync();
+        }
     }
 }

@@ -5,6 +5,7 @@ using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using Project.Data;
 using Project.Models;
+using QuestPDF.Fluent;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -130,6 +131,7 @@ namespace Project.Controllers
             {
                 return NotFound("No projects found.");
             }
+
             ExcelPackage.License.SetNonCommercialOrganization("MEPA");
 
             using var package = new ExcelPackage();
@@ -205,6 +207,81 @@ namespace Project.Controllers
                 fileBytes,
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 $"Proponents_{DateTime.Now:yyyyMMddHHmmss}.xlsx"
+            );
+        }
+
+        [HttpGet("/api/export/proponents/pdf")]
+        public async Task<IActionResult> ExportProponentsPDF(string filter = null, bool proposal = true)
+        {
+            var query = _context.Proponents.AsQueryable();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(i => i.Name.Contains(filter) || i.Location.Contains(filter) || i.Address.Contains(filter));
+            }
+
+            var proponents = await query.ToListAsync();
+
+            if (!proponents.Any())
+            {
+                return NotFound("No proponents found.");
+            }
+
+            var stream = new MemoryStream();
+
+            Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Margin(30);
+                    page.Header().Text("Proponents List").FontSize(18).Bold();
+                    page.Content().Table(table =>
+                    {
+                        table.ColumnsDefinition(columns =>
+                        {
+                            columns.RelativeColumn(3); // Name
+                            columns.RelativeColumn(2); // Location
+                            columns.RelativeColumn(2); // Type
+                            //columns.RelativeColumn(2); // Status
+                        });
+
+                        table.Header(header =>
+                        {
+                            header.Cell().Border(1).Padding(2).Text("Name").Bold();
+                            header.Cell().Border(1).Padding(2).Text("Location").Bold();
+                            header.Cell().Border(1).Padding(2).Text("Address").Bold();
+                            //header.Cell().Border(1).Padding(2).Text("Status").Bold();
+                        });
+
+                        foreach (var proponent in proponents)
+                        {
+                            table.Cell().Border(1).Padding(2).Text(proponent.Name);
+                            table.Cell().Border(1).Padding(2).Text(proponent.Location);
+                            table.Cell().Border(1).Padding(2).Text(proponent.Address);
+        //                    table.Cell().Border(1).Padding(2).Text(project.Trackings
+        //.OrderByDescending(t => t.createdOn)
+        //.FirstOrDefault()?.Status?.Name ?? "-");
+                        }
+                    });
+
+                    page.Footer().AlignCenter()
+                        .Text(x =>
+                        {
+                            x.Span("Page ");
+                            x.CurrentPageNumber();
+                            x.Span(" of ");
+                            x.TotalPages();
+                        });
+                });
+            })
+            .GeneratePdf(stream);
+
+            var fileBytes = stream.ToArray();
+
+            return File(
+                fileBytes,
+                "application/pdf",
+                $"Proponents_{DateTime.Now:yyyyMMddHHmmss}.pdf"
             );
         }
 

@@ -340,11 +340,11 @@ else
 
     async Task createPDF()
     {
-        // var bytes = await ProponentService.ExportProjectPDFAsync(searchQuery);
-        // await JSRuntime.InvokeVoidAsync("downloadFile",
-        //     $"Projects_{DateTime.Now:yyyyMMdd}.pdf",
-        //     "application/pdf",
-        //     bytes);
+        var bytes = await ProponentService.ExportProponentsPDFAsync(searchQuery);
+        await JSRuntime.InvokeVoidAsync("downloadFile",
+            $"Proponents_{DateTime.Now:yyyyMMdd}.pdf",
+            "application/pdf",
+            bytes);
     }
 
 

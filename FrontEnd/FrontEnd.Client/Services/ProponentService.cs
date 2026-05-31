@@ -100,5 +100,16 @@ namespace FrontEnd.Client.Services
 
             return await response.Content.ReadAsByteArrayAsync();
         }
+        public async Task<byte[]> ExportProponentsPDFAsync(string? filter = null)
+        {
+            var url = $"api/export/proponents/PDF?filter={filter}";
+
+            var response = await _http.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return Array.Empty<byte>();
+
+            return await response.Content.ReadAsByteArrayAsync();
+        }
     }
 }

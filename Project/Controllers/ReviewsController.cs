@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project.Data;
 using Project.DTO;
 using Project.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Project.Controllers
 {
@@ -80,16 +81,22 @@ namespace Project.Controllers
         public async Task<ActionResult<ReviewModel>> PostReviewModel(ReviewDTO reviewModel)
         {
             var firstStatus = await _context.Statuses.OrderBy(s => s.SortOrder).FirstOrDefaultAsync();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId is null)
+                return Unauthorized();
+
             TrackingModel tracking = new TrackingModel()
             {
                 StatusID = firstStatus.ID,
                 ProjectID = reviewModel.ProjectID,
-                userID = "97775807-c99a-445a-9bc3-2a88c3449823",
+                userID = userId,
                 assignedDate = DateTime.UtcNow,
                 createdOn = DateTime.UtcNow,
                 updatedOn = DateTime.UtcNow,
             };
             _context.Trackings.Add(tracking);
+            await _context.SaveChangesAsync();
             ReviewModel model = new ReviewModel() 
             { 
                 ID = reviewModel.ID,

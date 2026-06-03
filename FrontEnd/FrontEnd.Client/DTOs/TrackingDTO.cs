@@ -28,8 +28,8 @@ namespace FrontEnd.Client.DTOs
 
     public enum ProjectType
     {
-        [Display(Name = "Proposal")]
-        Proposal,
+        [Display(Name = "Project Briefs")]
+        Brief,
         [Display(Name = "Environmental Impact Assessment")]
         ESIA,
 

@@ -1,13 +1,13 @@
 ﻿@page "/Proposals"
 @* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
 
-<PageTitle>Proposals</PageTitle>
+<PageTitle>Project Briefs</PageTitle>
 
 @if (proposals != null && proposals.Count > 0)
 {
     <div class="row">
         <div class="col-md-6">
-            <h3>Proposals</h3>
+            <h3>Project Briefs</h3>
         </div>
         <div class="col-md-2">
             <div class="mb-3 input-group rounded-pill justify-content-end">
@@ -113,8 +113,8 @@
 else
 {
 <div class="d-flex flex-column align-items-center justify-content-center min-vh-100">
-        <h5 class="mb-3">No Proposal Found</h5>
-        <p class="mb-4 text-muted">Please enter a new proposal.</p>
+        <h5 class="mb-3">No Project Briefs Found</h5>
+        <p class="mb-4 text-muted">Please enter a new Project Brief.</p>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
             <i class="bi bi-plus-square me-2"></i>Add
         </button>
@@ -129,7 +129,7 @@ else
                 <EditForm method="post" Model="Proposal" OnValidSubmit="@(isEditMode? HandleUpdate : HandleSubmission)"
                           FormName="create">
                     <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">@(isEditMode ? "Edit Proposal" : "Create Proposal") </h1>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">@(isEditMode ? "Edit Project Brief" : "Create Project Brief") </h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -221,7 +221,7 @@ else
                                  id="ProjectType"
                                  class="form-select">
                         <option value="">-- Select Project Type --</option>
-                        @foreach (var type in Enum.GetValues<ProjectType>().Where(t => t != ProjectType.Proposal))
+                        @foreach (var type in Enum.GetValues<ProjectType>().Where(t => t != ProjectType.Brief))
                         {
                             <option value="@type">@EnumHelper.GetDisplayName(type)</option>
                         }
@@ -322,7 +322,7 @@ else
         try
         {
             Proposal.createdOn = DateTime.Now;
-            Proposal.ProjectType = ProjectType.Proposal;
+            Proposal.ProjectType = ProjectType.Brief;
             Proposal.closingDate = DateTime.Now;
             Proposal.assignedDate = DateTime.Now;
             var response = await ProjectService.CreateProjectAsync(Proposal);
@@ -331,7 +331,7 @@ else
 
                 await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
 
-                await JSRuntime.InvokeVoidAsync("SwalService.success", "Added a Proposal Successfull.");
+                await JSRuntime.InvokeVoidAsync("SwalService.success", "Added a Brief Successfull.");
 
                 Proposal = new ProjectDTO();
             }
@@ -361,9 +361,9 @@ else
         {
             var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
 
-            if (selectedStatus?.Name == "Approved" && Proposal.ProjectType == ProjectType.Proposal)
+            if (selectedStatus?.Name == "Approved" && Proposal.ProjectType == ProjectType.Brief)
             {
-                submitMessage = "Approved proposals must be assigned a valid project type.";
+                submitMessage = "Approved a Project Brief must be assigned a valid project type.";
                 return;
             }
             // EditPerson.ProponentID = ;
@@ -386,7 +386,7 @@ else
                 // await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
                 await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
 
-                await JSRuntime.InvokeVoidAsync("SwalService.success", "Proposal updated successfully!");
+                await JSRuntime.InvokeVoidAsync("SwalService.success", "Project Brief updated successfully!");
 
             }
             else
@@ -414,9 +414,9 @@ else
             .FirstOrDefault();
         var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
 
-        if (selectedStatus?.Name == "Approved" && project.ProjectType == ProjectType.Proposal)
+        if (selectedStatus?.Name == "Approved" && project.ProjectType == ProjectType.Brief)
         {
-            submitMessage = "Approved proposals must be assigned a valid project type.";
+            submitMessage = "Approved Brief must be assigned a valid project type.";
             return;
         }
 
@@ -460,16 +460,16 @@ else
 
     async Task createExcel()
     {
-        var bytes = await ProjectService.ExportProjectAsync(ProjectType.Proposal, searchQuery);
+        var bytes = await ProjectService.ExportProjectAsync(ProjectType.Brief, searchQuery);
         await JSRuntime.InvokeVoidAsync("downloadFile",
-            $"Proposals_{DateTime.Now:yyyyMMdd}.xlsx",
+            $"Briefs_{DateTime.Now:yyyyMMdd}.xlsx",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             bytes);
     }
 
     async Task createPDF()
     {
-        var bytes = await ProjectService.ExportProjectPDFAsync(ProjectType.Proposal, searchQuery);
+        var bytes = await ProjectService.ExportProjectPDFAsync(ProjectType.Brief, searchQuery);
         await JSRuntime.InvokeVoidAsync("downloadFile",
             $"Projects_{DateTime.Now:yyyyMMdd}.pdf",
             "application/pdf",

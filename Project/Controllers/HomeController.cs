@@ -164,7 +164,7 @@ namespace Project.Controllers
             var result = await _context.Projects
                 .AsNoTracking()
                 .Where(p => p.SubmissionDate >= fromDate && p.SubmissionDate <= toDate
-                            && p.ProjectType != ProjectType.Proposal)
+                            && p.ProjectType != ProjectType.Brief)
                 .GroupBy(p => new
                 {
                     p.SubmissionDate.Year,

@@ -61,7 +61,7 @@
                 <label class="input-group-text" for="inputGroupSelect01">Type</label>
                 <select class="form-select" @bind="selectedType" @bind:after="OnFilterChanged">
                     <option value="">All</option>
-                    @foreach (var type in Enum.GetValues<ProjectType>().Where(t => t != ProjectType.Proposal))
+                    @foreach (var type in Enum.GetValues<ProjectType>().Where(t => t != ProjectType.Brief))
                     {
                         <option value="@type">@EnumHelper.GetDisplayName(type)</option>
                     }
@@ -140,7 +140,7 @@
 }
 else
 {
-    <p>Please enter some projects via Proposals.</p>
+    <p>Please enter some projects via Project Briefs.</p>
 }
 
 
@@ -151,7 +151,7 @@ else
             <EditForm method="post" Model="Proposal" OnValidSubmit="HandleUpdate"
                       FormName="create">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Proposal</h1>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Project</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -241,7 +241,7 @@ else
                                                      id="ProjectType"
                                                      class="form-select">
                                             <option value="">-- Select Project Type --</option>
-                                            @foreach (var type in Enum.GetValues<ProjectType>().Where(t => t != ProjectType.Proposal))
+                                            @foreach (var type in Enum.GetValues<ProjectType>().Where(t => t != ProjectType.Brief))
                                             {
                                                 <option value="@type">@EnumHelper.GetDisplayName(type)</option>
                                             }
@@ -371,9 +371,9 @@ else
             .FirstOrDefault();
         var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
 
-        if (selectedStatus?.Name == "Approved" && project.ProjectType == ProjectType.Proposal)
+        if (selectedStatus?.Name == "Approved" && project.ProjectType == ProjectType.Brief)
         {
-            submitMessage = "Approved proposals must be assigned a valid project type.";
+            submitMessage = "Approved Project Brief must be assigned a valid project type.";
             return;
         }
 
@@ -409,9 +409,9 @@ else
         {
             var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
 
-            if (selectedStatus?.Name == "Approved" && Proposal.ProjectType == ProjectType.Proposal)
+            if (selectedStatus?.Name == "Approved" && Proposal.ProjectType == ProjectType.Brief)
             {
-                submitMessage = "Approved proposals must be assigned a valid project type.";
+                submitMessage = "Approved Project Brief must be assigned a valid project type.";
                 return;
             }
             // EditPerson.ProponentID = ;

@@ -29,7 +29,7 @@ namespace Project.Models
 
     public enum ProjectType
     {
-        Proposal,
+        Brief,
         ESMP,
         Audit,
         ESIA

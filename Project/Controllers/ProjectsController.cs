@@ -100,8 +100,8 @@ namespace Project.Controllers
             var projects = await _context.Projects
                 .AsNoTracking()
                 .Where(p => isProposal
-        ? p.ProjectType == ProjectType.Proposal
-        : p.ProjectType != ProjectType.Proposal)
+        ? p.ProjectType == ProjectType.Brief
+        : p.ProjectType != ProjectType.Brief)
                 .Select(p => new
                 {
                     p.Id,
@@ -314,7 +314,7 @@ namespace Project.Controllers
         {
             var query = _context.Projects
                 .Where(p => type == null
-                    ? p.ProjectType != ProjectType.Proposal
+                    ? p.ProjectType != ProjectType.Brief
                     : p.ProjectType == type)
                 .Include(p => p.Proponent)
                 .Include(p => p.Trackings)
@@ -427,8 +427,8 @@ namespace Project.Controllers
         {
             var query = _context.Projects
                 .Where(p => type == null
-                    ? p.ProjectType != ProjectType.Proposal
-                    : p.ProjectType == ProjectType.Proposal)
+                    ? p.ProjectType != ProjectType.Brief
+                    : p.ProjectType == ProjectType.Brief)
                 .Include(p => p.Proponent)
                 .Include(p => p.Trackings)
                     .ThenInclude(t => t.Status)

@@ -9,6 +9,8 @@ namespace Project.Models
         [Required]
         public Guid ProponentID { get; set; }
         [Required]
+        public Guid? CategoryID { get; set; }
+        [Required]
         public string? Name { get; set; }
         [Required]
         public string? Location { get; set; }
@@ -23,6 +25,7 @@ namespace Project.Models
         public DateTime updatedOn { get; set; }
         //public ICollection<Proponent>? Proponents { get; set; }
         public Proponent? Proponent { get; set; }
+        public CategoryModel? Category { get; set; }
         public ICollection<TrackingModel>? Trackings { get; set; }
         public TrackingModel? Tracking { get; set; }
     }

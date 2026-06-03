@@ -9,6 +9,8 @@ namespace FrontEnd.Client.DTOs
         [Required]
         public Guid? ProponentID { get; set; }
         [Required]
+        public Guid? CategoryID { get; set; }
+        [Required]
         public string? Name { get; set; }
         [Required]
         public string? Location { get; set; }
@@ -23,6 +25,7 @@ namespace FrontEnd.Client.DTOs
         public DateTime updatedOn { get; set; }
         //public ICollection<Proponent>? Proponents { get; set; }
         public ProponentsDTO? Proponent { get; set; }
+        public CategoryDTO? Category { get; set; }
         // Initialize Trackings to an empty collection to avoid null reference or empty-sequence issues in the UI
         public ICollection<TrackingDTO> Trackings { get; set; } = new List<TrackingDTO>();
         public TrackingDTO? Tracking { get; set; }

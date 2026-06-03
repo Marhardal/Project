@@ -55,6 +55,7 @@ namespace Project.Controllers
 
             return Ok(result);
         }
+
         // GET: api/Proponents
         [HttpGet("api/GetProjectbyProponent")]
         public async Task<ActionResult<IEnumerable<ProjectbyProponentDTO>>> GetProjectbyProponent(DateTime? From, DateTime? To)
@@ -69,7 +70,6 @@ namespace Project.Controllers
                 Count = g.Count()
             }).Take(5).ToListAsync();
         }
-
 
         [HttpGet("api/GetRecentProjects")]
         public async Task<ActionResult<IEnumerable<RecentActivityDTO>>> GetRecentProject(DateTime? From, DateTime? To)
@@ -155,6 +155,7 @@ namespace Project.Controllers
 
             return Ok(result);
         }
+
         [HttpGet("api/projects-by-month")]
         public async Task<ActionResult<IEnumerable<ProjectMonthDTO>>> GetProjectsByMonth(DateTime? From, DateTime? To)
         {
@@ -182,6 +183,34 @@ namespace Project.Controllers
                 .OrderBy(x => x.Year)
                 .ThenBy(x => x.Month)
                 .ThenBy(x => x.Type)
+                .ToListAsync();
+
+            return Ok(result);
+        }
+
+        [HttpGet("api/projects-by-District")]
+        public async Task<ActionResult<IEnumerable<DistrictDistribution>>> GetProjectsByDistrict(DateTime? From, DateTime? To)
+        {
+            var fromDate = From ?? DateTime.Now.AddDays(-7);
+            var toDate = To ?? DateTime.Now;
+            var result = await _context.ProjectLocations
+                .AsNoTracking()
+                .Where(pl => pl.Project.SubmissionDate >= fromDate &&
+                             pl.Project.SubmissionDate <= toDate &&
+                             pl.Project.ProjectType != ProjectType.Brief)
+                .GroupBy(pl => new
+                {
+                    pl.LocationID,
+                    pl.Location.Location,
+                    pl.Location.Code
+                })
+                .Select(g => new DistrictDistribution
+                {
+                    District = g.Key.Location,
+                    Code = g.Key.Code,
+                    Total = g.Select(x => x.ProjectID).Distinct().Count()
+                })
+                .OrderByDescending(x => x.Total)
                 .ToListAsync();
 
             return Ok(result);

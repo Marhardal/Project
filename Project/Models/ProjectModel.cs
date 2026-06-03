@@ -9,11 +9,12 @@ namespace Project.Models
         [Required]
         public Guid ProponentID { get; set; }
         [Required]
-        public Guid? CategoryID { get; set; }
+        public Guid CategoryID { get; set; }
         [Required]
         public string? Name { get; set; }
-        [Required]
-        public string? Location { get; set; }
+        //[Required]
+        //public string? Location { get; set; }
+        //public Guid? LocationID { get; set; }
         [Required]
         public string? Description { get; set; }
         [Required]
@@ -26,8 +27,10 @@ namespace Project.Models
         //public ICollection<Proponent>? Proponents { get; set; }
         public Proponent? Proponent { get; set; }
         public CategoryModel? Category { get; set; }
+        public ICollection<ProjectLocation>? ProjectLocations { get; set; }
         public ICollection<TrackingModel>? Trackings { get; set; }
         public TrackingModel? Tracking { get; set; }
+        //public LocationModel? Location { get; set; }
     }
 
     public enum ProjectType

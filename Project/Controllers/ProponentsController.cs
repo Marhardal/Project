@@ -51,8 +51,13 @@ namespace Project.Controllers
         {
             Id = pro.Id,
             Name = pro.Name,
-            Location = pro.Location,
+            //Location = pro.Location,
             createdOn = pro.createdOn,
+
+            ProjectLocations = pro.ProjectLocations.Select(pl => new ProjectLocation
+            {
+                Location = pl.Location,
+            }).ToList(),
         }).ToList(),
 
         Contacts = p.Contacts.Select(c => new ContactPerson

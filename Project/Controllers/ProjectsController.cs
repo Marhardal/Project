@@ -105,7 +105,6 @@ namespace Project.Controllers
                 .Select(p => new
                 {
                     p.Id,
-                    p.Location,
                     p.Name,
                     p.ProjectType,
                     p.ProponentID,
@@ -123,6 +122,18 @@ namespace Project.Controllers
                         Location = p.Proponent.Location,
                         createdOn = p.createdOn,
                     },
+
+                    ProjectLocations = p.ProjectLocations
+                        .Select(pl => new ProjectLocation
+                        {
+                            ID = pl.ID,
+                            Location = pl.Location == null ? null : new LocationModel
+                            {
+                                ID = pl.Location.ID,
+                                Location = pl.Location.Location,
+                            }
+                        })
+                        .ToList(),
 
                     Trackings = p.Trackings
                         .OrderByDescending(t => t.createdOn)
@@ -166,7 +177,6 @@ namespace Project.Controllers
                 {
                     p.Id,
                     p.Name,
-                    p.Location,
                     p.ProjectType,
                     p.SubmissionDate,
                     p.closingDate,
@@ -181,6 +191,18 @@ namespace Project.Controllers
                         p.Proponent.Address,
                         p.Proponent.Location
                     },
+
+                    ProjectLocations = p.ProjectLocations
+                        .Select(pl => new
+                        {
+                            pl.ID,
+                            Location = pl.Location == null ? null : new
+                            {
+                                pl.Location.ID,
+                                pl.Location.Location
+                            }
+                        })
+                        .ToList(),
 
                     Trackings = p.Trackings
                         .OrderByDescending(t => t.createdOn)
@@ -331,7 +353,7 @@ namespace Project.Controllers
 
             if (!string.IsNullOrEmpty(filter))
             {
-                query = query.Where(i => i.Name.Contains(filter) || i.Location.Contains(filter));
+                query = query.Where(i => i.Name.Contains(filter));
             }
 
             var projects = await query.ToListAsync();
@@ -444,7 +466,7 @@ namespace Project.Controllers
 
             if (!string.IsNullOrEmpty(filter))
             {
-                query = query.Where(i => i.Name.Contains(filter) || i.Location.Contains(filter));
+                query = query.Where(i => i.Name.Contains(filter));
             }
 
             var projects = await query.ToListAsync();
@@ -483,7 +505,7 @@ namespace Project.Controllers
                         foreach (var project in projects)
                         {
                             table.Cell().Border(1).Padding(2).Text(project.Name);
-                            table.Cell().Border(1).Padding(2).Text(project.Location);
+                            table.Cell().Border(1).Padding(2).Text(string.Join(", ", project.ProjectLocations.Select(pl => pl.Location.Location)));
                             table.Cell().Border(1).Padding(2).Text(project.ProjectType.ToString());
                             table.Cell().Border(1).Padding(2).Text(project.Trackings
         .OrderByDescending(t => t.createdOn)

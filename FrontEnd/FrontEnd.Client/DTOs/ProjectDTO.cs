@@ -14,6 +14,7 @@ namespace FrontEnd.Client.DTOs
         public string? Name { get; set; }
         [Required]
         public string? Location { get; set; }
+        public Guid LocationID { get; set; }
         [Required]
         public string? Description { get; set; }
         [Required]

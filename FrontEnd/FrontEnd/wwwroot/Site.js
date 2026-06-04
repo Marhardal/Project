@@ -191,4 +191,46 @@ window.mapHelper = {
             wrapperHeight: rect.height
         };
     }
-};23
+};
+
+window.choicesHelper = {
+    _instances: {},
+
+    init: function (elementId, items, selectedValues, dotNetRef) {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+
+        // Destroy existing instance if any
+        if (this._instances[elementId]) {
+            this._instances[elementId].destroy();
+        }
+
+        const choices = new Choices(el, {
+            removeItemButton: true,
+            searchEnabled: true,
+            searchPlaceholderValue: 'Search...',
+            placeholderValue: 'Select locations',
+            shouldSort: false,
+            choices: items.map(i => ({
+                value: i.value,
+                label: i.label,
+                selected: selectedValues.includes(i.value)
+            }))
+        });
+
+        this._instances[elementId] = choices;
+
+        // Notify Blazor on change
+        el.addEventListener('change', () => {
+            const selected = choices.getValue(true);
+            dotNetRef.invokeMethodAsync('OnSelectionChanged', selected);
+        });
+    },
+
+    destroy: function (elementId) {
+        if (this._instances[elementId]) {
+            this._instances[elementId].destroy();
+            delete this._instances[elementId];
+        }
+    }
+};

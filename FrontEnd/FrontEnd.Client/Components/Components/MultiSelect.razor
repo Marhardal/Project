@@ -1,0 +1,57 @@
+﻿@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<select id="locationSelect" multiple class="form-select">
+</select>
+
+@code {
+    [Parameter] public required List<LocationDTO> Locations { get; set; }
+    [Parameter] public required List<Guid> SelectedLocationIds { get; set; }
+    [Parameter] public EventCallback<List<Guid>> SelectedLocationIdsChanged { get; set; }
+        private DotNetObjectReference<MultiSelect>? _dotNetRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+
+            // Build items list for Choices.js
+            var items = Locations.Select(l => new
+            {
+                value = l.ID.ToString(),
+                label = l.Location
+            }).ToList();
+
+            // Current selected values as strings
+            var selected = SelectedLocationIds
+                .Select(id => id.ToString())
+                .ToList();
+
+            await JS.InvokeVoidAsync(
+                "choicesHelper.init",
+                "locationSelect",
+                items,
+                selected,
+                _dotNetRef
+            );
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnSelectionChanged(List<string> selectedIds)
+    {
+        var guids = selectedIds
+            .Select(id => Guid.TryParse(id, out var g) ? g : Guid.Empty)
+            .Where(g => g != Guid.Empty)
+            .ToList();
+
+        await SelectedLocationIdsChanged.InvokeAsync(guids);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await JS.InvokeVoidAsync("choicesHelper.destroy", "locationSelect");
+        _dotNetRef?.Dispose();
+    }
+}

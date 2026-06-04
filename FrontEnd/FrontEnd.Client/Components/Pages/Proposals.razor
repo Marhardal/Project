@@ -79,7 +79,7 @@
                           title="@proposal.Name">@proposal.Name</span>
                 </td>
                 <td class="py-2">@proposal.Proponent?.Name</td>
-                <td class="py-2">@proposal.Location</td>
+                @* <td class="py-2">@proposal.Location</td> *@
                 @{
                     var status = proposal?.Trackings.OrderByDescending(p => p.createdOn).FirstOrDefault()?.Status;
                 }
@@ -134,6 +134,7 @@ else
                     </div>
                     <div class="modal-body">
                         <DataAnnotationsValidator />
+                        <ValidationSummary/>
                     @if (!string.IsNullOrEmpty(submitMessage))
                     {
                         <div class="alert alert-danger my-2" role="alert">
@@ -170,11 +171,25 @@ else
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="Location" class="form-label">Location</label>
-                                    <InputText @bind-Value="Proposal.Location" class="form-control" id="Location"
+                                    <label for="Location" class="form-label">Category</label>
+                                    @* <InputText @bind-Value="Proposal.Location" class="form-control" id="Location"
                                                placeholder="Enter Project Location.">
-                                    </InputText>
-                                    <ValidationMessage For="@(() => Proposal.Location)" class="text-danger" />
+                                    </InputText> *@
+                                <InputSelect @bind-Value="Proposal.CategoryID"
+                                             id="CategoryID"
+                                             class="form-select">
+                                    <option value="">-- Select Project Category --</option>
+                                    @foreach (var location in locations)
+                                    {
+                                        <option value="@location.ID">@location.Location</option>
+                                    }
+                                </InputSelect>
+                                
+                                    <ValidationMessage For="@(() => Proposal.CategoryID)" class="text-danger" />
+@if (!Proposal.SelectedLocationIds.Any() && isSubmitting)
+    {
+        <div class="text-danger small mt-1">Please select at least one location.</div>
+    }
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -185,6 +200,37 @@ else
                                     <ValidationMessage For="@(() => Proposal.SubmissionDate)" class="text-danger" />
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="Location" class="form-label">Location</label>
+                                @* <InputText @bind-Value="Proposal.Location" class="form-control" id="Location"
+                                               placeholder="Enter Project Location.">
+                                    </InputText> *@
+                                @* <InputSelect @bind-Value="Proposal.LocationID"
+                                             id="LocationID"
+                                             class="form-select">
+                                    <option value="">-- Select Project Location --</option>
+                                    @foreach (var location in locations)
+                                    {
+                                        <option value="@location.ID">@location.Location</option>
+                                    }
+                                </InputSelect> *@
+                                @if (locations.Any())
+                                {
+
+                                    <MultiSelect Locations="locations"
+                                                 SelectedLocationIds="Proposal.SelectedLocationIds"
+                                                 SelectedLocationIdsChanged="@(ids => Proposal.SelectedLocationIds = ids)"></MultiSelect>
+                                }
+                                @* <ValidationMessage For="@(() => Proposal.LocationID)" class="text-danger" /> *@
+                                @if (!Proposal.SelectedLocationIds.Any() && isSubmitting)
+                                {
+                                    <div class="text-danger small mt-1">Please select at least one location.</div>
+                                }
+                            </div>
+                        </div>
                         </div>
                     @{
                         var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
@@ -260,20 +306,21 @@ else
     private List<ProjectDTO> proposals = new();
     private List<ProponentsDTO> proponents = new();
     private List<StatusDTO> statuses = new();
+    private List<LocationDTO> locations = new();
     private List<ProjectType> projectTypes;
     [SupplyParameterFromForm]
     private ProjectDTO Proposal { get; set; } = new();
     private int pageSize = 10;
     private int currentPage = 1;
     private string searchQuery = string.Empty;
+    private HashSet<string> SelectedLocationIds { get; set; } = new();
 
     private int totalPages => (int)Math.Ceiling(filteredProposals.Count / (double)pageSize);
 
     private List<ProjectDTO> filteredProposals => proposals?
     .Where(p =>
         string.IsNullOrWhiteSpace(searchQuery) ||
-        p.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-        p.Location.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+        p.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
     .ToList() ?? new();
 
 
@@ -302,6 +349,9 @@ else
             var proponentResult = await ProponentService.GetProponentsAsync();
             proponents = proponentResult ?? new List<ProponentsDTO>();
 
+            var locationsResult = await LocationService.GetLocationsAsync();
+            locations = locationsResult ?? new List<LocationDTO>();
+
             isloaded = true;
         }
         catch (Exception ex)
@@ -318,9 +368,13 @@ else
 
     async Task HandleSubmission()
     {
-
+        isSubmitting = true;
         try
         {
+            if (!Proposal.SelectedLocationIds.Any())
+            {
+                return; // stop if nothing selected
+            }
             Proposal.createdOn = DateTime.Now;
             Proposal.ProjectType = ProjectType.Brief;
             Proposal.closingDate = DateTime.Now;
@@ -343,6 +397,7 @@ else
         }
         finally
         {
+            isSubmitting = false;
             var projectResult = await ProjectService.GetProjectAsync(true);
             proposals = projectResult ?? new List<ProjectDTO>();
 
@@ -426,7 +481,7 @@ else
         {
             Id = project.Id,
             Name = project.Name,
-            Location = project.Location,
+            // Location = project.Location,
             ProponentID = project.ProponentID,
             ProjectType = project.ProjectType,
             Description = project.Description,
@@ -475,5 +530,6 @@ else
             "application/pdf",
             bytes);
     }
+
 
 }

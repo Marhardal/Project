@@ -5,6 +5,9 @@ build_property.EnableTrimAnalyzer = false
 build_property.IncludeAllContentForSelfExtract = 
 build_property.VerifyReferenceTrimCompatibility = 
 build_property.VerifyReferenceAotCompatibility = 
+build_property.MudDebugAnalyzer = 
+build_property.MudAllowedAttributePattern = 
+build_property.MudAllowedAttributeList = 
 build_property.TargetFramework = net10.0
 build_property.TargetFramework = net10.0
 build_property.TargetPlatformMinVersion = 
@@ -47,6 +50,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd.Client/Components/Components/MalawiProjectMap.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXE1hbGF3aVByb2plY3RNYXAucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd.Client/Components/Components/MultiSelect.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXE11bHRpU2VsZWN0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd.Client/Components/Components/Paginator.razor]

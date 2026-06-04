@@ -5,6 +5,7 @@ using FrontEnd.Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -74,6 +75,7 @@ builder.Services.AddHttpClient<LocationService>((sp, client) =>
     client.Timeout = TimeSpan.FromSeconds(100);
 }).AddHttpMessageHandler<BearerTokenHandler>();
 
+builder.Services.AddMudServices();
 builder.Services.AddScoped<AuthStateService>();
 builder.Services.AddScoped<NavigationHistoryService>();
 await builder.Build().RunAsync();

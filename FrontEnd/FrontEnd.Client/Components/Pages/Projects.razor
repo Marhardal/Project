@@ -106,7 +106,7 @@
                     title="@project.Name">@project.Name</span>
                 </td>
                 <td>@project?.Proponent?.Name</td>
-                <td>@project?.Location</td>
+                @* <td>@project?.Location</td> *@
                 <td>@project?.ProjectType.ToString()</td>
                 @{
                     var status = project?.Trackings.OrderByDescending(p => p.createdOn).FirstOrDefault()?.Status;
@@ -192,10 +192,10 @@ else
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="Location" class="form-label">Location</label>
-                                <InputText @bind-Value="Proposal.Location" class="form-control" id="Location"
+                                @* <InputText @bind-Value="Proposal.Location" class="form-control" id="Location"
                                            placeholder="Enter Project Location.">
                                 </InputText>
-                                <ValidationMessage For="@(() => Proposal.Location)" class="text-danger" />
+                                <ValidationMessage For="@(() => Proposal.Location)" class="text-danger" /> *@
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -306,8 +306,7 @@ else
     private List<ProjectDTO> filteredProjects => projects?
         .Where(p =>
             (string.IsNullOrWhiteSpace(searchQuery) ||
-            p.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
-            p.Location.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+            p.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
             &&
             (selectedType == null || p.ProjectType == selectedType)
             &&
@@ -383,7 +382,7 @@ else
         {
             Id = project.Id,
             Name = project.Name,
-            Location = project.Location,
+            // Location = project.Location,
             ProponentID = project.ProponentID,
             ProjectType = project.ProjectType,
             Description = project.Description,

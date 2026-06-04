@@ -13,9 +13,6 @@ namespace FrontEnd.Client.DTOs
         [Required]
         public string? Name { get; set; }
         [Required]
-        public string? Location { get; set; }
-        public Guid LocationID { get; set; }
-        [Required]
         public string? Description { get; set; }
         [Required]
         public ProjectType ProjectType { get; set; }
@@ -29,7 +26,10 @@ namespace FrontEnd.Client.DTOs
         public CategoryDTO? Category { get; set; }
         // Initialize Trackings to an empty collection to avoid null reference or empty-sequence issues in the UI
         public ICollection<TrackingDTO> Trackings { get; set; } = new List<TrackingDTO>();
+
+        public ICollection<ProjectLocation>? ProjectLocations { get; set; }
         public TrackingDTO? Tracking { get; set; }
+        public List<Guid> SelectedLocationIds { get; set; } = new List<Guid>();
 
     }
 }

@@ -156,6 +156,27 @@ namespace Project.Controllers
             return Ok(result);
         }
 
+        [HttpGet("api/GetProjectCategories")]
+        public async Task<ActionResult<IEnumerable<ProjectStatus>>> GetProjectCategories(DateTime? From, DateTime? To)
+        {
+            var fromDate = From ?? DateTime.Now.AddDays(-7);
+            var toDate = To ?? DateTime.Now;
+            var result = await _context.Projects
+                .Where(p => p.SubmissionDate >= fromDate &&
+                            p.SubmissionDate <= toDate &&
+                            p.ProjectType != ProjectType.Brief)
+                .Include(p => p.Category)
+                .AsNoTracking()
+                .GroupBy(p => new { p.CategoryID, p.Category.Name })
+                .Select(g => new ProjectCategory
+                {
+                    Category = g.Key.Name,
+                    Total = g.Count()
+                })
+                .ToListAsync();
+            return Ok(result);
+        }
+
         [HttpGet("api/projects-by-month")]
         public async Task<ActionResult<IEnumerable<ProjectMonthDTO>>> GetProjectsByMonth(DateTime? From, DateTime? To)
         {

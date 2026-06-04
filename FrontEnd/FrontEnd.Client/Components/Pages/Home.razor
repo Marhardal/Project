@@ -109,7 +109,7 @@ else
 
         <!-- Projects Status + Projects by Proponent side by side -->
         <div class="row mt-2">
-            <div class="col-md-6 col-sm-12">
+            <div class="col-md-6 col-sm-12 mt-sm-2">
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
@@ -140,41 +140,41 @@ else
                     <div class="card-header">
                         <div class="row">
                             <div class="col-8">
-                                <div class="card-title">Projects by Proponent</div>
+                                <div class="card-title">Project Categories</div>
                             </div>
                             <div class="col-4 text-end">
-                                <NavLink class="btn btn-sm btn-outline-primary" href="Proponent/Projects">View</NavLink>
+                                <NavLink class="btn btn-sm btn-outline-primary" href="Project/Status">View</NavLink>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <TableTemplate Items="ProjectbyProponents" Context="Project">
-                            <TableHeader>
-                                <th scope="col">#</th>
-                                <th scope="col">Proponent</th>
-                                <th scope="col">Count</th>
-                            </TableHeader>
-                            <RowTemplate Context="Project">
-                                @{
-                                    int index = ProjectbyProponents.IndexOf(Project) + 1;
-                                }
-                                <td>@index</td>
-                                <td>@Project.Proponent</td>
-                                <td>@Project.Count</td>
-                            </RowTemplate>
-                        </TableTemplate>
+                        @if (ProjectCategories.Any())
+                        {
+                            <ApexChart TItem="ProjectCategory" Options="chartOptionsCategories" @key="chartKey">
+                                <ApexPointSeries TItem="ProjectCategory"
+                                                 Items="ProjectCategories"
+                                                 Name="Projects" SeriesType="SeriesType.Pie"
+                                                 XValue="e => e.Category" YValue="e => e.Total" />
+                            </ApexChart>
+                        }
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 
     <!-- Right column: Map -->
     <div class="col-md-4 col-sm-12 mt-2">
         <div class="card h-100">
             <div class="card-header">
-                <div class="card-title">Project Distribution</div>
+                <div class="row">
+                    <div class="col-8">
+                        <div class="card-title">Project Distribution</div>
+                    </div>
+                    <div class="col-4 text-end">
+                        <NavLink class="btn btn-sm btn-outline-primary" href="Project/Status">View</NavLink>
+                    </div>
+                </div>
             </div>
             <div class="card-body d-flex justify-content-center">
                 <MalawiProjectMap StartDate="StartDate" EndDate="EndDate" Distributions="Distributions" />
@@ -183,7 +183,38 @@ else
     </div>
 
     <!-- Bottom: Recent Projects full width -->
-    <div class="col-12 mt-2">
+    <div class="col-md-4 col-sm-12 mt-sm-2">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="card-title">Projects by Proponent</div>
+                    </div>
+                    <div class="col-4 text-end">
+                        <NavLink class="btn btn-sm btn-outline-primary" href="Proponent/Projects">View</NavLink>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <TableTemplate Items="ProjectbyProponents" Context="Project">
+                    <TableHeader>
+                        <th scope="col">#</th>
+                        <th scope="col">Proponent</th>
+                        <th scope="col">Count</th>
+                    </TableHeader>
+                    <RowTemplate Context="Project">
+                        @{
+                            int index = ProjectbyProponents.IndexOf(Project) + 1;
+                        }
+                        <td>@index</td>
+                        <td>@Project.Proponent</td>
+                        <td>@Project.Count</td>
+                    </RowTemplate>
+                </TableTemplate>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8 col-sm-12 mt-sm-2">
         <div class="card">
             <div class="card-header">
                 <div class="row">
@@ -247,10 +278,12 @@ else
     private List<StatusSummaryDTO>? StatusSummaries;
     private List<ProjectMonthDTO>? ProjectMonths;
     private List<DistrictDistribution>? Distributions;
+    private List<ProjectCategory>? ProjectCategories;
     private DateTime? StartDate;
     private DateTime? EndDate;
     private string Label = "This Month";
     private ApexChartOptions<ProjectStatusDTO> chartOptions;
+    private ApexChartOptions<ProjectCategory> chartOptionsCategories;
     private string MalawiSvg = "";
 
     protected override async Task OnInitializedAsync()
@@ -368,11 +401,27 @@ else
             ProjectStatuses = await HomeService.GetProjectStatuses(StartDate, EndDate) ?? new List<ProjectStatusDTO>();
             StatusSummaries = await HomeService.GetStatusSummary(StartDate, EndDate) ?? new List<StatusSummaryDTO>();
             ProjectMonths = await HomeService.GetProjectsByMonth(StartDate, EndDate) ?? new List<ProjectMonthDTO>();
-            Distributions = await HomeService.GetDistrictDistribution(StartDate, EndDate); 
+            Distributions = await HomeService.GetDistrictDistribution(StartDate, EndDate) ?? new List<DistrictDistribution>();
+            ProjectCategories = await HomeService.GetProjectCategories(StartDate, EndDate) ?? new List<ProjectCategory>();
 
             chartOptions = new ApexChartOptions<ProjectStatusDTO>
             {
                 Colors = ProjectStatuses.Select(x => x.Color).ToList(),
+                Legend = new Legend
+                {
+                    Position = LegendPosition.Bottom
+                },
+                Tooltip = new Tooltip
+                {
+                    Y = new TooltipY
+                    {
+                        Formatter = "function(val) { return val + ' Projects' }"
+                    }
+                }
+            };
+
+            chartOptionsCategories = new ApexChartOptions<ProjectCategory>
+            {
                 Legend = new Legend
                 {
                     Position = LegendPosition.Bottom

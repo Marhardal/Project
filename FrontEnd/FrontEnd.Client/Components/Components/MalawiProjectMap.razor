@@ -1,0 +1,182 @@
+﻿<div class="col-md-4 col-sm-12 mt-sm-2">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-8">
+                    <div class="card-title">Project Distribution</div>
+                </div>
+                <div class="col-4 text-end">
+                    <NavLink class="btn btn-sm btn-outline-primary" href="Project/Status">View</NavLink>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+
+            @if (_loading)
+            {
+                <p>Loading map...</p>
+            }
+            else
+            {
+                <div class="map-wrapper">
+                    <svg viewBox="0 0 1000 1000" width="600" height="600" xmlns="http://www.w3.org/2000/svg"
+                         stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width=".5">
+
+                        @foreach (var d in _districts)
+                        {
+                            <path id="@d.Code" d="@d.PathData" fill="@GetColor(d.Code)" @onmouseover="() => _hovered = d"
+                                  @onmouseout="() => _hovered = null" style="cursor:pointer">
+                                <title>@d.Name — @GetTotal(d.Code) projects</title>
+                            </path>
+                        }
+                    </svg>
+
+                    @if (_hovered != null)
+                    {
+                        <div class="tooltip">
+                            <strong>@_hovered.Name</strong><br />
+                            Projects: <b>@GetTotal(_hovered.Code)</b>
+                        </div>
+                    }
+
+                    <div class="legend">
+                        <span>0</span>
+                        <div class="legend-gradient"></div>
+                        <span>@_max</span>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    // ── State ────────────────────────────────────────────────
+    bool _loading = true;
+    DistrictEntry? _hovered;
+    Dictionary<string, int> _totals = new();
+    int _max = 1;
+    List<DistrictEntry> _districts = new();
+
+    // ── Models ───────────────────────────────────────────────
+    record ApiResult(string District, int Total, string Code);
+    record DistrictEntry(string Code, string Name, string PathData);
+
+    [Parameter]
+    public required DateTime? StartDate { get; set; }
+
+    [Parameter]
+    public required DateTime? EndDate { get; set; }
+
+    [Parameter]
+    public required List<DistrictDistribution>? Distributions { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadMapAsync();
+    }
+    private async Task LoadMapAsync()
+    {
+        _loading = true;
+        StateHasChanged();
+        var svgTask = Http.GetStringAsync(navigationManager.BaseUri + "maps/mw.svg");
+        var districtsTask = LocationService.GetLocationsAsync();
+        var resultsTask = HomeService.GetDistrictDistribution(StartDate, EndDate);
+
+        await Task.WhenAll(svgTask, districtsTask);
+
+        var dbDistricts = ((await districtsTask) ?? new())
+                            .ToDictionary(d => d.Code);
+
+        // var results = (await resultsTask) ?? new();
+
+        // Parse path geometry from SVG
+        var doc = new System.Xml.XmlDocument();
+        doc.LoadXml(svgTask.Result);
+
+        foreach (System.Xml.XmlNode node in doc.GetElementsByTagName("path"))
+        {
+            var id = node.Attributes?["id"]?.Value;
+            var d = node.Attributes?["d"]?.Value;
+
+            if (id == null || d == null || !id.StartsWith("MW")) continue;
+
+            // Name comes from DB, fallback to SVG name attribute
+            var name = dbDistricts.TryGetValue(id, out var db)
+                       ? db.Location
+                       : node.Attributes?["name"]?.Value ?? id;
+
+            _districts.Add(new DistrictEntry(id, name, d)); // ← real path data now
+        }
+
+        _totals = Distributions.ToDictionary(r => r.Code, r => r.Total);
+        _max = _totals.Values.DefaultIfEmpty(1).Max();
+
+        _loading = false;
+    }
+
+    // ── Helpers ──────────────────────────────────────────────
+    int GetTotal(string code) =>
+        _totals.GetValueOrDefault(code, 0);
+
+    string GetColor(string code)
+    {
+        var count = GetTotal(code);
+
+        // No projects — gray
+        if (count == 0) return "#d0d0d0";
+
+        // Has projects — green, darker = more projects
+        var ratio = (double)count / _max;
+        var green = (int)(100 + ratio * 155); // 100 (light green) → 255 (full green)
+        return $"rgb(0, {green}, 60)";
+    }
+}
+
+<style>
+    .map-wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* centers the SVG and legend */
+        width: 100%;
+    }
+
+    path {
+        transition: opacity 0.15s;
+    }
+
+    path:hover {
+        opacity: 0.7;
+    }
+
+    .tooltip {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 10px 14px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+        font-size: 0.9rem;
+        pointer-events: none;
+        min-width: 140px;
+    }
+
+    .legend {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+        font-size: 0.8rem;
+        color: #555;
+    }
+
+    .legend-gradient {
+        width: 180px;
+        height: 14px;
+        border-radius: 4px;
+        background: linear-gradient(to right, #d0d0d0, rgb(0, 255, 60));
+    }
+</style>

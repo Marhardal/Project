@@ -273,6 +273,13 @@ else
             </div>
         </div>
     </div>
+
+    <div class="col-md-12 mt-2">
+        <div class="map">
+            @* @((MarkupString)MalawiSvg) *@
+            <MalawiProjectMap StartDate="StartDate" EndDate="EndDate" Distributions="Distributions" />
+        </div>
+    </div>
 </div>
 
 @if (showProfileModal)
@@ -298,13 +305,16 @@ else
     private List<ProjectStatusDTO>? ProjectStatuses;
     private List<StatusSummaryDTO>? StatusSummaries;
     private List<ProjectMonthDTO>? ProjectMonths;
+    private List<DistrictDistribution>? Distributions;
     private DateTime? StartDate;
     private DateTime? EndDate;
     private string Label = "This Month";
     private ApexChartOptions<ProjectStatusDTO> chartOptions;
+    private string MalawiSvg = "";
 
     protected override async Task OnInitializedAsync()
     {
+        // MalawiSvg = await Http.GetStringAsync("https:localhost:7217/maps/mw.svg");
         await JSRuntime.InvokeVoidAsync("Spinner.show");
         StartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
         EndDate = DateTime.Today;
@@ -385,6 +395,13 @@ else
                 "document.getElementById('openProfileModalBtn')?.click();"
             );
         }
+
+        // Color the map districts whenever the page has rendered (including the initial load)
+        // Distributions will be populated by LoadData().
+        if (!string.IsNullOrWhiteSpace(MalawiSvg))
+        {
+            await JSRuntime.InvokeVoidAsync("colorDistricts", Distributions);
+        }
     }
 
     private void Apply()
@@ -410,6 +427,8 @@ else
             ProjectStatuses = await HomeService.GetProjectStatuses(StartDate, EndDate) ?? new List<ProjectStatusDTO>();
             StatusSummaries = await HomeService.GetStatusSummary(StartDate, EndDate) ?? new List<StatusSummaryDTO>();
             ProjectMonths = await HomeService.GetProjectsByMonth(StartDate, EndDate) ?? new List<ProjectMonthDTO>();
+            Distributions = await HomeService.GetDistrictDistribution(StartDate, EndDate); 
+
             chartOptions = new ApexChartOptions<ProjectStatusDTO>
             {
                 Colors = ProjectStatuses.Select(x => x.Color).ToList(),

@@ -67,6 +67,13 @@ builder.Services.AddHttpClient<HomeService>((sp, client) =>
     client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
     client.Timeout = TimeSpan.FromSeconds(100);
 }).AddHttpMessageHandler<BearerTokenHandler>();
+
+builder.Services.AddHttpClient<LocationService>((sp, client) =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
+    client.Timeout = TimeSpan.FromSeconds(100);
+}).AddHttpMessageHandler<BearerTokenHandler>();
+
 builder.Services.AddScoped<AuthStateService>();
 builder.Services.AddScoped<NavigationHistoryService>();
 await builder.Build().RunAsync();

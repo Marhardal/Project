@@ -164,5 +164,30 @@ namespace FrontEnd.Client.Services
             }
         }
 
+        public async Task<List<DistrictDistribution>> GetDistrictDistribution(DateTime? from, DateTime? to)
+        {
+            try
+            {
+                var result = await _http.GetFromJsonAsync<List<DistrictDistribution>>($"api/projects-by-District?From={from:yyyy-MM-dd}&To={to:yyyy-MM-dd}");
+                return result ?? new List<DistrictDistribution>();
+            }
+            catch (Exception ex)
+            {
+                // Log full exception including inner exceptions to help root-cause analysis
+                _logger.LogError(ex, "Failed to GET proponents from {BaseAddress}{Endpoint}", _http.BaseAddress, "api/Proponents");
+                if (ex is TaskCanceledException)
+                {
+                    _logger.LogWarning("Request was canceled - possible timeout or abort.");
+                }
+                if (ex.InnerException != null)
+                {
+                    _logger.LogError("Inner exception: {Inner}", ex.InnerException.Message);
+                }
+
+                // Return empty list to avoid bubbling exceptions to the UI lifecycle.
+                return new List<DistrictDistribution>();
+            }
+        }
+
     }
 }

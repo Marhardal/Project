@@ -161,3 +161,21 @@ window.downloadFile = (fileName, contentType, bytes) => {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 }
+
+window.colorDistricts = (districts) => {
+    districts.forEach(d => {
+        console.log(`Processing district ${d.district} with code ${d.code} and total ${d.total}`);
+        if (simplemaps_countrymap_mapdata.state_specific[d.code]) {
+            simplemaps_countrymap_mapdata.state_specific[d.code].color =
+                d.total >= 20 ? "#003a29" :
+                    d.total >= 10 ? "#006d4e" :
+                        d.total >= 5 ? "#00d396" :
+                            "#07ffb8";
+
+            simplemaps_countrymap_mapdata.state_specific[d.code].description =
+                `${d.district}: ${d.total} project(s)`;
+        }
+    });
+
+    simplemaps_countrymap.refresh();
+};

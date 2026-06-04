@@ -7,5 +7,7 @@
         public int Total { get; set; }
 
         public string? Code { get; set; }
+
+        public List<ProjectMonthDTO>? Project { get; set; }
     }
 }

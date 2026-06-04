@@ -1,4 +1,6 @@
-﻿namespace Project.DTO
+﻿using Project.Models;
+
+namespace Project.DTO
 {
     public class DistrictDistribution
     {
@@ -7,5 +9,7 @@
         public int? Total { get; set; }
 
         public string? Code { get; set; }
+
+        public List<ProjectMonthDTO>? Project { get; set; }
     }
 }

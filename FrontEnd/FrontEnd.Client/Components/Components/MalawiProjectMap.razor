@@ -18,33 +18,60 @@
             }
             else
             {
-                <div class="map-wrapper">
-                    <svg viewBox="0 0 1000 1000" width="600" height="600" xmlns="http://www.w3.org/2000/svg"
-                         stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width=".5">
 
-                        @foreach (var d in _districts)
-                        {
-                            <path id="@d.Code" d="@d.PathData" fill="@GetColor(d.Code)" @onmouseover="() => _hovered = d"
-                                  @onmouseout="() => _hovered = null" style="cursor:pointer">
-                                <title>@d.Name — @GetTotal(d.Code) projects</title>
-                            </path>
-                        }
-                    </svg>
+    <div class="map-wrapper" id="mapWrapper">
+        <svg viewBox="0 0 1000 1000" width="600" height="600" xmlns="http://www.w3.org/2000/svg"
+     stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width=".5">
 
-                    @if (_hovered != null)
-                    {
-                        <div class="tooltip">
-                            <strong>@_hovered.Name</strong><br />
-                            Projects: <b>@GetTotal(_hovered.Code)</b>
-                        </div>
-                    }
+            @foreach (var d in _districts)
+            {
+                <path id="@d.Code" d="@d.PathData" fill="@GetColor(d.Code)"
+                      @onmouseover="() => _hovered = d"
+                      @onmouseout="() => _hovered = null"
+                      @onmousemove="async (e) => await UpdateMousePosition(e)"
+                      style="cursor:pointer">
+                    @* <title>@d.Name — @GetTotal(d.Code) projects</title> *@
+                </path>
+            }
+        </svg>
+        @if (_hovered != null)
+        {
+            var distData = Distributions?.FirstOrDefault(d => d.Code == _hovered.Code);
 
-                    <div class="legend">
-                        <span>0</span>
-                        <div class="legend-gradient"></div>
-                        <span>@_max</span>
-                    </div>
+            <div class="district-card" style="left:@CardLeft; top:@CardTop;">
+                <div class="district-card-header">
+                    <strong>@_hovered.Name</strong>
+                    <span class="badge" style="background-color: @GetColor(_hovered.Code);">
+                        @GetTotal(_hovered.Code) total
+                    </span>
                 </div>
+
+                @if (distData?.Project != null && distData.Project.Any())
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var project in distData.Project)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>@((ProjectType)project.Type)</span>
+                                <span class="text-dark">@project.Total</span>
+                            </li>
+                        }
+                    </ul>
+                }
+                @* else
+                {
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item text-muted">No projects</li>
+                    </ul>
+                } *@
+            </div>
+        }
+        <div class="legend">
+            <span>0</span>
+            <div class="legend-gradient"></div>
+            <span>@_max</span>
+        </div>
+    </div>
             }
     @*     </div>
     </div> *@
@@ -57,6 +84,8 @@
     Dictionary<string, int> _totals = new();
     int _max = 1;
     List<DistrictEntry> _districts = new();
+    double _mouseX;
+    double _mouseY;
 
     // ── Models ───────────────────────────────────────────────
     record ApiResult(string District, int Total, string Code);
@@ -75,46 +104,90 @@
     {
         await LoadMapAsync();
     }
+
+    double _wrapperWidth;
+    double _wrapperHeight;
+    const double CardWidth = 220;
+    const double CardHeight = 150;
+
+    string CardLeft => (_mouseX + CardWidth + 15) > _wrapperWidth
+        ? $"{_mouseX - CardWidth - 10}px"
+        : $"{_mouseX + 15}px";
+
+    string CardTop => (_mouseY + CardHeight + 15) > _wrapperHeight
+        ? $"{_mouseY - CardHeight - 10}px"
+        : $"{_mouseY + 15}px";
+
+    async Task UpdateMousePosition(MouseEventArgs e)
+    {
+        try
+        {
+            var pos = await JSRuntime.InvokeAsync<MousePosition>(
+                "mapHelper.getMousePosition",
+                "mapWrapper",  // we'll use document.getElementById
+                e.ClientX,
+                e.ClientY
+            );
+
+            _mouseX = pos.X;
+            _mouseY = pos.Y;
+            _wrapperWidth = pos.WrapperWidth;
+            _wrapperHeight = pos.WrapperHeight;
+        }
+        catch { }
+    }
+
+    record MousePosition(double X, double Y, double WrapperWidth, double WrapperHeight);
+
     private async Task LoadMapAsync()
     {
         _loading = true;
         StateHasChanged();
-        var svgTask = Http.GetStringAsync(navigationManager.BaseUri + "maps/mw.svg");
+
+        _districts.Clear();
+
+        var svgTask = Http.GetStringAsync(navigationManager.BaseUri + "Maps/mw.svg");
         var districtsTask = LocationService.GetLocationsAsync();
         var resultsTask = HomeService.GetDistrictDistribution(StartDate, EndDate);
 
-        await Task.WhenAll(svgTask, districtsTask);
+        await Task.WhenAll(svgTask, districtsTask, resultsTask);
 
         var dbDistricts = ((await districtsTask) ?? new())
-                            .ToDictionary(d => d.Code);
+            .Where(d => !string.IsNullOrWhiteSpace(d.Code))
+            .ToDictionary(d => d.Code);
 
-        // var results = (await resultsTask) ?? new();
+        Distributions = (await resultsTask) ?? new();
 
-        // Parse path geometry from SVG
         var doc = new System.Xml.XmlDocument();
-        doc.LoadXml(svgTask.Result);
+        doc.LoadXml(await svgTask);
 
         foreach (System.Xml.XmlNode node in doc.GetElementsByTagName("path"))
         {
             var id = node.Attributes?["id"]?.Value;
             var d = node.Attributes?["d"]?.Value;
 
-            if (id == null || d == null || !id.StartsWith("MW")) continue;
+            if (string.IsNullOrWhiteSpace(id) ||
+                string.IsNullOrWhiteSpace(d) ||
+                !id.StartsWith("MW"))
+            {
+                continue;
+            }
 
-            // Name comes from DB, fallback to SVG name attribute
             var name = dbDistricts.TryGetValue(id, out var db)
-                       ? db.Location
-                       : node.Attributes?["name"]?.Value ?? id;
+                ? db.Location
+                : node.Attributes?["name"]?.Value ?? id;
 
-            _districts.Add(new DistrictEntry(id, name, d)); // ← real path data now
+            _districts.Add(new DistrictEntry(id, name, d));
         }
 
-        _totals = Distributions.ToDictionary(r => r.Code, r => r.Total);
+        _totals = Distributions
+            .Where(r => !string.IsNullOrWhiteSpace(r.Code))
+            .ToDictionary(r => r.Code, r => r.Total);
+
         _max = _totals.Values.DefaultIfEmpty(1).Max();
 
         _loading = false;
     }
-
     // ── Helpers ──────────────────────────────────────────────
     int GetTotal(string code) =>
         _totals.GetValueOrDefault(code, 0);
@@ -123,14 +196,22 @@
     {
         var count = GetTotal(code);
 
-        // No projects — gray
-        if (count == 0) return "#d0d0d0";
+        if (count == 0) return "#d0d0d0"; // no projects — gray
 
-        // Has projects — green, darker = more projects
         var ratio = (double)count / _max;
-        var green = (int)(100 + ratio * 155); // 100 (light green) → 255 (full green)
-        return $"rgb(0, {green}, 60)";
+        // low count = light green (150), high count = dark green (40)
+        var green = (int)(150 - ratio * 110); // 150 → 40
+        return $"rgb(0, {green}, 0)";
     }
+
+    string GetTypeColor(ProjectType type) => type switch
+    {
+        ProjectType.Brief => "#6c757d",  // gray
+        ProjectType.ESMP => "#0d6efd",  // blue
+        ProjectType.ESIA => "#198754",  // green
+        ProjectType.Audit => "#ffc107",  // yellow
+        _ => "#adb5bd"
+    };
 }
 
 <style>
@@ -177,6 +258,55 @@
         width: 180px;
         height: 14px;
         border-radius: 4px;
-        background: linear-gradient(to right, #d0d0d0, rgb(0, 255, 60));
+        background: linear-gradient(to right, rgb(0,150,0), rgb(0,40,0));
+    }
+
+    .district-card {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    min-width: 180px;
+    max-width: 220px;
+    pointer-events: none;
+    z-index: 10;
+    overflow: hidden;
+    }
+
+    .district-card {
+        position: absolute;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        min-width: 180px;
+        max-width: 220px;
+        pointer-events: none;
+        z-index: 10;
+        overflow: hidden;
+    }
+
+    .district-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        font-size: 0.9rem;
+    }
+
+    .district-card .list-group-item {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+    }
+
+    .type-dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 6px;
     }
 </style>

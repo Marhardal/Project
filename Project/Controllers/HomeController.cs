@@ -194,24 +194,32 @@ namespace Project.Controllers
             var fromDate = From ?? DateTime.Now.AddDays(-7);
             var toDate = To ?? DateTime.Now;
             var result = await _context.ProjectLocations
-                .AsNoTracking()
-                .Where(pl => pl.Project.SubmissionDate >= fromDate &&
-                             pl.Project.SubmissionDate <= toDate &&
-                             pl.Project.ProjectType != ProjectType.Brief)
-                .GroupBy(pl => new
-                {
-                    pl.LocationID,
-                    pl.Location.Location,
-                    pl.Location.Code
-                })
-                .Select(g => new DistrictDistribution
-                {
-                    District = g.Key.Location,
-                    Code = g.Key.Code,
-                    Total = g.Select(x => x.ProjectID).Distinct().Count()
-                })
-                .OrderByDescending(x => x.Total)
-                .ToListAsync();
+    .AsNoTracking()
+    .Where(pl => pl.Project.SubmissionDate >= fromDate &&
+                 pl.Project.SubmissionDate <= toDate &&
+                 pl.Project.ProjectType != ProjectType.Brief)
+    .GroupBy(pl => new
+    {
+        pl.LocationID,
+        pl.Location.Location,
+        pl.Location.Code
+    })
+    .Select(g => new DistrictDistribution
+    {
+        District = g.Key.Location,
+        Code = g.Key.Code,
+        Total = g.Select(x => x.ProjectID).Distinct().Count(),
+
+        Project = g.GroupBy(x => x.Project.ProjectType)
+            .Select(pt => new ProjectMonthDTO
+            {
+                Type = pt.Key,
+                Total = pt.Select(x => x.ProjectID).Distinct().Count()
+            })
+            .ToList()
+    })
+    .OrderByDescending(x => x.Total)
+    .ToListAsync();
 
             return Ok(result);
         }

@@ -3,7 +3,7 @@
 
 <PageTitle>Home</PageTitle>
 
-<div class="flex-wrap pt-3 pb-2 mb-3 d-flex justify-content-between flex-md-nowrap align-items-center border-bottom">
+<div class="flex-wrap pb-2 mb-3 d-flex justify-content-between flex-md-nowrap align-items-center border-bottom">
     <h1 class="h2">Dashboard</h1>
     <div class="mb-2 btn-toolbar mb-md-0">
         @* <div class="btn-group me-2">
@@ -70,13 +70,16 @@ else
 }
 
 <div class="my-2 row">
-    <div class="col-md-8 col-sm-12 mt-sm-2">
-        <div class="card">
+
+    <!-- Left column: Chart + Status + Proponent -->
+    <div class="col-md-8 col-sm-12">
+
+        <!-- Projects Submitted per Month -->
+        <div class="card mt-2">
             <div class="card-header">
                 <div class="row">
                     <div class="col-8">
-                <div class="card-title">Projects Submitted per Month</div>
-                        @* <div class="card-title">Projects Status</div> *@
+                        <div class="card-title">Projects Submitted per Month</div>
                     </div>
                     <div class="col-4 text-end">
                         <NavLink class="btn btn-sm btn-outline-primary" href="Month/Project">View</NavLink>
@@ -86,160 +89,106 @@ else
             <div class="card-body">
                 @if (ProjectMonths.Any())
                 {
-                    <ApexChart TItem="ProjectMonthDTO"
-                               Height="300" @key="chartKey"  Options="lineChartOptions">
-
+                    <ApexChart TItem="ProjectMonthDTO" Height="300" @key="chartKey" Options="lineChartOptions">
                         <ApexPointSeries TItem="ProjectMonthDTO"
                                          Items="ProjectMonths.Where(x => x.Type == ProjectType.ESMP)"
-                                         Name="ESMP"
-                                         SeriesType="SeriesType.Line"
-                                         XValue="e => e.MonthName"
-                                         YValue="e => e.Total" />
-
+                                         Name="ESMP" SeriesType="SeriesType.Line"
+                                         XValue="e => e.MonthName" YValue="e => e.Total" />
                         <ApexPointSeries TItem="ProjectMonthDTO"
                                          Items="ProjectMonths.Where(x => x.Type == ProjectType.ESIA)"
-                                         Name="ESIA"
-                                         SeriesType="SeriesType.Line"
-                                         XValue="e => e.MonthName"
-                                         YValue="e => e.Total" />
-
+                                         Name="ESIA" SeriesType="SeriesType.Line"
+                                         XValue="e => e.MonthName" YValue="e => e.Total" />
                         <ApexPointSeries TItem="ProjectMonthDTO"
                                          Items="ProjectMonths.Where(x => x.Type == ProjectType.Audit)"
-                                         Name="Audit"
-                                         SeriesType="SeriesType.Line"
-                                         XValue="e => e.MonthName"
-                                         YValue="e => e.Total" />
-
+                                         Name="Audit" SeriesType="SeriesType.Line"
+                                         XValue="e => e.MonthName" YValue="e => e.Total" />
                     </ApexChart>
-                    @* <ApexChart TItem="ProjectMonthDTO"
-                               Height="300">
+                }
+            </div>
+        </div>
 
-                        @foreach (var type in Enum.GetValues<ProjectType>())
+        <!-- Projects Status + Projects by Proponent side by side -->
+        <div class="row mt-2">
+            <div class="col-md-6 col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="card-title">Projects Status</div>
+                            </div>
+                            <div class="col-4 text-end">
+                                <NavLink class="btn btn-sm btn-outline-primary" href="Project/Status">View</NavLink>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        @if (ProjectStatuses.Any())
                         {
-                            <ApexPointSeries TItem="ProjectMonthDTO"
-                                             Items="ProjectMonths.Where(x => x.Type == type).ToList()"
-                                             Name="@type.ToString()"
-                                             SeriesType="SeriesType.Line"
-                                             XValue="e => e.MonthName"
-                                             YValue="e => e.Total" />
+                            <ApexChart TItem="ProjectStatusDTO" Options="chartOptions" @key="chartKey">
+                                <ApexPointSeries TItem="ProjectStatusDTO"
+                                                 Items="ProjectStatuses"
+                                                 Name="Projects" SeriesType="SeriesType.Pie"
+                                                 XValue="e => e.Status" YValue="e => e.Total" />
+                            </ApexChart>
                         }
-
-                    </ApexChart> *@
-                }
-            </div>
-        </div>
-    </div>
-    @* 
-    <div class="col-md-6 col-sm-12 mt-sm-2">
-        <div class="card">
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-8">
-                        <div class="card-title">Projects Status</div>
-                    </div>
-                    <div class="col-4 text-end">
-                        <NavLink class="btn btn-sm btn-outline-primary" href="Project/Status">View</NavLink>
                     </div>
                 </div>
             </div>
-            <div class="card-body">
-                @if (GroupedProjects.Any())
-                {
-                    <ApexChart TItem="GroupedProjectTypesDTO">
 
-                        <ApexPointSeries TItem="GroupedProjectTypesDTO"
-                                         Items="GroupedProjects"
-                                         Name="Projects"
-                                         SeriesType="SeriesType.Pie"
-                                         XValue="e => e.Type.ToString()"
-                                         YValue="e => e.Count" />
-                    </ApexChart>
-                }
-            </div>
-        </div>
-    </div>
-     *@
-    <div class="col-md-4 col-sm-12 mt-sm-2">
-        <div class="card">
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-8">
-                        <div class="card-title">Projects Status</div>
+            <div class="col-md-6 col-sm-12 mt-sm-2">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="card-title">Projects by Proponent</div>
+                            </div>
+                            <div class="col-4 text-end">
+                                <NavLink class="btn btn-sm btn-outline-primary" href="Proponent/Projects">View</NavLink>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-4 text-end">
-                        <NavLink class="btn btn-sm btn-outline-primary" href="Project/Status">View</NavLink>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                @if (ProjectStatuses.Any())
-                {
-                    @* <ApexChart TItem="ProjectStatusDTO">
-
-                        <ApexPointSeries TItem="ProjectStatusDTO"
-                                         Items="ProjectStatuses"
-                                         Name="Projects"
-                                         SeriesType="SeriesType.Pie"
-                                         XValue="e => e.Status"
-                                         YValue="e => e.Total" />
-                    </ApexChart> *@
-                    <ApexChart TItem="ProjectStatusDTO"
-                               Options="chartOptions" @key="chartKey">
-
-                        <ApexPointSeries TItem="ProjectStatusDTO"
-                                         Items="ProjectStatuses"
-                                         Name="Projects"
-                                         SeriesType="SeriesType.Pie"
-                                         XValue="e => e.Status"
-                                         YValue="e => e.Total" />
-                    </ApexChart>
-                }
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4 col-sm-12 mt-sm-2">
-        <div class="card">
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-8">
-                <div class="card-title">Projects by Proponent</div>
-                        @* <div class="card-title">Projects Status</div> *@
-                    </div>
-                    <div class="col-4 text-end">
-                        <NavLink class="btn btn-sm btn-outline-primary" href="Proponent/Projects">View</NavLink>
+                    <div class="card-body">
+                        <TableTemplate Items="ProjectbyProponents" Context="Project">
+                            <TableHeader>
+                                <th scope="col">#</th>
+                                <th scope="col">Proponent</th>
+                                <th scope="col">Count</th>
+                            </TableHeader>
+                            <RowTemplate Context="Project">
+                                @{
+                                    int index = ProjectbyProponents.IndexOf(Project) + 1;
+                                }
+                                <td>@index</td>
+                                <td>@Project.Proponent</td>
+                                <td>@Project.Count</td>
+                            </RowTemplate>
+                        </TableTemplate>
                     </div>
                 </div>
             </div>
-            <div class="card-body">
+        </div>
 
-                <TableTemplate Items="ProjectbyProponents" Context="Project">
-                    <TableHeader>
-                       <th scope="col">#</th>
-                       <th scope="col">Proponent</th>
-                       <th scope="col">Count</th>
-                    </TableHeader>
-                    <RowTemplate Context="Project">
-                        @{
-                            int index = ProjectbyProponents.IndexOf(Project) + 1;
-                        }
-                        <td>@index</td>
-                        <td>@Project.Proponent</td>
-                        <td>@Project.Count</td>
-                    </RowTemplate>
-                </TableTemplate>
-                
-                @* <canvas id="pie" width="400" height="400"></canvas> *@
+    </div>
+
+    <!-- Right column: Map -->
+    <div class="col-md-4 col-sm-12 mt-2">
+        <div class="card h-100">
+            <div class="card-header">
+                <div class="card-title">Project Distribution</div>
+            </div>
+            <div class="card-body d-flex justify-content-center">
+                <MalawiProjectMap StartDate="StartDate" EndDate="EndDate" Distributions="Distributions" />
             </div>
         </div>
     </div>
-    <div class="col-md-8 col-sm-12 mt-sm-2">
+
+    <!-- Bottom: Recent Projects full width -->
+    <div class="col-12 mt-2">
         <div class="card">
             <div class="card-header">
                 <div class="row">
                     <div class="col-8">
-                <div class="card-title">Recent Projects</div>
-                        @* <div class="card-title">Projects Status</div> *@
+                        <div class="card-title">Recent Projects</div>
                     </div>
                     <div class="col-4 text-end">
                         <NavLink class="btn btn-sm btn-outline-primary" href="/Projects">View</NavLink>
@@ -247,7 +196,6 @@ else
                 </div>
             </div>
             <div class="card-body">
-                
                 <TableTemplate Items="RecentProjects" Context="Project">
                     <TableHeader>
                         <th scope="col">#</th>
@@ -264,9 +212,9 @@ else
                         <td>
                             <span class="d-inline-block text-truncate" style="max-width: 250px;"
                                   title="@Project.Project">@Project.Project</span>
-                            </td>
+                        </td>
                         <td>@Project.Proponent</td>
-                        <td><StatusItem  Name="@Project.Status" Colour="@Project.Color"/></td>
+                        <td><StatusItem Name="@Project.Status" Colour="@Project.Color" /></td>
                         <td>@Project.Date.Humanize()</td>
                     </RowTemplate>
                 </TableTemplate>
@@ -274,14 +222,7 @@ else
         </div>
     </div>
 
-    <div class="col-md-12 mt-2">
-        <div class="map">
-            @* @((MarkupString)MalawiSvg) *@
-            <MalawiProjectMap StartDate="StartDate" EndDate="EndDate" Distributions="Distributions" />
-        </div>
-    </div>
 </div>
-
 @if (showProfileModal)
 {
     <User Profile="@userProfile" />

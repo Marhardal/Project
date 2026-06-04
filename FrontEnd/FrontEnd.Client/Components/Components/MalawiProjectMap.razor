@@ -4,14 +4,27 @@
 }
 else
 {
-    <div class="map-wrapper" id="mapWrapper">
-        <svg viewBox="0 0 1000 1000" width="600" height="600" xmlns="http://www.w3.org/2000/svg"
-             stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width=".5">
+    <div class="map-wrapper" id="mapWrapper"
+     @onwheel="OnWheel" @onwheel:preventDefault
+     @onmousedown="OnMouseDown"
+     @onmousemove="OnMouseMove"
+     @onmouseup="OnMouseUp"
+     @onmouseleave="OnMouseLeave">
+
+        <svg viewBox="0 0 1000 1000"
+             width="100%"
+             height="100%"
+             xmlns="http://www.w3.org/2000/svg"
+             stroke="#ffffff" stroke-linecap="round"
+             stroke-linejoin="round" stroke-width=".5"
+             style="display:block; overflow:hidden;">
+
+        <g transform="translate(@_translateX.ToString("F2", System.Globalization.CultureInfo.InvariantCulture), @_translateY.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)) scale(@_scale.ToString("F4", System.Globalization.CultureInfo.InvariantCulture))">
 
             @foreach (var d in _districts)
             {
                 <path id="@d.Code" d="@d.PathData" fill="@GetColor(d.Code)"
-                      @onmouseover="() => _hovered = d"
+                      @onmouseover="() => { _hovered = d; }"
                       @onmouseout="() => _hovered = null"
                       @onmousemove="async (e) => await UpdateMousePosition(e)"
                       style="cursor:pointer">
@@ -24,7 +37,7 @@ else
                       y="@d.Cy.ToString(System.Globalization.CultureInfo.InvariantCulture)"
                       text-anchor="middle"
                       dominant-baseline="middle"
-                      font-size="12"
+                      font-size="@(12 / _scale)"
                       font-weight="600"
                       fill="@(GetTotal(d.Code) > 0 ? "#ffffff" : "#555555")"
                       stroke="none"
@@ -33,50 +46,53 @@ else
                     @d.Code.Replace("MW", "")
                 </svg:text>
             }
-        </svg>
+        </g>
+    </svg>
 
-        @if (_hovered != null)
-        {
-            var distData = Distributions?.FirstOrDefault(d => d.Code == _hovered.Code);
-
-            <div class="district-card" style="left:@CardLeft; top:@CardTop;">
-                <div class="district-card-header">
-                    <strong>@_hovered.Name</strong>
-                    <span class="badge" style="background-color: @GetColor(_hovered.Code);">
-                        @GetTotal(_hovered.Code) total
-                    </span>
-                </div>
-
-                @if (distData?.Project != null && distData.Project.Any())
-                {
-                    <ul class="list-group list-group-flush">
-                        @foreach (var project in distData.Project)
-                        {
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>
-                                    @* <span class="type-dot" style="background:@GetTypeColor(project.Type)"></span> *@
-                                    @((ProjectType)project.Type)
-                                </span>
-                                <span class="text-dark fw-bold">@project.Total</span>
-                            </li>
-                        }
-                    </ul>
-                }
-                else
-                {
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item text-muted">No projects</li>
-                    </ul>
-                }
-            </div>
-        }
-
-        <div class="legend">
-            <span>0</span>
-            <div class="legend-gradient"></div>
-            <span>@_max</span>
-        </div>
+    @* Zoom controls *@
+    <div class="zoom-controls">
+            <button class="zoom-btn" @onclick="ZoomIn">+</button>
+        <button class="zoom-btn" @onclick="ResetZoom">⊙</button>
+            <button class="zoom-btn" @onclick="ZoomOut">−</button>
     </div>
+
+    @if (_hovered != null)
+    {
+        var distData = Distributions?.FirstOrDefault(d => d.Code == _hovered.Code);
+        <div class="district-card" style="left:@CardLeft; top:@CardTop;">
+            <div class="district-card-header">
+                <strong>@_hovered.Name</strong>
+                <span class="badge" style="background-color: @GetColor(_hovered.Code);">
+                    @GetTotal(_hovered.Code) total
+                </span>
+            </div>
+            @if (distData?.Project != null && distData.Project.Any())
+            {
+                <ul class="list-group list-group-flush">
+                    @foreach (var project in distData.Project)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>@((ProjectType)project.Type)</span>
+                            <span class="text-dark fw-bold">@project.Total</span>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item text-muted">No projects</li>
+                </ul>
+            }
+        </div>
+    }
+
+    <div class="legend">
+        <span>0</span>
+        <div class="legend-gradient"></div>
+        <span>@_max</span>
+    </div>
+</div>
 }
 
 @code {
@@ -206,6 +222,113 @@ else
         catch { }
     }
 
+    // ── Zoom & Pan state ─────────────────────────────────────
+    double _scale = 1.0;
+    double _translateX = 0;
+    double _translateY = 0;
+    bool _isPanning = false;
+    double _panStartX;
+    double _panStartY;
+
+    const double MinScale = 0.5;
+    const double MaxScale = 8.0;
+
+    // Zoom with mouse wheel — zoom toward cursor
+    // void OnWheel(WheelEventArgs e)
+    // {
+    //     var zoomFactor = e.DeltaY < 0 ? 1.15 : 0.87;
+    //     var newScale = Math.Clamp(_scale * zoomFactor, MinScale, MaxScale);
+
+    //     Zoom toward mouse position
+    //     var mouseX = e.OffsetX;
+    //     var mouseY = e.OffsetY;
+
+    //     _translateX = mouseX - (mouseX - _translateX) * (newScale / _scale);
+    //     _translateY = mouseY - (mouseY - _translateY) * (newScale / _scale);
+    //     _scale = newScale;
+    // }
+
+    // Zoom buttons
+    void ZoomIn() => ApplyZoom(1.3);
+    void ZoomOut() => ApplyZoom(0.77);
+    // void ResetZoom() { _scale = 1; _translateX = 0; _translateY = 0; }
+
+    void ApplyZoom(double factor)
+    {
+        var newScale = Math.Clamp(_scale * factor, MinScale, MaxScale);
+        // Zoom toward center (300, 300 = half of 600px SVG)
+        _translateX = 300 - (300 - _translateX) * (newScale / _scale);
+        _translateY = 300 - (300 - _translateY) * (newScale / _scale);
+        _scale = newScale;
+    }
+
+    // Pan with mouse drag
+    void OnMouseDown(MouseEventArgs e)
+    {
+        if (e.Button == 0) // left click
+        {
+            _isPanning = true;
+            _panStartX = e.ClientX - _translateX;
+            _panStartY = e.ClientY - _translateY;
+        }
+    }
+
+    // void OnMouseMove(MouseEventArgs e)
+    // {
+    //     if (_isPanning)
+    //     {
+    //         _translateX = e.ClientX - _panStartX;
+    //         _translateY = e.ClientY - _panStartY;
+    //     }
+    // }
+
+    void ClampTranslation()
+    {
+        var svgSize = 600 * _scale;
+        var maxTransX = 200 * _scale;
+        var minTransX = -(svgSize - 600 + 200 * _scale) + 600 - svgSize;
+        var maxTransY = 200 * _scale;
+        var minTransY = -(svgSize - 600 + 200 * _scale) + 600 - svgSize;
+
+        _translateX = Math.Clamp(_translateX, minTransX, maxTransX);
+        _translateY = Math.Clamp(_translateY, minTransY, maxTransY);
+    }
+
+    void OnWheel(WheelEventArgs e)
+    {
+        var zoomFactor = e.DeltaY < 0 ? 1.15 : 0.87;
+        var newScale = Math.Clamp(_scale * zoomFactor, MinScale, MaxScale);
+
+        var mouseX = e.OffsetX;
+        var mouseY = e.OffsetY;
+
+        _translateX = mouseX - (mouseX - _translateX) * (newScale / _scale);
+        _translateY = mouseY - (mouseY - _translateY) * (newScale / _scale);
+        _scale = newScale;
+
+        ClampTranslation(); // ← add this
+    }
+
+    void OnMouseMove(MouseEventArgs e)
+    {
+        if (_isPanning)
+        {
+            _translateX = e.ClientX - _panStartX;
+            _translateY = e.ClientY - _panStartY;
+            ClampTranslation(); // ← add this
+        }
+    }
+
+    void ResetZoom()
+    {
+        _scale = 1;
+        _translateX = 0;
+        _translateY = 0;
+    }
+
+    void OnMouseUp(MouseEventArgs e) => _isPanning = false;
+    void OnMouseLeave(MouseEventArgs e) => _isPanning = false;
+
     // ── Helpers ──────────────────────────────────────────────
     int GetTotal(string code) => _totals.GetValueOrDefault(code, 0);
 
@@ -233,9 +356,18 @@ else
         position: relative;
         display: flex;
         flex-direction: column;
-        align-items: center; /* centers the SVG and legend */
+        align-items: center;
         width: 100%;
+        overflow: hidden;
+        cursor: grab;
+        border-radius: 8px;
+        background: #f9f9f9;
+        /* Remove fixed height: 600px — let it fill parent */
     }
+
+        .map-wrapper:active {
+            cursor: grabbing;
+        }
 
     path {
         transition: opacity 0.15s;

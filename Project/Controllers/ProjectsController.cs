@@ -113,7 +113,12 @@ namespace Project.Controllers
                     p.assignedDate,
                     p.Description,
                     p.createdOn,
-
+                    p.CategoryID,
+                    Category = p.Category == null ? null : new CategoryModel
+                    {
+                        ID = p.Category.ID, 
+                        Name = p.Category.Name
+                    },
                     Proponent = p.Proponent == null ? null : new Proponent
                     {
                         ID = p.Proponent.ID,
@@ -122,16 +127,11 @@ namespace Project.Controllers
                         Location = p.Proponent.Location,
                         createdOn = p.createdOn,
                     },
-
                     ProjectLocations = p.ProjectLocations
                         .Select(pl => new ProjectLocation
                         {
                             ID = pl.ID,
-                            Location = pl.Location == null ? null : new LocationModel
-                            {
-                                ID = pl.Location.ID,
-                                Location = pl.Location.Location,
-                            }
+                            LocationID = pl.LocationID
                         })
                         .ToList(),
 
@@ -256,6 +256,23 @@ namespace Project.Controllers
             if (id != projectModel.Id)
             {
                 return BadRequest();
+            }
+
+            if (!projectModel.SelectedLocationIds.Any())
+            {
+                return StatusCode(422, new { StatusMessage = "Please add a Location." });
+            }
+            if (projectModel.SelectedLocationIds.Any())
+            {
+                foreach (var locationID in projectModel.SelectedLocationIds)
+                {
+                    _context.ProjectLocations.Where(pl => pl.ProjectID == projectModel.Id).ExecuteDelete();
+                    _context.ProjectLocations.Add(new ProjectLocation
+                    {
+                        ProjectID = projectModel.Id,
+                        LocationID = Guid.Parse(locationID)
+                    });
+                }
             }
 
             _context.Entry(projectModel).State = EntityState.Modified;

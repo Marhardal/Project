@@ -427,6 +427,7 @@ else
                 submitMessage = "Approved a Project Brief must be assigned a valid project type.";
                 return;
             }
+            Proposal.SelectedLocationIds.ToList();
             // EditPerson.ProponentID = ;
             // Proponent!.ProponentID = Guid.Parse(PropID);
             Proposal.updatedOn = DateTime.Now;
@@ -493,11 +494,17 @@ else
             Description = project.Description,
             SubmissionDate = project.SubmissionDate,
             createdOn = project.createdOn,
+            CategoryID = project.CategoryID,
             Tracking = new TrackingDTO()
             {
                 StatusID = tracking?.StatusID ?? defaultStatusId
             }
         };
+
+        Proposal.SelectedLocationIds = project.ProjectLocations?.Select(i =>
+            i.LocationID
+        ).ToList();
+        // SelectedLocationIds = Proposal.SelectedLocationIds.ToList();
 
         var statusResult = await StatusService.GetStatusAsync();
         statuses = (statusResult ?? new List<StatusDTO>()).OrderBy(s => s.SortOrder)

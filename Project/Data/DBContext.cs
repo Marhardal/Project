@@ -75,8 +75,6 @@ namespace Project.Data
                 .HasForeignKey(t => t.userID)
                 .HasPrincipalKey(u => u.UserID);
 
-
-
             modelBuilder.Entity<UserModel>()
                 .HasOne(u => u.identityUser)
                 .WithOne()

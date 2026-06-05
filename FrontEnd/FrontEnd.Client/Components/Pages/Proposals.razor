@@ -179,9 +179,9 @@ else
                                              id="CategoryID"
                                              class="form-select">
                                     <option value="">-- Select Project Category --</option>
-                                    @foreach (var location in locations)
+                                    @foreach (var category in categories)
                                     {
-                                        <option value="@location.ID">@location.Location</option>
+                                        <option value="@category.ID">@category.Name</option>
                                     }
                                 </InputSelect>
                                 
@@ -307,6 +307,7 @@ else
     private List<ProponentsDTO> proponents = new();
     private List<StatusDTO> statuses = new();
     private List<LocationDTO> locations = new();
+    private List<CategoryDTO> categories = new();
     private List<ProjectType> projectTypes;
     [SupplyParameterFromForm]
     private ProjectDTO Proposal { get; set; } = new();
@@ -351,6 +352,9 @@ else
 
             var locationsResult = await LocationService.GetLocationsAsync();
             locations = locationsResult ?? new List<LocationDTO>();
+
+            var categoriesResult = await CategoryService.GetLocationsAsync();
+            categories = categoriesResult;
 
             isloaded = true;
         }

@@ -83,20 +83,24 @@ namespace Project.Data
                 .HasForeignKey<UserModel>(u => u.UserID)
                 .OnDelete(DeleteBehavior.Cascade);
 
+
             modelBuilder.Entity<ProjectLocation>()
-             .HasKey(pl => new { pl.ProjectID, pl.LocationID });
+                .HasKey(pl => new { pl.ProjectID, pl.LocationID }); // composite key
 
             modelBuilder.Entity<ProjectLocation>()
                 .HasOne(pl => pl.Project)
                 .WithMany(p => p.ProjectLocations)
-                .HasForeignKey(pl => pl.ProjectID)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(pl => pl.ProjectID);
 
             modelBuilder.Entity<ProjectLocation>()
                 .HasOne(pl => pl.Location)
                 .WithMany(l => l.ProjectLocations)
-                .HasForeignKey(pl => pl.LocationID)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(pl => pl.LocationID);
+
+
+           // modelBuilder.Entity<ProjectModel>()
+           //.HasIndex(p => p.LocationID)
+           //.IsUnique(false);
 
             modelBuilder.Entity<Status>().HasData(
                 new Status

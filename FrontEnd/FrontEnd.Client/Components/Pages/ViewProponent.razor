@@ -210,7 +210,7 @@
                                  <span class="d-inline-block text-truncate" style="max-width: 350px;" title="@project.Name">
                                 @project.Name </span>
                             </td>
-                            <td class="py-2">@project?.Location</td>
+                            @* <td class="py-2">@project?.Location</td> *@
                             <td class="py-2">@{
                                     var status = project?.Trackings?.LastOrDefault()?.Status?.Name ?? "No status";    
                                 }

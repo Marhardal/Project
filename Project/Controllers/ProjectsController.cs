@@ -290,6 +290,36 @@ namespace Project.Controllers
 
         // POST: api/Projects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //[HttpPost]
+        //public async Task<ActionResult<ProjectModel>> PostProjectModel(ProjectModel projectModel)
+        //{
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        //    if (userId is null)
+        //        return Unauthorized();
+
+        //    _context.Projects.Add(projectModel);
+        //    ProjectLocation location = new ProjectLocation()
+        //    {
+        //        ProjectID = projectModel.Id,
+        //        LocationID = projectModel.SelectedLocationIds
+        //    };
+        //    _context.ProjectLocations.Add(location);
+        //    var firstStatus = await _context.Statuses.OrderBy(s => s.SortOrder).FirstOrDefaultAsync();
+        //    TrackingModel tracking = new TrackingModel()
+        //    {
+        //        StatusID = firstStatus.ID,
+        //        ProjectID = projectModel.Id,
+        //        userID = userId,
+        //        assignedDate = DateTime.UtcNow,
+        //        createdOn = DateTime.UtcNow,
+        //        updatedOn = DateTime.UtcNow,
+        //    };
+        //    _context.Trackings.Add(tracking);
+        //    await _context.SaveChangesAsync();
+        //    //return CreatedAtAction("GetProjectModel", new { id = projectModel.Id }, projectModel);
+        //    return StatusCode(201, new { StatusMessage = "Added Contact Person." });
+        //}
         [HttpPost]
         public async Task<ActionResult<ProjectModel>> PostProjectModel(ProjectModel projectModel)
         {
@@ -298,9 +328,39 @@ namespace Project.Controllers
             if (userId is null)
                 return Unauthorized();
 
+            if (!projectModel.SelectedLocationIds.Any())
+            {
+                return StatusCode(422, new { StatusMessage = "Please add a Location." });
+            }
+
+            // Set timestamps
+            projectModel.createdOn = DateTime.UtcNow;
+            projectModel.updatedOn = DateTime.UtcNow;
+
             _context.Projects.Add(projectModel);
-            var firstStatus = await _context.Statuses.OrderBy(s => s.SortOrder).FirstOrDefaultAsync();
-            TrackingModel tracking = new TrackingModel()
+
+            // Add one ProjectLocation per selected location
+            if (projectModel.SelectedLocationIds.Any())
+            {
+                foreach (var locationID in projectModel.SelectedLocationIds)
+                {
+                    _context.ProjectLocations.Add(new ProjectLocation
+                    {
+                        ProjectID = projectModel.Id,
+                        LocationID = Guid.Parse(locationID)
+                    });
+                }
+            }
+
+            // Add initial tracking status
+            var firstStatus = await _context.Statuses
+                .OrderBy(s => s.SortOrder)
+                .FirstOrDefaultAsync();
+
+            if (firstStatus is null)
+                return BadRequest("No statuses configured.");
+
+            _context.Trackings.Add(new TrackingModel
             {
                 StatusID = firstStatus.ID,
                 ProjectID = projectModel.Id,
@@ -308,13 +368,12 @@ namespace Project.Controllers
                 assignedDate = DateTime.UtcNow,
                 createdOn = DateTime.UtcNow,
                 updatedOn = DateTime.UtcNow,
-            };
-            _context.Trackings.Add(tracking);
-            await _context.SaveChangesAsync();
-            //return CreatedAtAction("GetProjectModel", new { id = projectModel.Id }, projectModel);
-            return StatusCode(201, new { StatusMessage = "Added Contact Person." });
-        }
+            });
 
+            await _context.SaveChangesAsync();
+
+            return StatusCode(201, new { StatusMessage = "Project added successfully." });
+        }
         // DELETE: api/Projects/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProjectModel(Guid id)

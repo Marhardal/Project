@@ -379,6 +379,8 @@ else
             {
                 return; // stop if nothing selected
             }
+
+            Proposal.SelectedLocationIds.ToList();
             Proposal.createdOn = DateTime.Now;
             Proposal.ProjectType = ProjectType.Brief;
             Proposal.closingDate = DateTime.Now;

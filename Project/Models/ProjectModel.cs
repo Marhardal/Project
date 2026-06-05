@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Project.Models
 {
@@ -29,6 +30,9 @@ namespace Project.Models
         public ICollection<TrackingModel>? Trackings { get; set; }
         public TrackingModel? Tracking { get; set; }
         //public LocationModel? Location { get; set; }
+        [NotMapped]
+        public HashSet<string> SelectedLocationIds { get; set; } = new();
+
     }
 
     public enum ProjectType

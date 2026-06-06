@@ -106,7 +106,10 @@
                     title="@project.Name">@project.Name</span>
                 </td>
                 <td>@project?.Proponent?.Name</td>
-                @* <td>@project?.Location</td> *@
+                <td>@(project?.ProjectLocations?.Any() == true
+                        ? string.Join(", ", project?.ProjectLocations?.Select(l => l.Location?.Location).Where(l => l != null))
+                        : "—")</td>
+
                 <td>@project?.ProjectType.ToString()</td>
                 @{
                     var status = project?.Trackings.OrderByDescending(p => p.createdOn).FirstOrDefault()?.Status;

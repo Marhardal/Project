@@ -79,7 +79,11 @@
                           title="@proposal.Name">@proposal.Name</span>
                 </td>
                 <td class="py-2">@proposal.Proponent?.Name</td>
-                @* <td class="py-2">@proposal.Location</td> *@
+                <td class="py-2">
+                    @(proposal.ProjectLocations?.Any() == true
+                        ? string.Join(", ", proposal.ProjectLocations.Select(l => l.Location?.Location).Where(l => l != null))
+                        : "—")
+                </td>
                 @{
                     var status = proposal?.Trackings.OrderByDescending(p => p.createdOn).FirstOrDefault()?.Status;
                 }

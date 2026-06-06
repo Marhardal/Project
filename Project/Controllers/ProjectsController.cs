@@ -131,7 +131,12 @@ namespace Project.Controllers
                         .Select(pl => new ProjectLocation
                         {
                             ID = pl.ID,
-                            LocationID = pl.LocationID
+                            LocationID = pl.LocationID,
+                            Location = pl.Location == null ? null : new LocationModel
+                            {
+                                Location = pl.Location.Location,
+                                Code = pl.Location.Code
+                            }
                         })
                         .ToList(),
 

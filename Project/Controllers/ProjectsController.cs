@@ -269,9 +269,9 @@ namespace Project.Controllers
             }
             if (projectModel.SelectedLocationIds.Any())
             {
+                    _context.ProjectLocations.Where(pl => pl.ProjectID == projectModel.Id).ExecuteDelete();
                 foreach (var locationID in projectModel.SelectedLocationIds)
                 {
-                    _context.ProjectLocations.Where(pl => pl.ProjectID == projectModel.Id).ExecuteDelete();
                     _context.ProjectLocations.Add(new ProjectLocation
                     {
                         ProjectID = projectModel.Id,

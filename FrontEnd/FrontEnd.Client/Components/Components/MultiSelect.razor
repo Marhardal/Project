@@ -1,7 +1,7 @@
 ﻿@inject IJSRuntime JS
 @implements IAsyncDisposable
 
-<select id="locationSelect" multiple class="form-select">
+<select id="locationSelect" multiple>
 </select>
 
 @code {
@@ -29,7 +29,7 @@
                 .ToList();
 
             await JS.InvokeVoidAsync(
-                "choicesHelper.init",
+                "choicesHelper.initMulti",
                 "locationSelect",
                 items,
                 selected,

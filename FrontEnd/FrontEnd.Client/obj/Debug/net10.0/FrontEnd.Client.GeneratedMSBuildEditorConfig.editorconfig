@@ -72,6 +72,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXFJlZGlyZWN0VG9Mb2dpbi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd.Client/Components/Components/SelectSearch.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXFNlbGVjdFNlYXJjaC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd.Client/Components/Components/StackedChart.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXFN0YWNrZWRDaGFydC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 

@@ -156,46 +156,53 @@ else
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                
                                 <div class="mb-3">
-                                    <label for="ProponentID" class="form-label">Project Proponent</label>
-                                    <InputSelect @bind-Value="Proposal.ProponentID" id="ProponentID" class="form-select"
+                                    <label for="Location" class="form-label">Category</label>
+                                    @* <InputText @bind-Value="Proposal.Location" class="form-control" id="Location"
+                                               placeholder="Enter Project Location.">
+                                    </InputText> *@
+                                    <InputSelect @bind-Value="Proposal.CategoryID"
+                                                 id="CategoryID"
+                                                 class="form-select">
+                                        <option value="">-- Select Project Category --</option>
+                                        @foreach (var category in categories)
+                                        {
+                                            <option value="@category.ID">@category.Name</option>
+                                        }
+                                    </InputSelect>
+
+                                    <ValidationMessage For="@(() => Proposal.CategoryID)" class="text-danger" />
+                                    @if (!Proposal.SelectedLocationIds.Any() && isSubmitting)
+                                    {
+                                        <div class="text-danger small mt-1">Please select at least one location.</div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    
+                    <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="ProponentID" class="form-label">Project Proponent</label>
+                            @* <InputSelect @bind-Value="Proposal.ProponentID" id="ProponentID" class="form-select"
                                                  aria-label="Default select example">
                                         <option value="">-- Select Proponent --</option>
                                         @foreach (var proponent in proponents)
                                         {
                                             <option value="@proponent.ID">@proponent.Name</option>
                                         }
-                                    </InputSelect>
-                                    <ValidationMessage For="@(() => Proposal.ProponentID)" class="text-danger" />
-                                </div>
-                            </div>
+                                    </InputSelect> *@
+                            @* With Guid *@
+                            <SelectSearch Items="proponents.Select(p => new SelectSearch.ChoiceItem(p.ID.ToString(), p.Name)).ToList()"
+                                          SelectedValue="@Proposal.ProponentID.ToString()"
+                                          SelectedValueChanged="@(val => Proposal.ProponentID = Guid.Parse(val!))"
+                                          Placeholder="Select Proponent"
+                                          SearchPlaceholder="Search proponents..." />
+                            <ValidationMessage For="@(() => Proposal.ProponentID)" class="text-danger" />
                         </div>
-                    
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="Location" class="form-label">Category</label>
-                                    @* <InputText @bind-Value="Proposal.Location" class="form-control" id="Location"
-                                               placeholder="Enter Project Location.">
-                                    </InputText> *@
-                                <InputSelect @bind-Value="Proposal.CategoryID"
-                                             id="CategoryID"
-                                             class="form-select">
-                                    <option value="">-- Select Project Category --</option>
-                                    @foreach (var category in categories)
-                                    {
-                                        <option value="@category.ID">@category.Name</option>
-                                    }
-                                </InputSelect>
-                                
-                                    <ValidationMessage For="@(() => Proposal.CategoryID)" class="text-danger" />
-@if (!Proposal.SelectedLocationIds.Any() && isSubmitting)
-    {
-        <div class="text-danger small mt-1">Please select at least one location.</div>
-    }
-                                </div>
-                            </div>
+
+                        </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="SubmissionDate" class="form-label">Submission Date</label>

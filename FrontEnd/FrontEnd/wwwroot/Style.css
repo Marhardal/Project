@@ -37,3 +37,245 @@
         opacity: 1;
     }
 }
+/* ── Choices.js → Bootstrap form-control match ── */
+
+/*.choices__inner {
+    background-color: #fff !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 0.375rem !important;
+    height: calc(1.5em + 0.75rem + 2px) !important;
+    min-height: unset !important;
+    padding: 0.375rem 0.75rem 0.375rem 0.75rem !important;
+    padding-right: 2.25rem !important;
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    color: #212529 !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;*/
+    /* Bootstrap chevron */
+    /*background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.75rem center !important;
+    background-size: 16px 12px !important;
+}*/
+
+    /* Expand when items selected or dropdown open */
+    /*.choices__inner:has(.choices__item),
+    .choices.is-open .choices__inner {
+        height: auto !important;
+        min-height: calc(1.5em + 0.75rem + 2px) !important;
+        flex-wrap: wrap !important;
+        overflow: visible !important;
+    }*/
+
+/* Focus state */
+/*.choices.is-focused .choices__inner {
+    border-color: #86b7fe !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    outline: 0 !important;
+}*/
+
+/* Placeholder */
+/*.choices__placeholder {
+    color: #6c757d !important;
+    opacity: 1 !important;
+}*/
+
+/* Pills */
+/*.choices__list--multiple {
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 2px !important;
+    align-items: center !important;
+}
+
+    .choices__list--multiple .choices__item {
+        background-color: #0d6efd !important;
+        border-color: #0d6efd !important;
+        border-radius: 0.25rem !important;
+        font-size: 0.8rem !important;
+        line-height: 1.5 !important;
+        padding: 1px 8px !important;
+        margin: 0 !important;
+    }*/
+
+/* Dropdown */
+/*.choices__list--dropdown {
+    border: 1px solid #dee2e6 !important;
+    border-radius: 0.375rem !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    z-index: 9999 !important;
+}*/
+
+/* Constrain the cloned search input size */
+/*.choices__input--cloned {
+    min-width: 0 !important;
+    width: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+    height: auto !important;
+}*/
+
+/* ── Choices.js → Bootstrap form-control match ── */
+
+/* Base inner container - both single and multi */
+/* ── Choices.js → Bootstrap form-control match ── */
+
+/* Base inner container */
+/* ── Choices.js → Bootstrap form-control match ── */
+
+.choices__inner {
+    background-color: #fff !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 0.375rem !important;
+    min-height: calc(1.5em + 0.75rem + 2px) !important;
+    max-height: calc(1.5em + 0.75rem + 2px) !important;
+    padding: 0.375rem 2.25rem 0.375rem 0.75rem !important;
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    color: #212529 !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+}
+
+.choices[data-type*="select-one"] .choices__inner {
+    background-image: none !important;
+}
+
+.choices[data-type*="select-multiple"] .choices__inner {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.75rem center !important;
+    background-size: 16px 12px !important;
+}
+
+    .choices[data-type*="select-multiple"] .choices__inner:has(.choices__item[data-item]) {
+        max-height: none !important;
+        flex-wrap: wrap !important;
+        overflow: visible !important;
+        padding-bottom: 0.25rem !important;
+    }
+
+/* Single chevron */
+.choices[data-type*="select-one"] {
+    position: relative !important;
+}
+
+    .choices[data-type*="select-one"]::after {
+        content: "" !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+        background-repeat: no-repeat !important;
+        background-size: 16px 12px !important;
+        width: 16px !important;
+        height: 12px !important;
+        position: absolute !important;
+        right: 0.75rem !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        border: none !important;
+        margin: 0 !important;
+    }
+
+/* Single selected text */
+.choices__list--single {
+    padding: 0 !important;
+    width: 100% !important;
+}
+
+    .choices__list--single .choices__item {
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+
+/* Multi pill list */
+.choices__list--multiple {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 2px !important;
+    align-items: center !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+    .choices__list--multiple .choices__item {
+        background-color: #0d6efd !important;
+        border-color: #0d6efd !important;
+        border-radius: 0.25rem !important;
+        font-size: 0.8rem !important;
+        line-height: 1.5 !important;
+        padding: 1px 8px !important;
+        margin: 0 !important;
+        white-space: nowrap !important;
+    }
+
+/* Multi cloned input — collapsed by default */
+.choices[data-type*="select-multiple"] .choices__input--cloned {
+    width: 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+    height: auto !important;
+}
+
+/* Multi cloned input — expand to show placeholder when no pills */
+.choices[data-type*="select-multiple"] .choices__inner:not(:has(.choices__item[data-item])) .choices__input--cloned {
+    width: 100% !important;
+    min-width: 100% !important;
+}
+
+.choices[data-type*="select-multiple"] .choices__input--cloned::placeholder {
+    color: #6c757d !important;
+    opacity: 1 !important;
+}
+
+/* Single cloned input — lives inside dropdown */
+.choices[data-type*="select-one"] .choices__input--cloned {
+    width: 100% !important;
+    min-width: unset !important;
+    padding: 0.375rem 0.75rem !important;
+    border: none !important;
+    background: transparent !important;
+    font-size: 1rem !important;
+}
+
+.choices__placeholder {
+    color: #6c757d !important;
+    opacity: 1 !important;
+}
+
+.choices.is-focused .choices__inner {
+    border-color: #86b7fe !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    outline: 0 !important;
+}
+
+.choices__list--dropdown {
+    border: 1px solid #dee2e6 !important;
+    border-radius: 0.375rem !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    z-index: 9999 !important;
+}
+
+    .choices__list--dropdown .choices__item--selectable.is-highlighted {
+        background-color: #0d6efd !important;
+        color: #fff !important;
+    }

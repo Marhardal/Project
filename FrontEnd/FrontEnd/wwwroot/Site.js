@@ -192,24 +192,31 @@ window.mapHelper = {
         };
     }
 };
-
 window.choicesHelper = {
     _instances: {},
+    _listeners: {},
 
-    init: function (elementId, items, selectedValues, dotNetRef) {
+    initMulti: function (elementId, items, selectedValues, dotNetRef) {
         const el = document.getElementById(elementId);
         if (!el) return;
 
-        // Destroy existing instance if any
+        // Remove stale listener
+        if (this._listeners[elementId]) {
+            el.removeEventListener('change', this._listeners[elementId]);
+            delete this._listeners[elementId];
+        }
+
+        // Destroy existing instance
         if (this._instances[elementId]) {
             this._instances[elementId].destroy();
+            delete this._instances[elementId];
         }
 
         const choices = new Choices(el, {
             removeItemButton: true,
             searchEnabled: true,
             searchPlaceholderValue: 'Search...',
-            placeholderValue: 'Select locations',
+            placeholderValue: 'Select...',
             shouldSort: false,
             choices: items.map(i => ({
                 value: i.value,
@@ -220,17 +227,93 @@ window.choicesHelper = {
 
         this._instances[elementId] = choices;
 
-        // Notify Blazor on change
-        el.addEventListener('change', () => {
-            const selected = choices.getValue(true);
+        const handler = () => {
+            // getValue(true) returns objects — extract .value
+            const selected = choices.getValue(true).map(item => item.value ?? item);
             dotNetRef.invokeMethodAsync('OnSelectionChanged', selected);
-        });
+        };
+
+        el.addEventListener('change', handler);
+        this._listeners[elementId] = handler;
     },
 
-    destroy: function (elementId) {
+    initSingle: function (elementId, items, selectedValue, dotNetRef) {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+
+        // Remove stale listener
+        if (this._listeners[elementId]) {
+            el.removeEventListener('change', this._listeners[elementId]);
+            delete this._listeners[elementId];
+        }
+
+        // Destroy existing instance
         if (this._instances[elementId]) {
             this._instances[elementId].destroy();
             delete this._instances[elementId];
         }
+
+        const choices = new Choices(el, {
+            searchEnabled: true,
+            searchPlaceholderValue: 'Search...',
+            placeholderValue: 'Select...',
+            shouldSort: false,
+            noResultsText: 'No results found',
+            itemSelectText: '',
+        });
+
+        choices.setChoices(
+            items.map(i => ({
+                value: i.value,
+                label: i.label,
+                selected: i.value === selectedValue
+            })),
+            'value',
+            'label',
+            true
+        );
+
+        this._instances[elementId] = choices;
+
+        const handler = () => {
+            // getValue(true) for single returns one object — extract .value
+            const item = choices.getValue(true);
+            const selected = item?.value ?? item ?? null;
+            dotNetRef.invokeMethodAsync('OnValueChanged', selected);
+        };
+
+        el.addEventListener('change', handler);
+        this._listeners[elementId] = handler;
+    },
+
+    destroy: function (elementId) {
+        // Clean up listener first, then instance
+        const el = document.getElementById(elementId);
+        if (el && this._listeners[elementId]) {
+            el.removeEventListener('change', this._listeners[elementId]);
+            delete this._listeners[elementId];
+        }
+
+        if (this._instances[elementId]) {
+            this._instances[elementId].destroy();
+            delete this._instances[elementId];
+        }
+    },
+
+    refresh: function (elementId, items, selectedValue) {
+        const instance = this._instances[elementId];
+        if (!instance) return;
+
+        instance.clearChoices();
+        instance.setChoices(
+            items.map(i => ({
+                value: i.value,
+                label: i.label,
+                selected: i.value === selectedValue
+            })),
+            'value',
+            'label',
+            true
+        );
     }
 };

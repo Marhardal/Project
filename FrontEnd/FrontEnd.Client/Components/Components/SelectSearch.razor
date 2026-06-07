@@ -1,0 +1,69 @@
+﻿@implements IAsyncDisposable
+
+<select id="@_elementId" class="form-control"></select>
+
+@code {
+    [Parameter] public List<ChoiceItem> Items { get; set; } = new();
+    [Parameter] public string? SelectedValue { get; set; }
+    [Parameter] public EventCallback<string?> SelectedValueChanged { get; set; }
+    [Parameter] public string Placeholder { get; set; } = "Select...";
+    [Parameter] public string SearchPlaceholder { get; set; } = "Search...";
+
+    private readonly string _elementId = $"choices-single-{Guid.NewGuid():N}";
+    private DotNetObjectReference<SelectSearch>? _dotNetRef;
+    private string? _prevSelected;
+    private List<ChoiceItem> _prevItems = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+
+            await JSRuntime.InvokeVoidAsync(
+                "choicesHelper.initSingle",
+                _elementId,
+                Items,
+                SelectedValue ?? string.Empty,
+                _dotNetRef
+            );
+
+            _prevSelected = SelectedValue;
+            _prevItems = Items.ToList();
+        }
+        else
+        {
+            var itemsChanged = !Items.SequenceEqual(_prevItems);
+            var selectionChanged = SelectedValue != _prevSelected;
+
+            if (itemsChanged || selectionChanged)
+            {
+                await JSRuntime.InvokeVoidAsync(
+                    "choicesHelper.refresh",
+                    _elementId,
+                    Items,
+                    SelectedValue ?? string.Empty
+                );
+
+                _prevSelected = SelectedValue;
+                _prevItems = Items.ToList();
+            }
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnValueChanged(string selected)
+    {
+        _prevSelected = selected;
+        await SelectedValueChanged.InvokeAsync(selected);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await JSRuntime.InvokeVoidAsync("choicesHelper.destroy", _elementId);
+        _dotNetRef?.Dispose();
+    }
+
+    // Simple model for items
+    public record ChoiceItem(string Value, string Label);
+}

@@ -15,7 +15,7 @@ namespace FrontEnd.Client.Services
             _logger = logger;
         }
 
-        public async Task<List<ContactPersonDTO>> GetContactPersonsAsync(Guid ProponentID)
+        public async Task<List<ContactPersonDTO>> GetContactPersonsAsync(Guid? ProponentID)
         {
             try
             {

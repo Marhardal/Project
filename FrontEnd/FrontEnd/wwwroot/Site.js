@@ -185,10 +185,10 @@ window.mapHelper = {
         const el = document.getElementById(elementId);
         const rect = el.getBoundingClientRect();
         return {
-            x: clientX - rect.left,
-            y: clientY - rect.top,
-            wrapperWidth: rect.width,
-            wrapperHeight: rect.height
+            x: clientX,
+            y: clientY,
+            wrapperWidth: window.innerWidth,
+            wrapperHeight: window.innerHeight
         };
     }
 };

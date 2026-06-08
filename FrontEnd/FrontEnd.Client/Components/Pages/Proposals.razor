@@ -213,7 +213,7 @@ else
                             </div>
                         </div>
                         <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="Location" class="form-label">Location</label>
                                 @* <InputText @bind-Value="Proposal.Location" class="form-control" id="Location"
@@ -242,25 +242,48 @@ else
                                 }
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="Status" class="form-label">Status</label>
+
+                                @* To this *@
+                                @if (Proposal.Tracking != null)
+                                {
+                                <InputSelect @bind-Value="Proposal.Tracking.StatusID"
+                                             id="Status"
+                                             class="form-select">
+                                    <option value="">-- Select Status --</option>
+                                    @foreach (var status in statuses)
+                                    {
+                                        <option value="@status.ID">@status.Name</option>
+                                    }
+                                </InputSelect>
+                                }
+                                @if (Proposal?.Tracking != null)
+                                {
+                                    <ValidationMessage For="@(() => Proposal.Tracking.StatusID)" class="text-danger" />
+                                }
+                            </div>
+                        </div>
                         </div>
                     @{
                         var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
-                        var isApproved = selectedStatus?.Name == "Approved";
+                        var isApproved = selectedStatus?.Name == "Collected";
                     }
-@if (isEditMode && Proposal?.Tracking != null)
+                    @if (isEditMode && Proposal?.Tracking != null && isApproved && contacts.Any())
 {
     <div class="row">
-        <div class="@(isApproved ? "col-md-6" : "col-md-12")">
+        <div class="col-md-6">
             <div class="mb-3">
-                <label for="Status" class="form-label">Status</label>
+                <label for="Status" class="form-label">Collected By</label>
 
                 <InputSelect @bind-Value="Proposal.Tracking.StatusID"
                              id="Status"
                              class="form-select">
                     <option value="">-- Select Status --</option>
-                    @foreach (var status in statuses)
+                    @foreach (var status in contacts)
                     {
-                        <option value="@status.ID">@status.Name</option>
+                        <option value="@status.Id">@status.FullName</option>
                     }
                 </InputSelect>
 
@@ -289,8 +312,8 @@ else
             </div>
         }
     </div>
-}
-                        <div class="mb-3">
+                    }
+                    <div class="mb-3">
                             <label for="Description" class="form-label">Description</label>
                             <InputTextArea @bind-Value="Proposal.Description" class="form-control" id="Description" rows="3"
                                            placeholder="Enter Project Description."></InputTextArea>
@@ -321,7 +344,11 @@ else
     private List<CategoryDTO> categories = new();
     private List<ProjectType> projectTypes;
     [SupplyParameterFromForm]
-    private ProjectDTO Proposal { get; set; } = new();
+    private ProjectDTO Proposal { get; set; } = new()
+    {
+        Tracking = new TrackingDTO(),
+        SelectedLocationIds = new List<Guid>()
+    };
     private int pageSize = 10;
     private int currentPage = 1;
     private string searchQuery = string.Empty;
@@ -364,8 +391,8 @@ else
             var locationsResult = await LocationService.GetLocationsAsync();
             locations = locationsResult ?? new List<LocationDTO>();
 
-            var categoriesResult = await CategoryService.GetLocationsAsync();
-            categories = categoriesResult;
+            var categoriesResult = await CategoryService.GetLocationsAsync() ;
+            categories = categoriesResult ?? new List<CategoryDTO>();
 
             isloaded = true;
         }
@@ -433,7 +460,7 @@ else
         {
             var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
 
-            if (selectedStatus?.Name == "Approved" && Proposal.ProjectType == ProjectType.Brief)
+            if (selectedStatus?.Name == "Collected" && Proposal.ProjectType == ProjectType.Brief)
             {
                 submitMessage = "Approved a Project Brief must be assigned a valid project type.";
                 return;
@@ -479,7 +506,10 @@ else
             StateHasChanged();
         }
     }
+    // add this field with other fields
+    private List<ContactPersonDTO> contacts = new();
 
+    // update editProposal method
     async Task editProposal(ProjectDTO project)
     {
         var tracking = project.Trackings?
@@ -487,7 +517,7 @@ else
             .FirstOrDefault();
         var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
 
-        if (selectedStatus?.Name == "Approved" && project.ProjectType == ProjectType.Brief)
+        if (selectedStatus?.Name == "Collected" && project.ProjectType == ProjectType.Brief)
         {
             submitMessage = "Approved Brief must be assigned a valid project type.";
             return;
@@ -499,7 +529,6 @@ else
         {
             Id = project.Id,
             Name = project.Name,
-            // Location = project.Location,
             ProponentID = project.ProponentID,
             ProjectType = project.ProjectType,
             Description = project.Description,
@@ -512,21 +541,19 @@ else
             }
         };
 
-        Proposal.SelectedLocationIds = project.ProjectLocations?.Select(i =>
-            i.LocationID
-        ).ToList();
-        // SelectedLocationIds = Proposal.SelectedLocationIds.ToList();
+        Proposal.SelectedLocationIds = project.ProjectLocations?.Select(i => i.LocationID).ToList();
 
         var statusResult = await StatusService.GetStatusAsync();
-        statuses = (statusResult ?? new List<StatusDTO>()).OrderBy(s => s.SortOrder)
-    .Take(3).ToList();
+        statuses = (statusResult ?? new List<StatusDTO>()).OrderBy(s => s.SortOrder).Take(3).ToList();
 
-        // var types = ProjectType
+        // fetch contact persons for this project (await the task so 'contacts' is a List, not a Task)
+        var contactsResult = await ContactPersonService.GetContactPersonsAsync(project.ProponentID);
+        contacts = contactsResult ?? new List<ContactPersonDTO>();
+
         isEditMode = true;
 
         await JSRuntime.InvokeVoidAsync("showModal", "staticBackdrop");
     }
-
     private Timer? _debounce;
 
     private void OnSearchChanged(ChangeEventArgs e)

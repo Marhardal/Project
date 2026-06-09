@@ -26,6 +26,7 @@
                     <th>Status</th>
                     <th>Color</th>
                     <th>Sort Order</th>
+                    <th>Type</th>
                     <th>Updated On</th>
                     <th></th>
                 </TableHeader>
@@ -41,6 +42,7 @@
                         </span>
                     </td>
                     <td>@status.SortOrder</td>
+                    <td>@status.Category</td>
                     <td>@status.updatedOn</td>
                     <td>
                         <div class="d-flex gap-1 justify-content-center">
@@ -94,6 +96,21 @@
                                          placeholder="Enter Status Sort Order."></InputNumber>
                         </div>
                         <ValidationMessage For="@(() => Status.SortOrder)" class="text-danger" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Category" class="form-label">Type</label>
+                        <div class="d-flex align-items-center gap-2">
+                            @* <InputNumber id="Category" @bind-Value="Status.Category" class="form-control"
+                                         placeholder="Enter Status Type."></InputNumber> *@
+                            <InputSelect id="Category" @bind-Value="Status.Category" class="form-select">
+                                <option value="">Select Type</option>
+                                @foreach (var cat in Enum.GetValues<Category>())
+                                {
+                                    <option value="@cat">@EnumHelper.GetDisplayName(cat)</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <ValidationMessage For="@(() => Status.Category)" class="text-danger" />
                     </div>
 
                     @if (!string.IsNullOrEmpty(submitMessage))
@@ -233,6 +250,7 @@
         Status.Name = statusDTO.Name;
         Status.Color = statusDTO.Color;
         Status.SortOrder = statusDTO.SortOrder;
+        Status.Category = statusDTO.Category;
         Status.createdOn = statusDTO.createdOn;
         Status.updatedOn = DateTime.Now;
         isEditMode = true;

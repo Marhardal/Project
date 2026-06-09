@@ -40,6 +40,14 @@ namespace FrontEnd.Client.DTOs
         ESMP,
     }
 
+    public enum Category
+    {
+        [Display(Name = "Brief")]
+        Brief,
+        [Display(Name = "Project")]
+        Project
+    }
+
     public enum Proposal
     {
         NotStarted,

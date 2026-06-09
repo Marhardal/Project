@@ -11,7 +11,10 @@ using System.ComponentModel.DataAnnotations;
             [Required]
             public string? Color { get; set; }
 
+            [Required]
             public int SortOrder { get; set; }
+            [Required]
+            public Category Category { get; set; }
 
             public DateTime createdOn { get; set; }
             public DateTime updatedOn { get; set; }
@@ -20,3 +23,8 @@ using System.ComponentModel.DataAnnotations;
             public ICollection<TrackingModel>? Trackings { get; set; }
 
         }
+public enum Category
+{
+    Brief,
+    Project
+}

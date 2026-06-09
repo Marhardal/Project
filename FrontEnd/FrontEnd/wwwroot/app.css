@@ -161,9 +161,9 @@ typing-spinner span {
   font-size: 0.75rem;
 }
 
-.nav-item {
-  margin: 3px 0px;
-  color: #fffafa;
+#sidebarMenu .nav-item {
+    margin: 3px 0px;
+    color: #fffafa;
 }
 
 .navbar-brand {

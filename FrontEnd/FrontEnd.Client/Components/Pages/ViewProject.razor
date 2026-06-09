@@ -209,26 +209,47 @@
                     }
                     @if (trackings.Any())
                     {
+                        var previousdate = DateTime.Now;
                         @foreach (var tracking in trackings)
                         {
                             <div class="planning-timeline">
                                 <div class="timeline-item pb-4 pt-2">
                                     <div class="timeline-dot"></div>
                                     <div class="timeline-content">
-                                        <div class="text-muted small mb-2">
-                                            <i class="bi bi-calendar-event-fill me-1"></i> @tracking.createdOn.ToString("dd MMM yyyy")
-                                            <span class="ms-2"><i class="bi bi-clock-fill me-1"></i> @tracking.createdOn.ToString("hh:mm tt")</span>
-                                        </div>
+                                        @{
+                                            var duration = tracking.createdOn - previousdate;
+                                        }
 
+                                        <div class="text-muted small mb-2">
+                                            <i class="bi bi-calendar-event-fill me-1"></i>
+                                            @tracking.createdOn.ToString("dd MMM yyyy")
+
+                                            <span class="ms-2">
+                                                <i class="bi bi-clock-fill me-1"></i>
+                                                @tracking.createdOn.ToString("hh:mm tt")
+                                            </span>
+
+                                            @if (previousdate != DateTime.MinValue)
+                                            {
+                                                <div class="small text-success">
+                                                    <i class="bi bi-arrow-down"></i>
+                                                    Moved to this stage after @duration.Humanize(2)
+                                                </div>
+                                            }
+                                        </div>
                                         <div class="card border-0 bg-body-tertiary">
                                             <div class="card-body">
                                                 <span class="fw-semibold text-primary d-inline-block mb-3">
-                                                    @Project?.ProjectType.ToString() | @tracking?.Status?.Name
+                                                    @(tracking?.Status?.Category != Category.Brief
+    ? Project?.ProjectType.ToString()
+    : Category.Brief)
                                                 </span>
                                                 <div class="row g-3">
                                                     <div class="col-md-4">
                                                         <div class="text-muted small"><i class="bi bi-stars me-1"></i>Status</div>
-                                                        <div class="fw-medium">@tracking?.Status?.Name</div>
+                                                        <div class="fw-medium">
+                                                            <StatusItem Name="@tracking?.Status?.Name" Colour="@tracking?.Status?.Color"></StatusItem>
+                                                            </div>
                                                     </div>
                                                     @if (tracking?.User != null)
                                                     {
@@ -297,48 +318,6 @@
         </div>
     </div>
 }
-<style>
-    .planning-timeline {
-        position: relative;
-        margin-left: 0.5rem;
-    }
-
-    .timeline-item {
-        position: relative;
-        padding-left: 2rem;
-    }
-
-        .timeline-item::before {
-            content: "";
-            position: absolute;
-            left: 0.47rem;
-            top: 0.9rem;
-            bottom: -0.5rem;
-            width: 2px;
-            background: #cfe2ff;
-        }
-
-        .timeline-item:last-child::before {
-            bottom: 1.5rem;
-        }
-
-    .timeline-dot {
-        position: absolute;
-        left: 0;
-        top: 0.7rem;
-        width: 1rem;
-        height: 1rem;
-        border-radius: 50%;
-        background: #fff;
-        border: 2px solid #0d6efd;
-        box-shadow: 0 0 0 3px #e7f1ff;
-    }
-
-    .timeline-content .card {
-        border-radius: 0.5rem;
-    }
-
-</style>
 
 @code {
     [SupplyParameterFromForm]

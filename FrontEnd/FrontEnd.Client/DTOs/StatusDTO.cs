@@ -11,8 +11,10 @@ namespace FrontEnd.Client.DTOs
 
         [Required]
         public string? Color { get; set; }
-
+        [Required]
         public int SortOrder { get; set; }
+        [Required]
+        public Category Category { get; set; }
 
         public DateTime createdOn { get; set; }
         public DateTime updatedOn { get; set; }
@@ -21,4 +23,5 @@ namespace FrontEnd.Client.DTOs
         public ICollection<TrackingDTO>? Trackings { get; set; }
 
     }
+
 }

@@ -221,7 +221,9 @@ namespace Project.Controllers
                             {
                                 t.Status.ID,
                                 t.Status.Name,
-                                t.Status.SortOrder
+                                t.Status.SortOrder,
+                                t.Status.Category,
+                                t.Status.Color
                             },
 
                             Review = t.Review == null ? null : new

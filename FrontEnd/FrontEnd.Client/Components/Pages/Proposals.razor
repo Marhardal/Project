@@ -269,8 +269,10 @@ else
                     @{
                         var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
                         var isApproved = selectedStatus?.Name == "Collected";
+                        var countstatus = statuses.Count();
+                        var lastStatus = statuses.Last().SortOrder == selectedStatus.SortOrder;
                     }
-                    @if (isEditMode && Proposal?.Tracking != null && isApproved && contacts.Any())
+                    @if (isEditMode && Proposal?.Tracking != null && lastStatus && contacts.Any())
 {
     <div class="row">
         <div class="col-md-6">
@@ -381,6 +383,9 @@ else
         await JSRuntime.InvokeVoidAsync("Spinner.show");
         try
         {
+            var statusResult = await StatusService.GetStatusAsync();
+            statuses = (statusResult ?? new List<StatusDTO>()).Where(s => s.Category == Category.Brief).ToList();
+
             // Fetch projects and proponents with null-checks to prevent null assignments
             var projectResult = await ProjectService.GetProjectAsync(true);
             proposals = projectResult ?? new List<ProjectDTO>();

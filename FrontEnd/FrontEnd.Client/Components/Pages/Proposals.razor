@@ -396,7 +396,7 @@ else
             var locationsResult = await LocationService.GetLocationsAsync();
             locations = locationsResult ?? new List<LocationDTO>();
 
-            var categoriesResult = await CategoryService.GetLocationsAsync() ;
+            var categoriesResult = await CategoryService.GetCategories();
             categories = categoriesResult ?? new List<CategoryDTO>();
 
             isloaded = true;

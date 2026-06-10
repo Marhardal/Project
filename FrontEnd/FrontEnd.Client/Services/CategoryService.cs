@@ -1,4 +1,5 @@
 ﻿using FrontEnd.Client.DTOs;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace FrontEnd.Client.Services
@@ -14,7 +15,7 @@ namespace FrontEnd.Client.Services
             _logger = logger;
         }
 
-        public async Task<List<CategoryDTO>> GetLocationsAsync()
+        public async Task<List<CategoryDTO>> GetCategories()
         {
             try
             {
@@ -28,5 +29,38 @@ namespace FrontEnd.Client.Services
             }
         }
 
+        public async Task<HttpResponseMessage> UpdateCategoryAsync(Guid id, CategoryDTO dto)
+        {
+            try
+            {
+                return await _http.PutAsJsonAsync($"api/Category/{id}", dto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to update Category via POST {Endpoint}", "api/Status");
+                var resp = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+                {
+                    Content = new StringContent(ex.Message)
+                };
+                return resp;
+            }
+        }
+
+        public async Task<HttpResponseMessage> CreateCategoryAsync(CategoryDTO dto)
+        {
+            try
+            {
+                return await _http.PostAsJsonAsync($"api/Category/", dto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to update Category via POST {Endpoint}", "api/Status");
+                var resp = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+                {
+                    Content = new StringContent(ex.Message)
+                };
+                return resp;
+            }
+        }
     }
 }

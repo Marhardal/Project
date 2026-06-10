@@ -40,6 +40,10 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd.Client/Components/Components/Categories.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXENhdGVnb3JpZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd.Client/Components/Components/DashCard.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXERhc2hDYXJkLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 

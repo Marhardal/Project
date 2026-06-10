@@ -1,0 +1,200 @@
+﻿<div class="px-2 py-2 mb-2 row">
+    <div class="col-md-6">
+        <h5>Project Categories</h5>
+    </div>
+    <div class="col-md-6 text-end">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            <i class="bi bi-plus-square me-2"></i>Add
+        </button>
+    </div>
+</div>
+
+
+@if (allCategories?.Count > 0)
+{
+
+    <div class="border rounded bg-body-tertiary">
+        <div class="p-2 mt-2">
+
+            <TableTemplate Items="allCategories" Context="Category">
+
+                <TableHeader>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th></th>
+                </TableHeader>
+                <RowTemplate Context="category">
+                    @{
+                        int index = allCategories.IndexOf(category) + 1;
+                    }
+                    <td>@index</td>
+                    <td>@category.Name</td>
+
+                    <td>
+                        <div class="d-flex gap-1 justify-content-center">
+                            <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop" @onclick="() => editCategory(category)">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </RowTemplate>
+            </TableTemplate>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info" role="alert">
+        No Categories found. Please add a category.
+    </div>
+}
+
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <EditForm Model="@category" OnValidSubmit="isEditMode ? HandleUpdate : HandleSubmission" FormName="create">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">@(isEditMode ? "Edit Category" : "Create Category") </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <DataAnnotationsValidator />
+
+                    @if (!string.IsNullOrEmpty(submitMessage))
+                    {
+                        <div class="alert @(submitMessage?.Contains("Error") == true ? "alert-danger" : "alert-success") alert-dismissible fade show"
+                             role="alert">
+                            @submitMessage
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Status Name</label>
+                        <InputText id="Name" @bind-Value="category.Name" class="form-control"
+                                   placeholder="Enter Status Name."></InputText>
+                        <ValidationMessage For="@(() => category.Name)" class="text-danger" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" disabled="@isSaving">
+                        @if (isSaving)
+                        {
+                            control = isEditMode ? "Updating" : "Creating";
+                            <span>@control</span>
+                            <span class="submitting-dots">
+                                <span>.</span>
+                                <span>.</span>
+                                <span>.</span>
+                            </span>
+                        }
+                        else
+                        {
+                            control = isEditMode ? "Update" : "Create";
+                            <span>@control</span>
+                        }
+                        @* @control *@
+                    </button>
+
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+                
+@code {
+    private List<CategoryDTO> allCategories = new();
+
+    private CategoryDTO? category { get; set; } = new();
+    public bool isEditMode = false;
+    string submitMessage = string.Empty;
+    bool isSaving = false;
+    private string control = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        allCategories = await CategoryService.GetCategories();
+    }
+
+    async Task editCategory(CategoryDTO category)
+    {
+        this.category = category;
+    }
+
+    private async Task HandleSubmission()
+    {
+        isSaving = true;
+        submitMessage = null;
+        try
+        {
+            var response = await CategoryService.CreateCategoryAsync(category);
+            if (response.IsSuccessStatusCode)
+            {
+                allCategories = await CategoryService.GetCategories();
+                isEditMode = false;
+                category = new CategoryDTO();
+                await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
+                await JSRuntime.InvokeVoidAsync("SwalService.success", "Category Created successfully!");
+            }
+            else
+            {
+                submitMessage = $"Error {response.StatusCode}: {await response.Content.ReadAsStringAsync()}";
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+
+            throw;
+        }
+        finally
+        {
+            isEditMode = false;
+            isSaving = false;
+            submitMessage = string.Empty;
+        }
+    }
+
+    private async Task HandleUpdate()
+    {
+        isSaving = true;
+        submitMessage = null;
+        try
+        {
+            var response = await CategoryService.UpdateCategoryAsync(category.ID, category);
+            if (response.IsSuccessStatusCode)
+            {
+                allCategories = await CategoryService.GetCategories();
+                isEditMode = false;
+                category = new CategoryDTO();
+                await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
+                await JSRuntime.InvokeVoidAsync("SwalService.success", "Category updated successfully!");
+            }
+            else
+            {
+                submitMessage = $"Error {response.StatusCode}: {await response.Content.ReadAsStringAsync()}";
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+
+            throw;
+        }
+        finally
+        {
+            isEditMode = false;
+            isSaving = false;
+            submitMessage = string.Empty;
+        }
+    }
+}

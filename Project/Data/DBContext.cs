@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Project.Migrations;
 using Project.Models;
 
 namespace Project.Data
@@ -30,6 +31,12 @@ namespace Project.Data
         public DbSet<ReviewModel> Reviews { get; set; }
 
         public DbSet<UserModel> UserProfiles { get; set; }
+
+        public DbSet<PagesModel> Pages { get; set; }
+
+        public DbSet<Models.PageActions> PageActions { get; set; }
+
+        public DbSet<PermissionModel> Permissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -95,10 +102,30 @@ namespace Project.Data
                 .WithMany(l => l.ProjectLocations)
                 .HasForeignKey(pl => pl.LocationID);
 
+            modelBuilder.Entity<PermissionModel>()
+       .HasKey(rp => new { rp.RoleId, rp.PageActionId });
 
-           // modelBuilder.Entity<ProjectModel>()
-           //.HasIndex(p => p.LocationID)
-           //.IsUnique(false);
+            modelBuilder.Entity<PermissionModel>()
+                .HasOne(rp => rp.Role)
+                .WithMany()
+                .HasForeignKey(rp => rp.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PermissionModel>()
+                .HasOne(rp => rp.PageAction)
+                .WithMany(pa => pa.Permissions)
+                .HasForeignKey(rp => rp.PageActionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Models.PageActions>()
+                .HasOne(pa => pa.Page)
+                .WithMany(p => p.PageActions)
+                .HasForeignKey(pa => pa.PageID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // modelBuilder.Entity<ProjectModel>()
+            //.HasIndex(p => p.LocationID)
+            //.IsUnique(false);
 
             modelBuilder.Entity<Status>().HasData(
                 new Status

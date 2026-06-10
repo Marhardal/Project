@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "KuVgBEOXdKQ=",
+  "dgSpecHash": "/N3yBTN+bJg=",
   "success": true,
   "projectFilePath": "C:\\Users\\Martin\\source\\repos\\Project\\FrontEnd\\FrontEnd\\FrontEnd.csproj",
   "expectedPackageFiles": [
@@ -58,7 +58,7 @@
     "C:\\Users\\Martin\\.nuget\\packages\\humanizer.core.zh-cn\\3.0.10\\humanizer.core.zh-cn.3.0.10.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\humanizer.core.zh-hans\\3.0.10\\humanizer.core.zh-hans.3.0.10.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\humanizer.core.zh-hant\\3.0.10\\humanizer.core.zh-hant.3.0.10.nupkg.sha512",
-    "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.8\\microsoft.aspnetcore.app.internal.assets.10.0.8.nupkg.sha512",
+    "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.9\\microsoft.aspnetcore.app.internal.assets.10.0.9.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\10.0.8\\microsoft.aspnetcore.authentication.jwtbearer.10.0.8.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.authorization\\10.0.8\\microsoft.aspnetcore.authorization.10.0.8.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.components.authorization\\10.0.8\\microsoft.aspnetcore.components.authorization.10.0.8.nupkg.sha512",

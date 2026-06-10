@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "COKhj2g3c6U=",
+  "dgSpecHash": "nKxHP3mtDCA=",
   "success": true,
   "projectFilePath": "C:\\Users\\Martin\\source\\repos\\Project\\FrontEnd\\FrontEnd.Client\\FrontEnd.Client.csproj",
   "expectedPackageFiles": [
@@ -58,7 +58,7 @@
     "C:\\Users\\Martin\\.nuget\\packages\\humanizer.core.zh-cn\\3.0.10\\humanizer.core.zh-cn.3.0.10.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\humanizer.core.zh-hans\\3.0.10\\humanizer.core.zh-hans.3.0.10.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\humanizer.core.zh-hant\\3.0.10\\humanizer.core.zh-hant.3.0.10.nupkg.sha512",
-    "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.8\\microsoft.aspnetcore.app.internal.assets.10.0.8.nupkg.sha512",
+    "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.9\\microsoft.aspnetcore.app.internal.assets.10.0.9.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.authorization\\10.0.8\\microsoft.aspnetcore.authorization.10.0.8.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.components\\10.0.8\\microsoft.aspnetcore.components.10.0.8.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.components.analyzers\\10.0.8\\microsoft.aspnetcore.components.analyzers.10.0.8.nupkg.sha512",
@@ -106,8 +106,8 @@
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.extensions.validation\\10.0.8\\microsoft.extensions.validation.10.0.8.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.jsinterop\\10.0.8\\microsoft.jsinterop.10.0.8.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.jsinterop.webassembly\\10.0.8\\microsoft.jsinterop.webassembly.10.0.8.nupkg.sha512",
-    "C:\\Users\\Martin\\.nuget\\packages\\microsoft.net.illink.tasks\\10.0.8\\microsoft.net.illink.tasks.10.0.8.nupkg.sha512",
-    "C:\\Users\\Martin\\.nuget\\packages\\microsoft.net.sdk.webassembly.pack\\10.0.8\\microsoft.net.sdk.webassembly.pack.10.0.8.nupkg.sha512",
+    "C:\\Users\\Martin\\.nuget\\packages\\microsoft.net.illink.tasks\\10.0.9\\microsoft.net.illink.tasks.10.0.9.nupkg.sha512",
+    "C:\\Users\\Martin\\.nuget\\packages\\microsoft.net.sdk.webassembly.pack\\10.0.9\\microsoft.net.sdk.webassembly.pack.10.0.9.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\microsoft.visualstudio.solutionpersistence\\1.0.52\\microsoft.visualstudio.solutionpersistence.1.0.52.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\mudblazor\\9.5.0\\mudblazor.9.5.0.nupkg.sha512",
@@ -119,7 +119,7 @@
     "C:\\Users\\Martin\\.nuget\\packages\\system.composition.hosting\\9.0.0\\system.composition.hosting.9.0.0.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\system.composition.runtime\\9.0.0\\system.composition.runtime.9.0.0.nupkg.sha512",
     "C:\\Users\\Martin\\.nuget\\packages\\system.composition.typedparts\\9.0.0\\system.composition.typedparts.9.0.0.nupkg.sha512",
-    "C:\\Users\\Martin\\.nuget\\packages\\microsoft.netcore.app.runtime.mono.browser-wasm\\10.0.8\\microsoft.netcore.app.runtime.mono.browser-wasm.10.0.8.nupkg.sha512"
+    "C:\\Users\\Martin\\.nuget\\packages\\microsoft.netcore.app.runtime.mono.browser-wasm\\10.0.9\\microsoft.netcore.app.runtime.mono.browser-wasm.10.0.9.nupkg.sha512"
   ],
   "logs": []
 }

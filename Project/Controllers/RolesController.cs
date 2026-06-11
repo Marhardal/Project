@@ -7,6 +7,8 @@ using Project.Models;
 
 namespace Project.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class RolesController : Controller
     {
         private readonly RoleManager<IdentityRole> roleManager;

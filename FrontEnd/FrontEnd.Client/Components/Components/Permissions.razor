@@ -1,0 +1,466 @@
+﻿@page "/settings/roles"
+@attribute [Authorize]
+
+<PageTitle>Role Management</PageTitle>
+
+<div class="container-fluid px-4 py-3">
+
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <div>
+            <h5 class="mb-0 fw-500">Role management</h5>
+            <small class="text-muted">Define roles and control what each role can do on each page</small>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary btn-sm" @onclick="() => showAddPageModal = true">
+                <i class="ti ti-layout-grid-add me-1"></i> Add page
+            </button>
+            <button class="btn btn-primary btn-sm" @onclick="() => showAddRoleModal = true">
+                <i class="ti ti-plus me-1"></i> New role
+            </button>
+        </div>
+    </div>
+
+    @if (loading)
+    {
+        <div class="text-center py-5 text-muted">
+            <div class="spinner-border spinner-border-sm me-2"></div> Loading...
+        </div>
+    }
+    else
+    {
+        <!-- Search -->
+        <div class="input-group input-group-sm mb-3">
+            <span class="input-group-text">Search</span>
+            <input type="text" class="form-control" placeholder="Search roles..."
+                   @bind="searchQuery" @bind:event="oninput" />
+        </div>
+
+        <!-- Role list -->
+        @if (FilteredRoles.Count == 0)
+        {
+            <div class="text-center text-muted py-5">
+                <i class="ti ti-user-off fs-2 d-block mb-2"></i>
+                No roles found.
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-column gap-2">
+                @foreach (var role in FilteredRoles)
+                {
+                    <div class="card border rounded-3 shadow-none">
+
+                        <!-- Role header -->
+                        <div class="card-header bg-transparent d-flex align-items-center gap-3 py-2 px-3"
+                             style="cursor:pointer"
+                             @onclick="() => ToggleRole(role.Id)">
+                            <div class="role-avatar" style="@AvatarStyle(role.Id)">
+                                @Initials(role.Name)
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-500 fs-6">@role.Name</div>
+                                <small class="text-muted">
+                                    @GrantedCount(role.Id) of @TotalActions() permissions granted
+                                    &middot; @pages.Count pages
+                                </small>
+                            </div>
+                            <button class="btn btn-sm btn-outline-danger"
+                                    @onclick:stopPropagation="true"
+                                    @onclick="() => ConfirmDeleteRole(role)">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                            <i class="fa-solid @(expandedRoles.Contains(role.Id) ? "fa-chevron-up" : "fa-chevron-down") text-muted"></i>
+                        </div>
+
+                        <!-- Permission panel -->
+                        @if (expandedRoles.Contains(role.Id))
+                        {
+                            <div class="card-body px-3 py-2">
+
+                                <!-- Grant / Revoke all -->
+                                <div class="d-flex align-items-center gap-3 mb-2">
+                                    <small class="text-muted">Quick actions:</small>
+                                    <a class="small text-primary" style="cursor:pointer"
+                                       @onclick="() => GrantAll(role.Id)">Grant all</a>
+                                    <span class="text-muted small">&middot;</span>
+                                    <a class="small text-primary" style="cursor:pointer"
+                                       @onclick="() => RevokeAll(role.Id)">Revoke all</a>
+                                    <div class="ms-auto">
+                                        <button class="btn btn-primary btn-sm"
+                                                @onclick="() => SavePermissions(role.Id)"
+                                                disabled="@saving">
+                                            @if (saving)
+                                            {
+                                                <span class="spinner-border spinner-border-sm me-1"></span>
+                                            }
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Pages grid -->
+                                <div class="d-flex flex-column gap-2">
+                                    @foreach (var page in pages)
+                                    {
+                                        var grantedOnPage = page.PageActions
+                                            .Count(a => GetPerm(role.Id, a.Id));
+                                        var allGranted = grantedOnPage == page.PageActions.Count;
+
+                                        <div class="border rounded-2 overflow-hidden">
+                                            <div class="d-flex align-items-center justify-content-between px-3 py-2 bg-light border-bottom">
+                                                <span class="small fw-500">
+                                                    <i class="ti @(page.Icon ?? "ti-file") me-1 text-primary"></i>
+                                                    @* @page.  .Name *@
+                                                    @(
+                                                    page.Name
+                                                    )
+                                                    <span class="badge bg-secondary ms-1 fw-normal">
+                                                        @grantedOnPage/@(page.PageActions.Count)
+                                                    </span>
+                                                </span>
+                                                <a class="small text-muted" style="cursor:pointer"
+                                                   @onclick="() => TogglePage(role.Id, page, !allGranted)">
+                                                    @(allGranted ? "Revoke all" : "Grant all")
+                                                </a>
+                                            </div>
+                                            <div class="d-flex flex-wrap gap-2 px-3 py-2">
+                                                @foreach (var action in page.PageActions)
+                                                {
+                                                    var granted = GetPerm(role.Id, action.Id);
+                                                    <span class="badge rounded-pill px-3 py-2 @(granted ? "text-bg-primary" : "text-bg-light border")"
+                                                          style="cursor:pointer;font-weight:400"
+                                                          @onclick="() => TogglePerm(role.Id, action.Id)">
+                                                        @if (granted)
+                                                        {
+                                                            @* <i class="ti ti-check me-1"></i> *@
+                                                            <i class="fa-solid fa-check"></i>
+                                                        }
+                                                        @action.Name
+                                                    </span>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>
+
+<!-- Add Role Modal -->
+@if (showAddRoleModal)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background:rgba(0,0,0,0.4)">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">New role</h6>
+                    <button class="btn-close" @onclick="() => showAddRoleModal = false"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label small">Role name</label>
+                    <input class="form-control form-control-sm" @bind="newRoleName"
+                           placeholder="e.g. District Officer" maxlength="40" />
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary btn-sm" @onclick="() => showAddRoleModal = false">Cancel</button>
+                    <button class="btn btn-primary btn-sm" @onclick="CreateRole">Create role</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Add Page Modal -->
+@if (showAddPageModal)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background:rgba(0,0,0,0.4)">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <EditForm Model="page" OnValidSubmit="CreatePage" FormName="createPage">
+                    <div class="modal-header">
+                        <h6 class="modal-title">Add page / module</h6>
+                        <button type="button" class="btn btn-close btn-sm"
+                                @onclick="() => showAddPageModal = false">
+                            @* <i class="fa-solid fa-x ms-1"></i> *@
+                        </button>
+                    </div>
+                    <DataAnnotationsValidator />
+                    @* <ValidationSummary /> *@
+                    <div class="modal-body">
+                    @if (!string.IsNullOrEmpty(submitMessage))
+                    {
+                        <div class="alert alert-danger my-2" role="alert">
+                            @submitMessage
+                        </div>
+                        @* <div id="liveAlertPlaceholder"></div> *@
+                    }
+                        <label class="form-label small">Icon</label>
+                        @* <input class="form-control form-control-sm mb-3" @bind="newPageName"
+                               placeholder="" maxlength="40" /> *@
+                        <InputText class="form-control form-control-sm mb-3" @bind-Value="page.Icon" placeholder="Page Icons" />
+                        <ValidationMessage For="@(() => page.Icon)" class="text-danger" />
+                        <label class="form-label small">Name</label>
+                        @* <input class="form-control form-control-sm mb-3" @bind="newPageName"
+                               placeholder="" maxlength="40" /> *@
+                        <InputText class="form-control form-control-sm mb-3" @bind-Value="page.Name" placeholder="e.g. Districts" />
+                        <ValidationMessage For="@(() => page.Name)" class="text-danger" />
+                        <label class="form-label small">Actions</label>
+                        <div class="input-group input-group-sm mb-2">
+                            @* <input class="form-control" @bind="newActionInput"
+                                   placeholder="e.g. View" maxlength="30"
+                                   @onkeydown="OnActionKeyDown" /> *@
+                            <InputText class="form-control" @bind-Value="newActionInput" placeholder="e.g. View" maxlength="30"/>
+                            <button class="btn btn-outline-secondary" @onclick="AddNewAction">Add</button>
+                            @* <ValidationMessage For="@(() => Proposal.Name)" class="text-danger" /> *@
+                        </div>
+                        @if (!newPageActions.Any() || !string.IsNullOrEmpty(actionMessage))
+                        {
+                            <span class="text-danger py-2">@actionMessage</span>
+                        }
+                        <div class="d-flex flex-wrap gap-1">
+                            @foreach (PageActionsDTO a in actionsDTOs)
+                            {
+                                <span class="badge bg-primary rounded-pill">
+                                    @a.Name    @* ← was @a which calls .ToString() on the object *@
+                                    <i class="fa-solid fa-x ms-1" style="cursor:pointer"
+                                       @onclick="() => RemoveAction(a)"></i>
+                                </span>
+                            }
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm"
+                                @onclick="() => showAddPageModal = false">
+                            Cancel
+                        </button>
+                        @* @onclick="CreatePage" *@
+                        <button type="submit" class="btn btn-primary btn-sm" >Add page</button>
+                    </div>
+                </EditForm>
+                
+                
+                    
+                    
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    bool loading = true;
+    bool saving = false;
+    string searchQuery = string.Empty;
+    public string? submitMessage = string.Empty;
+    List<PageActionsDTO> actionsDTOs = new();
+    PagesDTO page = new();
+    List<PagesDTO> pages = [];
+    List<RolesDTO> roles = [];
+
+    // roleId → pageActionId → isGranted
+    Dictionary<string, Dictionary<Guid, bool>> perms = [];
+
+    HashSet<string> expandedRoles = [];
+
+    bool showAddRoleModal = false;
+    bool showAddPageModal = false;
+    string newRoleName = string.Empty;
+    string newPageName = string.Empty;
+    // List<PageActionsDTO> actionsDTOs = new();
+    string newActionInput = string.Empty;
+    string actionMessage = string.Empty;
+    List<string> newPageActions = [];
+
+    List<RolesDTO> FilteredRoles => string.IsNullOrWhiteSpace(searchQuery)
+        ? roles
+        : roles.Where(r => r.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+        loading = false;
+    }
+
+    async Task LoadData()
+    {
+        pages = await RoleService.GetPagesAsync();
+        roles = await RoleService.GetRolesAsync();
+        BuildPermsCache();
+    }
+
+    void BuildPermsCache()
+    {
+        perms.Clear();
+        foreach (var role in roles)
+        {
+            perms[role.Id] = [];
+            foreach (var page in pages)
+                foreach (var action in page.PageActions)
+                    perms[role.Id][action.Id] = role.Permissions
+                        .Any(p => p.PageActionId == action.Id);
+        }
+    }
+
+    bool GetPerm(string roleId, Guid actionId) =>
+        perms.TryGetValue(roleId, out var rp) && rp.TryGetValue(actionId, out var v) && v;
+
+    void TogglePerm(string roleId, Guid actionId)
+    {
+        if (!perms.ContainsKey(roleId)) perms[roleId] = [];
+        perms[roleId][actionId] = !GetPerm(roleId, actionId);
+    }
+
+    void TogglePage(string roleId, PagesDTO page, bool grant)
+    {
+        if (!perms.ContainsKey(roleId)) perms[roleId] = [];
+        foreach (var a in page.PageActions)
+            perms[roleId][a.Id] = grant;
+    }
+
+    void GrantAll(string roleId)
+    {
+        if (!perms.ContainsKey(roleId)) perms[roleId] = [];
+        foreach (var page in pages)
+            foreach (var a in page.PageActions)
+                perms[roleId][a.Id] = true;
+    }
+
+    void RevokeAll(string roleId)
+    {
+        if (!perms.ContainsKey(roleId)) perms[roleId] = [];
+        foreach (var page in pages)
+            foreach (var a in page.PageActions)
+                perms[roleId][a.Id] = false;
+    }
+
+    int GrantedCount(string roleId) =>
+        perms.TryGetValue(roleId, out var rp) ? rp.Count(x => x.Value) : 0;
+
+    int TotalActions() => pages.Sum(p => p.PageActions.Count);
+
+    void ToggleRole(string roleId)
+    {
+        if (!expandedRoles.Add(roleId))
+            expandedRoles.Remove(roleId);
+    }
+
+    async Task SavePermissions(string roleId)
+    {
+        saving = true;
+        var dto = perms.TryGetValue(roleId, out var rp)
+            ? rp.Select(kvp => new SavePermissionDto
+                { PageActionId = kvp.Key, IsGranted = kvp.Value }).ToList()
+            : [];
+
+        await RoleService.SavePermissionsAsync(roleId, dto);
+        saving = false;
+    }
+
+    async Task CreateRole()
+    {
+        if (string.IsNullOrWhiteSpace(newRoleName)) return;
+        var ok = await RoleService.CreateRoleAsync(newRoleName.Trim());
+        if (ok)
+        {
+            showAddRoleModal = false;
+            newRoleName = string.Empty;
+            await LoadData();
+        }
+    }
+
+    async Task ConfirmDeleteRole(RolesDTO role)
+    {
+        var confirmed = await JSRuntime.InvokeAsync<bool>("confirm",
+            $"Delete role '{role.Name}'? This cannot be undone.");
+        if (!confirmed) return;
+        await RoleService.DeleteRoleAsync(role.Id);
+        expandedRoles.Remove(role.Id);
+        await LoadData();
+    }
+    async Task CreatePage()
+    {
+        if (!actionsDTOs.Any())
+        {
+            actionMessage = "At least one action is required.";
+            return;  // ← missing return, validation fires but method continues
+        }
+
+        page.Id = new Guid();
+        page.Slug = page.Name;
+
+        page.PageActions = actionsDTOs;
+
+        var ok = await RoleService.CreatePageAsync(page);
+        if (!ok.IsSuccessStatusCode)
+        {
+            submitMessage = await ok.Content.ReadAsStringAsync();  // ← was missing await
+            return;
+        }
+
+        showAddPageModal = false;
+        page = new PagesDTO();            // ← reset the model
+        actionsDTOs.Clear();
+        newActionInput = string.Empty;
+        actionMessage = string.Empty;
+        submitMessage = string.Empty;
+        await LoadData();
+        await JSRuntime.InvokeVoidAsync("SwalService.success", "Page added successfully!");
+    }
+    void AddNewAction()
+    {
+        var val = newActionInput.Trim();
+
+        if (string.IsNullOrEmpty(val)) return;
+
+        if (actionsDTOs.Any(a => a.Name.Equals(val, StringComparison.OrdinalIgnoreCase)))
+        {
+            actionMessage = $"'{val}' is already added.";
+            return;
+        }
+
+        actionsDTOs.Add(new PageActionsDTO { Name = val, Slug = val.ToLower().Replace(" ", "-") });
+        newActionInput = string.Empty;
+        actionMessage = string.Empty;   // ← clear error once they add one
+    }
+
+    async Task OnActionKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") AddNewAction();
+    }
+    async Task RemoveAction(PageActionsDTO dto)
+    {
+        actionsDTOs.RemoveAll(a => a.Name == dto.Name);
+    }
+
+    string Initials(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return "";
+
+        var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        return parts.Length switch
+        {
+            1 => parts[0][0].ToString().ToUpper(),
+            _ => $"{char.ToUpper(parts[0][0])}{char.ToUpper(parts[^1][0])}"
+        };
+    }
+
+    string AvatarStyle(string roleId)
+    {
+        var colors = new[] {
+            ("background:#E6F1FB", "color:#185FA5"),
+            ("background:#EAF3DE", "color:#3B6D11"),
+            ("background:#FAEEDA", "color:#854F0B"),
+            ("background:#E1F5EE", "color:#0F6E56"),
+            ("background:#FBEAF0", "color:#993556"),
+        };
+        var i = Math.Abs(roleId.GetHashCode()) % colors.Length;
+        return $"{colors[i].Item1};{colors[i].Item2};width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0";
+    }
+}

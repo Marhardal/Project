@@ -34,10 +34,18 @@ builder.Services.AddDbContext<DBContext>(options =>
 //}
 );
 
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(
+        new System.Text.Json.Serialization.JsonStringEnumConverter()
+    );
+});
+
 builder.Services.AddAuthorization();
 
-builder.Services.AddIdentityApiEndpoints<IdentityUser>()
-    .AddEntityFrameworkStores<DBContext>();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<DBContext>()
+    .AddDefaultTokenProviders();
 
 var jwtKey = builder.Configuration["Jwt:Key"]
     ?? throw new InvalidOperationException("JWT Key is not configured in appsettings.json");
@@ -117,7 +125,9 @@ app.UseCors(MyAllowSpecificOrigins); // 2. CORS before auth
 app.UseAuthentication(); // 3. Authentication
 app.UseAuthorization();  // 4. Authorization
 
-app.MapIdentityApi<IdentityUser>(); // 5. Only once
+//app.MapIdentityApi<IdentityUser, IdentityRole>(); // 5. Only once
+
+
 app.MapControllers();
 
 app.Run();

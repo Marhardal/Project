@@ -6,7 +6,7 @@ using Project.Models;
 
 namespace Project.Data
 {
-    public class DBContext : IdentityDbContext<IdentityUser>
+    public class DBContext : IdentityDbContext<IdentityUser, IdentityRole, string>
     {
         public DBContext(DbContextOptions options) : base(options)
         {

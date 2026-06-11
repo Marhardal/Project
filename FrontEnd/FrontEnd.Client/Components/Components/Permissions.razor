@@ -83,7 +83,7 @@
                                     <a class="small text-primary" style="cursor:pointer"
                                        @onclick="() => GrantAll(role.Id)">Grant all</a>
                                     <span class="text-muted small">&middot;</span>
-                                    <a class="small text-primary" style="cursor:pointer"
+                                    <a class="small text-primary " style="cursor:pointer"
                                        @onclick="() => RevokeAll(role.Id)">Revoke all</a>
                                     <div class="ms-auto">
                                         <button class="btn btn-primary btn-sm"
@@ -107,22 +107,49 @@
                                         var allGranted = grantedOnPage == page.PageActions.Count;
 
                                         <div class="border rounded-2 overflow-hidden">
-                                            <div class="d-flex align-items-center justify-content-between px-3 py-2 bg-light border-bottom">
+                                            @* <div class="d-flex align-items-center justify-content-between px-3 py-2 bg-light border-bottom">
                                                 <span class="small fw-500">
                                                     <i class="ti @(page.Icon ?? "ti-file") me-1 text-primary"></i>
-                                                    @* @page.  .Name *@
+                                                    @* @page.  .Name 
                                                     @(
                                                     page.Name
                                                     )
                                                     <span class="badge bg-secondary ms-1 fw-normal">
                                                         @grantedOnPage/@(page.PageActions.Count)
                                                     </span>
-                                                </span>
-                                                <a class="small text-muted" style="cursor:pointer"
+                                                </span> *@
+                                                @* <button class="btn btn-outline-secondary btn-sm" @onclick="() => editPage(page)">
+                                                    <i class="ti ti-layout-grid-add me-1"></i> Update page
+                                                </button>
+                                               <button>Update Page</button>
+                                                <a class="btn btn-sm btn-outline-@(allGranted ? "danger" : "success")" style="cursor:pointer"
                                                    @onclick="() => TogglePage(role.Id, page, !allGranted)">
                                                     @(allGranted ? "Revoke all" : "Grant all")
-                                                </a>
+                                                </a> *@
+                                     @* </div> *@
+
+                                     
+                                            <div class="d-flex align-items-center justify-content-between px-3 py-2 bg-light border-bottom">
+                                                <span class="small fw-500">
+                                                    @* <i class="fa-solid fa-file"></i> *@
+                                                    <i class="fa-solid @(page.Icon ?? "fa-file") me-1 text-primary"></i>
+                                                    @(page.Name)
+                                                    <span class="badge bg-secondary ms-1 fw-normal">
+                                                        @grantedOnPage/@(page.PageActions.Count)
+                                                    </span>
+                                                </span>
+                                                <div class="d-flex gap-2 ms-auto">
+                                                    <button class="btn btn-outline-secondary btn-sm" @onclick="() => editPage(page)">
+                                                        <i class="ti ti-layout-grid-add me-1"></i> Update page
+                                                    </button>
+                                                    <a class="btn btn-sm btn-outline-@(allGranted ? "danger" : "success")" style="cursor:pointer"
+                                                       @onclick="() => TogglePage(role.Id, page, !allGranted)">
+                                                        @(allGranted ? "Revoke all" : "Grant all")
+                                                    </a>
+                                                </div>
                                             </div>
+
+       
                                             <div class="d-flex flex-wrap gap-2 px-3 py-2">
                                                 @foreach (var action in page.PageActions)
                                                 {
@@ -182,9 +209,9 @@
     <div class="modal fade show d-block" tabindex="-1" style="background:rgba(0,0,0,0.4)">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <EditForm Model="page" OnValidSubmit="CreatePage" FormName="createPage">
+                <EditForm Model="page" OnValidSubmit="@(editMood ? updatePage : CreatePage)" FormName="createPage">
                     <div class="modal-header">
-                        <h6 class="modal-title">Add page / module</h6>
+                        <h6 class="modal-title">@(editMood ? "Edit" : "Add") page / module</h6>
                         <button type="button" class="btn btn-close btn-sm"
                                 @onclick="() => showAddPageModal = false">
                             @* <i class="fa-solid fa-x ms-1"></i> *@
@@ -216,7 +243,7 @@
                                    placeholder="e.g. View" maxlength="30"
                                    @onkeydown="OnActionKeyDown" /> *@
                             <InputText class="form-control" @bind-Value="newActionInput" placeholder="e.g. View" maxlength="30"/>
-                            <button class="btn btn-outline-secondary" @onclick="AddNewAction">Add</button>
+                            <button type="button" class="btn btn-outline-secondary" @onclick="AddNewAction">Add</button>
                             @* <ValidationMessage For="@(() => Proposal.Name)" class="text-danger" /> *@
                         </div>
                         @if (!newPageActions.Any() || !string.IsNullOrEmpty(actionMessage))
@@ -240,7 +267,7 @@
                             Cancel
                         </button>
                         @* @onclick="CreatePage" *@
-                        <button type="submit" class="btn btn-primary btn-sm" >Add page</button>
+                        <button type="submit" class="btn btn-primary btn-sm" >@(editMood ? "Update Page" : "Add Page")</button>
                     </div>
                 </EditForm>
                 
@@ -275,6 +302,10 @@
     string newActionInput = string.Empty;
     string actionMessage = string.Empty;
     List<string> newPageActions = [];
+
+    bool editMood = false;
+
+    bool actionMood = false;
 
     List<RolesDTO> FilteredRoles => string.IsNullOrWhiteSpace(searchQuery)
         ? roles
@@ -382,6 +413,7 @@
         expandedRoles.Remove(role.Id);
         await LoadData();
     }
+
     async Task CreatePage()
     {
         if (!actionsDTOs.Any())
@@ -411,6 +443,47 @@
         await LoadData();
         await JSRuntime.InvokeVoidAsync("SwalService.success", "Page added successfully!");
     }
+
+    async Task updatePage()
+    {
+        if (!actionsDTOs.Any())
+        {
+            actionMessage = "At least one action is required.";
+            return;  // ← missing return, validation fires but method continues
+        }
+
+        page.Slug = page.Name;
+        page.PageActions = actionsDTOs;
+
+        var ok = await RoleService.updatePageAsync(page.Id, page);
+        if (!ok.IsSuccessStatusCode)
+        {
+            submitMessage = await ok.Content.ReadAsStringAsync();  // ← was missing await
+            return;
+        }
+
+        showAddPageModal = false;
+        page = new PagesDTO();            // ← reset the model
+        actionsDTOs.Clear();
+        newActionInput = string.Empty;
+        actionMessage = string.Empty;
+        submitMessage = string.Empty;
+        editMood = false;
+        await LoadData();
+        await JSRuntime.InvokeVoidAsync("SwalService.success", "Page updated successfully!");
+    }
+
+    async Task editPage(PagesDTO dTO)
+    {
+        editMood = true;
+        showAddPageModal = true;
+        page.Name = dTO.Name;
+        page.Icon = dTO.Icon;
+        page.PageActions = dTO.PageActions;
+        page.Id = dTO.Id;
+        actionsDTOs = dTO.PageActions.ToList();
+    }
+
     void AddNewAction()
     {
         var val = newActionInput.Trim();

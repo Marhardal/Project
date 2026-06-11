@@ -69,34 +69,154 @@ namespace Project.Controllers
 
         // PUT: api/Pages/{id}
         [HttpPut("{id:guid}")]
+        //    public async Task<IActionResult> PutPagesModel(Guid id, PagesModel pagesModel)
+        //    {
+        //        if (id != pagesModel.Id)
+        //        {
+        //            return BadRequest();
+        //        }
+
+        //        //_context.PageActions.Where(a => a.PageID == pagesModel.Id).ExecuteDelete();
+
+        //        //var page = new PagesModel
+        //        //{
+        //        //    Name = pagesModel.Name,
+        //        //    Slug = pagesModel.Name.ToLower().Replace(" ", "-"),
+        //        //    Icon = pagesModel.Icon,
+        //        //    SortOrder = pagesModel.SortOrder,
+        //        //    PageActions = pagesModel.PageActions.Select(a => new Models.PageActions
+        //        //    {
+        //        //        Id = Guid.NewGuid(),
+        //        //        Name = a.Name,
+        //        //        Slug = a.Slug.ToLower().Replace(" ", "-")
+        //        //    }).ToList()
+        //        //};
+
+        //        //_context.Entry(page).State = EntityState.Modified;
+
+        //        var existing = await _context.Pages
+        //.Include(p => p.PageActions)
+        //.FirstOrDefaultAsync(p => p.Id == id);
+
+        //        if (existing == null) return NotFound();
+
+        //        existing.Name = pagesModel.Name;
+        //        existing.Slug = pagesModel.Name.ToLower().Replace(" ", "-");
+        //        existing.Icon = pagesModel.Icon;
+        //        existing.SortOrder = pagesModel.SortOrder;
+
+        //        // replace child actions
+        //        _context.PageActions.RemoveRange(existing.PageActions);
+        //        existing.PageActions = pagesModel.PageActions.Select(a => new Models.PageActions
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            PageID = id,
+        //            Name = a.Name,
+        //            Slug = a.Slug?.ToLower().Replace(" ", "-")
+        //        }).ToList();
+
+        //        _context.Entry(existing).State = EntityState.Modified;
+
+        //        try
+        //        {
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!PagesModelExists(id))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+
+        //        return NoContent();
+        //    }
+        //public async Task<IActionResult> PutPagesModel(Guid id, PagesModel pagesModel)
+        //{
+        //    if (id != pagesModel.Id)
+        //        return BadRequest();
+
+        //    var existing = await _context.Pages
+        //        .Include(p => p.PageActions)
+        //        .FirstOrDefaultAsync(p => p.Id == id);
+
+        //    if (existing is null) return NotFound();
+
+        //    // Step 1 — delete old actions and commit immediately
+        //    if (existing.PageActions.Any())
+        //    {
+        //        _context.PageActions.RemoveRange(existing.PageActions);
+        //        await _context.SaveChangesAsync();
+        //        existing.PageActions.Clear();
+        //    }
+
+        //    // Step 2 — update parent and add new actions
+        //    existing.Name = pagesModel.Name.Trim();
+        //    existing.Slug = pagesModel.Name.Trim().ToLower().Replace(" ", "-");
+        //    existing.Icon = pagesModel.Icon;
+        //    existing.SortOrder = pagesModel.SortOrder;
+
+        //    foreach (var a in pagesModel.PageActions)
+        //    {
+        //        existing.PageActions.Add(new Models.PageActions
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            PageID = id,
+        //            Name = a.Name.Trim(),
+        //            Slug = a.Name.Trim().ToLower().Replace(" ", "-")
+        //        });
+        //    }
+
+        //    await _context.SaveChangesAsync();
+
+        //    return NoContent();
+        //}
         public async Task<IActionResult> PutPagesModel(Guid id, PagesModel pagesModel)
         {
             if (id != pagesModel.Id)
-            {
                 return BadRequest();
-            }
 
-            _context.Entry(pagesModel).State = EntityState.Modified;
+            // Step 1 — delete old actions and commit
+            var oldActions = await _context.PageActions
+                .Where(a => a.PageID == id)
+                .ToListAsync();
 
-            try
+            if (oldActions.Any())
             {
+                _context.PageActions.RemoveRange(oldActions);
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+
+            // Step 2 — fetch the parent fresh (no stale tracking state)
+            var existing = await _context.Pages
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (existing is null) return NotFound();
+
+            // Step 3 — update parent scalar properties
+            existing.Name = pagesModel.Name.Trim();
+            existing.Slug = pagesModel.Name.Trim().ToLower().Replace(" ", "-");
+            existing.Icon = pagesModel.Icon;
+            existing.SortOrder = pagesModel.SortOrder;
+
+            // Step 4 — add new actions
+            var newActions = pagesModel.PageActions.Select(a => new Models.PageActions
             {
-                if (!PagesModelExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                Id = Guid.NewGuid(),
+                PageID = id,
+                Name = a.Name.Trim(),
+                Slug = a.Name.Trim().ToLower().Replace(" ", "-")
+            }).ToList();
+
+            await _context.PageActions.AddRangeAsync(newActions);
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
-
         // POST: api/Pages
         [HttpPost]
         public async Task<ActionResult<PagesModel>> PostPagesModel(PagesModel pagesModel)

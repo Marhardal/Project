@@ -59,6 +59,25 @@ namespace FrontEnd.Client.Services
             }
         }
 
+        public async Task<HttpResponseMessage?> updatePageAsync(Guid Id, PagesDTO dto)
+        {
+
+            try
+            {
+                return await _http.PutAsJsonAsync("api/pages/"+Id, dto);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Failed to add a Page and its actions via POST {Endpoint}", "api/pages");
+                // Return a synthetic failure response so callers can handle gracefully
+                var resp = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+                {
+                    Content = new StringContent(ex.Message)
+                };
+                return resp;
+            }
+        }
+
         public async Task<bool> DeletePageAsync(Guid pageId)
         {
             var response = await _http.DeleteAsync($"api/pages/{pageId}");

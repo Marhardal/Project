@@ -15,7 +15,9 @@
                 <i class="ti ti-layout-grid-add me-1"></i> Add page
             </button>
             <button class="btn btn-primary btn-sm" @onclick="() => showAddRoleModal = true">
-                <i class="ti ti-plus me-1"></i> New role
+                @* <i class="ti ti-plus me-1"></i> *@
+                <i class="fa-solid fa-plus me-1"></i>
+                New role
             </button>
         </div>
     </div>
@@ -80,11 +82,11 @@
                                 <!-- Grant / Revoke all -->
                                 <div class="d-flex align-items-center gap-3 mb-2">
                                     <small class="text-muted">Quick actions:</small>
-                                    <a class="small text-primary" style="cursor:pointer"
-                                       @onclick="() => GrantAll(role.Id)">Grant all</a>
-                                    <span class="text-muted small">&middot;</span>
-                                    <a class="small text-primary " style="cursor:pointer"
-                                       @onclick="() => RevokeAll(role.Id)">Revoke all</a>
+                                    <button class="btn btn-sm btn-success" style="cursor:pointer"
+                                       @onclick="() => GrantAll(role.Id)">Grant all</button>
+                                    @* <span class="text-muted small">&middot;</span> *@
+                                    <button class="btn btn-sm btn-danger " style="cursor:pointer"
+                                       @onclick="() => RevokeAll(role.Id)">Revoke all</button>
                                     <div class="ms-auto">
                                         <button class="btn btn-primary btn-sm"
                                                 @onclick="() => SavePermissions(role.Id)"
@@ -142,10 +144,10 @@
                                                     <button class="btn btn-outline-secondary btn-sm" @onclick="() => editPage(page)">
                                                         <i class="ti ti-layout-grid-add me-1"></i> Update page
                                                     </button>
-                                                    <a class="btn btn-sm btn-outline-@(allGranted ? "danger" : "success")" style="cursor:pointer"
+                                                    <button class="btn btn-sm btn-@(allGranted ? "danger" : "success")" style="cursor:pointer"
                                                        @onclick="() => TogglePage(role.Id, page, !allGranted)">
                                                         @(allGranted ? "Revoke all" : "Grant all")
-                                                    </a>
+                                                    </button>
                                                 </div>
                                             </div>
 
@@ -319,6 +321,7 @@
 
     async Task LoadData()
     {
+        var mypages = await RoleService.GetUserPages();
         pages = await RoleService.GetPagesAsync();
         roles = await RoleService.GetRolesAsync();
         BuildPermsCache();

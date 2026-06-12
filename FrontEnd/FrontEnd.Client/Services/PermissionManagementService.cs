@@ -102,5 +102,11 @@ namespace FrontEnd.Client.Services
             var response = await _http.PutAsJsonAsync($"api/roles/{roleId}/permissions", permissions);
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<List<PermissionDto>> GetUserPages()
+        {
+            var result = await _http.GetFromJsonAsync<List<PermissionDto>>($"api/Permissions/my-nav");
+            return result ?? [];
+        }
     }
 }

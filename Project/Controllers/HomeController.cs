@@ -1,4 +1,5 @@
 ﻿using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project.Data;
@@ -8,6 +9,7 @@ using Project.Models;
 
 namespace Project.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly DBContext _context;

@@ -35,32 +35,35 @@
     </div>
 
     <div class="col-md-3 col-12">
-        <div class="d-flex flex-wrap gap-2 justify-content-end">
-            <div class="dropdown">
-                <button class="btn btn-secondary border text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Export
-                </button>
-                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end dropdown-menu-start">
-                    <li>
-                        <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createPDF()">
-                            <i class="fa-solid fa-file-pdf"></i>PDF
-                        </button>
-                    </li>
-                    <li>
-                        <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createExcel()">
-                            <i class="fa-solid fa-file-excel"></i>Excel
-                        </button>
-                    </li>
-                </ul>
+        @if (Permissions.Can(PageSlug, "Export"))
+        {
+            <div class="d-flex flex-wrap gap-2 justify-content-end">
+                <div class="dropdown">
+                    <button class="btn btn-secondary border text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Export
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end dropdown-menu-start">
+                        <li>
+                            <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createPDF()">
+                                <i class="fa-solid fa-file-pdf"></i>PDF
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createExcel()">
+                                <i class="fa-solid fa-file-excel"></i>Excel
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="flex-grow-1 flex-md-grow-0">
+                    <!-- Grows to fill space on mobile -->
+                    <button type="button" @onclick="OpenCreateModal" class="btn btn-primary w-100 w-md-auto"
+                    data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        <i class="fa-solid fa-plus me-2"></i>Add
+                    </button>
+                </div>
             </div>
-            <div class="flex-grow-1 flex-md-grow-0">
-                <!-- Grows to fill space on mobile -->
-                <button type="button" @onclick="OpenCreateModal" class="btn btn-primary w-100 w-md-auto"
-                        data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                    <i class="fa-solid fa-plus me-2"></i>Add
-                </button>
-            </div>
-        </div>
+        }
     </div>
 </div>
 @if (proponents?.Count > 0)
@@ -89,16 +92,25 @@
                     <td>@proponent.createdOn.ToString("MMM dd, yyyy")</td>
                     <td>
                         <div class="d-flex gap-1 justify-content-center">
-                            <NavLink class="btn btn-sm btn-outline-primary" href="@($"/Proponent/View/{proponent.ID}")">
-                                <i class="bi bi-eye"></i>
-                            </NavLink>
-                            <button class="btn btn-sm btn-outline-warning" @onclick="() => EditProponent(proponent)"
-                                    title="Edit" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" title="Delete">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                            @if (Permissions.Can(PageSlug, "Details"))
+                            {
+                                <NavLink class="btn btn-sm btn-outline-primary" href="@($"/Proponent/View/{proponent.ID}")">
+                                    <i class="bi bi-eye"></i>
+                                </NavLink>
+                            }
+                            @if (Permissions.Can(PageSlug, "Edit"))
+                            {
+                                <button class="btn btn-sm btn-outline-warning" @onclick="() => EditProponent(proponent)"
+                                title="Edit" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                            }
+                            @if (Permissions.Can(PageSlug, "Delete"))
+                            {
+                                <button class="btn btn-sm btn-outline-danger" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            }
                         </div>
                     </td>
                 </RowTemplate>

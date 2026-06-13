@@ -4,35 +4,43 @@
 <PageTitle>MEPA | Users</PageTitle>
 
 <div class="my-4 row g-0 align-items-center ">
-    <div class="col-md-4 my-2">
-        <div class="d-flex flex-wrap gap-2">
+    <div class="col-md-5 my-2">
+        @* <div class="d-flex flex-wrap gap-2"> *@
             <div class="flex-grow-1 flex-md-grow-0 my-2">
                 <h3>Users</h3>
             </div>
-            <div class="flex-grow-1 flex-md-grow-0">
-                <div class="my-2 input-group rounded-pill small">
-                    <span class="input-group-text" id="basic-addon1">Show</span>
-                    <select class="form-control-sm" aria-label="Username" aria-describedby="basic-addon1">
-                        <option>10</option>
-                        <option>20</option>
-                        <option>30</option>
-                        <option>40</option>
-                        <option>50</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
+        @* </div> *@
     </div>
-    <div class="col-md-5">
-        <div class="my-2 input-group">
+    <div class="col-md-2">
+
+        @* <div class="flex-grow-1 flex-md-grow-0"> *@
+            <div class="my-2 input-group rounded-pill small">
+                <span class="input-group-text" id="basic-addon1">Show</span>
+                <select class="form-control-sm" aria-label="Username" aria-describedby="basic-addon1">
+                    <option>10</option>
+                    <option>20</option>
+                    <option>30</option>
+                    <option>40</option>
+                    <option>50</option>
+                </select>
+            </div>
+        @* </div> *@
+    </div>
+    <div class="col-md-4">
+        <div class="px-2 input-group">
             <span class="input-group-text" id="basic-addon1">Search</span>
             <input type="text" class="form-control" placeholder="Search" aria-label="Username"
                    aria-describedby="basic-addon1">
         </div>
     </div>
+    <div class="col-md-1">
 
-    <div class="col-md-3 col-12">
+        <button type="button" @onclick="OpenCreateModal" class="btn btn-primary w-100 w-md-auto"
+                data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            <i class="fa-solid fa-plus me-2"></i>Add
+        </button>
+    </div>
+  @*   <div class="col-md-3 col-12">
         <div class="d-flex flex-wrap gap-2 justify-content-end">
             <div class="dropdown-center small flex-grow-1 flex-md-grow-0">
                 <!-- Grows to fill space on mobile -->
@@ -53,7 +61,7 @@
                 </button>
             </div>
         </div>
-    </div>
+    </div> *@
 </div>
 
 <div class="border rounded bg-body-tertiary">

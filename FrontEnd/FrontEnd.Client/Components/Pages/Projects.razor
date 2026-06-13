@@ -1,7 +1,5 @@
 ﻿@page "/Projects"
 @inherits PermissionGuardedPage
-@* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
-
 
 <PageTitle>Projects</PageTitle>
 @* 994190633 *@
@@ -23,24 +21,27 @@
         </div>
     </div>
     <div class="col-md-2 col-sm-2 text-md-end">
-
-        <div class="dropdown">
-            <button class="btn btn-secondary border text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Export
-            </button>
-            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end dropdown-menu-start">
-                <li>
-                    <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createPDF()">
-                        <i class="fa-solid fa-file-pdf"></i>PDF
-                    </button>
-                </li>
-                <li>
-                    <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createExcel()">
-                        <i class="fa-solid fa-file-excel"></i>Excel
-                    </button>
-                </li>
-            </ul>
-        </div>
+        @if (Permissions.Can(PageSlug, "Export"))
+        {
+            <div class="dropdown">
+                <button class="btn btn-secondary border text-white dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    Export
+                </button>
+                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end dropdown-menu-start">
+                    <li>
+                        <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createPDF()">
+                            <i class="fa-solid fa-file-pdf"></i>PDF
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createExcel()">
+                            <i class="fa-solid fa-file-excel"></i>Excel
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        }
     </div>
     @* <div class="col-md-2 col-sm-2 text-md-end">
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i
@@ -53,8 +54,8 @@
         <div class="col-md-7">
             <div class="mb-3 input-group">
                 <span class="input-group-text" id="basic-addon1">Search</span>
-                <input type="search" class="form-control" placeholder="Search"
-                       value="@searchQuery" @oninput="OnSearchChanged" />
+                <input type="search" class="form-control" placeholder="Search" value="@searchQuery"
+                       @oninput="OnSearchChanged" />
             </div>
         </div>
         <div class="col-md-2">
@@ -104,114 +105,123 @@
                 @* <td>@project.Name</td> *@
                 <td>
                     <span class="d-inline-block text-truncate" style="max-width: 350px;"
-                    title="@project.Name">@project.Name</span>
+                          title="@project.Name">@project.Name</span>
                 </td>
                 <td>@project?.Proponent?.Name</td>
                 <td>@(project?.ProjectLocations?.Any() == true
-                        ? string.Join(", ", project?.ProjectLocations?.Select(l => l.Location?.Location).Where(l => l != null))
-                        : "—")</td>
+                                            ? string.Join(", ", project?.ProjectLocations?.Select(l => l.Location?.Location).Where(l => l != null))
+                                            : "—")</td>
 
-                <td>@project?.ProjectType.ToString()</td>
-                @{
-                    var status = project?.Trackings.OrderByDescending(p => p.createdOn).FirstOrDefault()?.Status;
-                }
-
-                <td class="py-2">
-                    <StatusItem Name="@status?.Name" Colour="@status?.Color"></StatusItem>
-                </td>
-                <td>@project?.SubmissionDate.ToString("yyyy-MMM, dd")</td>
-                <td class="py-2">
-                    <div class="d-flex gap-1 justify-content-end ">
-                        <NavLink class="rounded btn btn-sm btn-outline-warning" href="@($"Project/View/{project.Id}")">
-                            <i class="bi bi-eye-fill"></i>
-                        </NavLink>
-                        @* @onclick="() => editProposal(proposal)" *@
-                        <button data-bs-toggle="modal"
-                                data-bs-target="#staticBackdrop" class="rounded btn btn-sm btn-outline-success" @onclick="() => editProject(project)">
-                            <i class="bi bi-pencil-square"></i>
-                        </button>
-                        <NavLink class="rounded btn btn-sm btn-outline-danger">
-                            <i class="bi bi-trash"></i>
-                        </NavLink>
-                    </div>
-                </td>
-            </RowTemplate>
-        </TableTemplate>
-        <div class="justify-content-center d-flex">
-            <Paginator pageSize="pageSize" currentPage="currentPage" totalItems="filteredProjects.Count" OnPageChanged="Pages => currentPage = Pages" />
-        </div>
-    </div>
-}
-else
-{
-    <p>Please enter some projects via Project Briefs.</p>
-}
-
-
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-     aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <EditForm method="post" Model="Proposal" OnValidSubmit="HandleUpdate"
-                      FormName="create">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Project</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <DataAnnotationsValidator />
-                    @if (!string.IsNullOrEmpty(submitMessage))
-                    {
-                        <div class="alert alert-danger my-2" role="alert">
-                            @submitMessage
-                        </div>
+                    <td>@project?.ProjectType.ToString()</td>
+                    @{
+                        var status = project?.Trackings.OrderByDescending(p => p.createdOn).FirstOrDefault()?.Status;
                     }
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="Name" class="form-label">Project Name</label>
-                                <InputText @bind-Value="Proposal.Name" class="form-control" id="Name"
-                                           placeholder="Enter Project Name."></InputText>
-                                <ValidationMessage For="@(() => Proposal.Name)" class="text-danger" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
 
-                            <div class="mb-3">
-                                <label for="ProponentID" class="form-label">Project Proponent</label>
-                                <InputSelect @bind-Value="Proposal.ProponentID" id="ProponentID" class="form-select"
-                                             aria-label="Default select example">
-                                    <option value="">-- Select Proponent --</option>
-                                    @foreach (var proponent in proponents)
-                                    {
-                                        <option value="@proponent.ID">@proponent.Name</option>
-                                    }
-                                </InputSelect>
-                                <ValidationMessage For="@(() => Proposal.ProponentID)" class="text-danger" />
-                            </div>
+                    <td class="py-2">
+                        <StatusItem Name="@status?.Name" Colour="@status?.Color"></StatusItem>
+                    </td>
+                    <td>@project?.SubmissionDate.ToString("yyyy-MMM, dd")</td>
+                    <td class="py-2">
+                        <div class="d-flex gap-1 justify-content-end ">
+                            @if (Permissions.Can(PageSlug, "Details"))
+                            {
+                                <NavLink class="rounded btn btn-sm btn-outline-warning" href="@($"Project/View/{project.Id}")">
+                                    <i class="bi bi-eye-fill"></i>
+                                </NavLink>
+                            }
+                            @* @onclick="() => editProposal(proposal)" *@
+                            @if (Permissions.Can(PageSlug, "Edit"))
+                            {
+                                <button data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                                        class="rounded btn btn-sm btn-outline-success" @onclick="() => editProject(project)">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            }
+                            @if (Permissions.Can(PageSlug, "Delete"))
+                            {
+                                <NavLink class="rounded btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </NavLink>
+                            }
                         </div>
+                    </td>
+                </RowTemplate>
+            </TableTemplate>
+            <div class="justify-content-center d-flex">
+                <Paginator pageSize="pageSize" currentPage="currentPage" totalItems="filteredProjects.Count"
+                           OnPageChanged="Pages => currentPage = Pages" />
+            </div>
+        </div>
+    }
+else
+    {
+        <p>Please enter some projects via Project Briefs.</p>
+    }
+
+
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <EditForm method="post" Model="Proposal" OnValidSubmit="HandleUpdate" FormName="create">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Project</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+                    <div class="modal-body">
+                        <DataAnnotationsValidator />
+                        @if (!string.IsNullOrEmpty(submitMessage))
+                        {
+                            <div class="alert alert-danger my-2" role="alert">
+                                @submitMessage
+                            </div>
+                        }
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="Name" class="form-label">Project Name</label>
+                                    <InputText @bind-Value="Proposal.Name" class="form-control" id="Name"
+                                               placeholder="Enter Project Name."></InputText>
+                                    <ValidationMessage For="@(() => Proposal.Name)" class="text-danger" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="Location" class="form-label">Location</label>
-                                @* <InputText @bind-Value="Proposal.Location" class="form-control" id="Location"
+                                <div class="mb-3">
+                                    <label for="ProponentID" class="form-label">Project Proponent</label>
+                                    <InputSelect @bind-Value="Proposal.ProponentID" id="ProponentID" class="form-select"
+                                                 aria-label="Default select example">
+                                        <option value="">-- Select Proponent --</option>
+                                        @foreach (var proponent in proponents)
+                                        {
+                                            <option value="@proponent.ID">@proponent.Name</option>
+                                        }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => Proposal.ProponentID)" class="text-danger" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="Location" class="form-label">Location</label>
+                                    @* <InputText @bind-Value="Proposal.Location" class="form-control" id="Location"
                                            placeholder="Enter Project Location.">
                                 </InputText>
                                 <ValidationMessage For="@(() => Proposal.Location)" class="text-danger" /> *@
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="SubmissionDate" class="form-label">Submission Date</label>
+                                    <InputDate @bind-Value="Proposal.SubmissionDate" class="form-control"
+                                               id="SubmissionDate"></InputDate>
+                                    <ValidationMessage For="@(() => Proposal.SubmissionDate)" class="text-danger" />
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="SubmissionDate" class="form-label">Submission Date</label>
-                                <InputDate @bind-Value="Proposal.SubmissionDate" class="form-control"
-                                           id="SubmissionDate"></InputDate>
-                                <ValidationMessage For="@(() => Proposal.SubmissionDate)" class="text-danger" />
-                            </div>
-                        </div>
-                    </div>
-                    @* @{
+                        @* @{
                         var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
                         var isApproved = selectedStatus?.Name == "Approved";
                     }
@@ -222,9 +232,7 @@ else
                                 <div class="mb-3">
                                     <label for="Status" class="form-label">Status</label>
 
-                                    <InputSelect @bind-Value="Proposal.Tracking.StatusID"
-                                                 id="Status"
-                                                 class="form-select">
+                                    <InputSelect @bind-Value="Proposal.Tracking.StatusID" id="Status" class="form-select">
                                         <option value="">-- Select Status --</option>
                                         @foreach (var status in statuses)
                                         {
@@ -237,56 +245,55 @@ else
                             </div>
 
                             
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="ProjectType" class="form-label">Type</label>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="ProjectType" class="form-label">Type</label>
 
-                                        <InputSelect @bind-Value="Proposal.ProjectType"
-                                                     id="ProjectType"
-                                                     class="form-select">
-                                            <option value="">-- Select Project Type --</option>
-                                            @foreach (var type in Enum.GetValues<ProjectType>().Where(t => t != ProjectType.Brief))
-                                            {
-                                                <option value="@type">@EnumHelper.GetDisplayName(type)</option>
-                                            }
-                                        </InputSelect>
+                                    <InputSelect @bind-Value="Proposal.ProjectType" id="ProjectType" class="form-select">
+                                        <option value="">-- Select Project Type --</option>
+                                        @foreach (var type in Enum.GetValues<ProjectType>().Where(t => t !=
+                                ProjectType.Brief))
+                                        {
+                                            <option value="@type">@EnumHelper.GetDisplayName(type)</option>
+                                        }
+                                    </InputSelect>
 
-                                        <ValidationMessage For="@(() => Proposal.ProjectType)" class="text-danger" />
-                                    </div>
+                                    <ValidationMessage For="@(() => Proposal.ProjectType)" class="text-danger" />
                                 </div>
+                            </div>
                         </div>
-                    @* } *@
-                    <div class="mb-3">
-                        <label for="Description" class="form-label">Description</label>
-                        <InputTextArea @bind-Value="Proposal.Description" class="form-control" id="Description" rows="3"
-                                       placeholder="Enter Project Description."></InputTextArea>
-                        <ValidationMessage For="@(() => Proposal.Description)" class="text-danger" />
+                        @* } *@
+                        <div class="mb-3">
+                            <label for="Description" class="form-label">Description</label>
+                            <InputTextArea @bind-Value="Proposal.Description" class="form-control" id="Description" rows="3"
+                                           placeholder="Enter Project Description."></InputTextArea>
+                            <ValidationMessage For="@(() => Proposal.Description)" class="text-danger" />
+                        </div>
                     </div>
-                </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" disabled="@isLoading">
-                        @if (isLoading)
-                        {
-                            <span>Updating</span>
-                            <span class="submitting-dots">
-                                <span>.</span>
-                                <span>.</span>
-                                <span>.</span>
-                            </span>
-                        }
-                        else
-                        {
-                            <span>Update</span>
-                        }
-                    </button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" disabled="@isLoading">
+                            @if (isLoading)
+                            {
+                                <span>Updating</span>
+                                <span class="submitting-dots">
+                                    <span>.</span>
+                                    <span>.</span>
+                                    <span>.</span>
+                                </span>
+                            }
+                            else
+                            {
+                                <span>Update</span>
+                            }
+                        </button>
+                    </div>
 
-            </EditForm>
+                </EditForm>
+            </div>
         </div>
     </div>
-</div>
 
 @code {
 
@@ -304,20 +311,20 @@ else
     private string searchQuery = string.Empty;
     private ProjectType? selectedType = null;
     private Guid? selectedStatus = null;
-    private int totalPages => (int)Math.Ceiling(filteredProjects .Count / (double)pageSize);
+    private int totalPages => (int)Math.Ceiling(filteredProjects.Count / (double)pageSize);
     bool isLoading = false;
-    
+
     // protected override string PageSlug => navigationManager.BaseUri.Remove("/");
 
     protected override string PageSlug
-{
-    get
     {
-        var relativePath = navigationManager.ToBaseRelativePath(navigationManager.Uri);
-        var firstSegment = relativePath.Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
-        return (firstSegment ?? string.Empty).ToLowerInvariant();
+        get
+        {
+            var relativePath = navigationManager.ToBaseRelativePath(navigationManager.Uri);
+            var firstSegment = relativePath.Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+            return (firstSegment ?? string.Empty).ToLowerInvariant();
+        }
     }
-}
 
     private List<ProjectDTO> filteredProjects => projects?
         .Where(p =>
@@ -415,7 +422,7 @@ else
 
         await JSRuntime.InvokeVoidAsync("showModal", "staticBackdrop");
     }
-    
+
     async Task HandleUpdate()
     {
         isLoading = true;
@@ -468,7 +475,7 @@ else
         }
         // submitMessage = null;
     }
-    
+
     private Timer? _debounce;
 
     private void OnSearchChanged(ChangeEventArgs e)

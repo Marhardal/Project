@@ -201,7 +201,7 @@ namespace Project.Controllers
 
             // Step 3 — update parent scalar properties
             existing.Name = pagesModel.Name.Trim();
-            existing.Slug = pagesModel.Name.Trim().ToLower().Replace(" ", "-");
+            existing.Slug = pagesModel.Slug.Trim().ToLower().Replace(" ", "-");
             existing.Icon = pagesModel.Icon;
             existing.SortOrder = pagesModel.SortOrder;
 

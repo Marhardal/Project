@@ -14,6 +14,8 @@ namespace FrontEnd.Client.DTOs
         public Guid PageActionId { get; init; }
         public string PageName { get; init; } = string.Empty;
         public string ActionName { get; init; } = string.Empty;
+        public string Icon { get; set; } = string.Empty;
+        public string Slug { get; set; } = string.Empty;
     }
 
     public record SavePermissionDto

@@ -1,26 +1,50 @@
-﻿using Microsoft.JSInterop;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+using System.Net;
+using System.Net.Http.Headers;
 
     public class BearerTokenHandler : DelegatingHandler
     {
         private readonly IJSRuntime _js;
+    private readonly NavigationManager navigation;
 
-        public BearerTokenHandler(IJSRuntime js)
+        public BearerTokenHandler(IJSRuntime js, NavigationManager navigationManager)
         {
             _js = js;
+            navigation = navigationManager;
         }
-
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        // Use Storage.getToken which unwraps the token correctly
-        var token = await _js.InvokeAsync<string>("Storage.getToken");
+        string? token = null;
 
-        if (!string.IsNullOrEmpty(token))
+        try
         {
-            request.Headers.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            token = await _js.InvokeAsync<string>("Storage.getToken");
+        }
+        catch (InvalidOperationException)
+        {
+            // JS interop not available yet (prerendering) — proceed without token
         }
 
-        return await base.SendAsync(request, cancellationToken);
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
+
+        var response = await base.SendAsync(request, cancellationToken);
+
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            try
+            {
+                await _js.InvokeVoidAsync("Storage.removeToken");
+            }
+            catch (InvalidOperationException) { }
+
+            navigation.NavigateTo("/Account/login", true);
+        }
+
+        return response;
     }
 }
 

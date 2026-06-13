@@ -239,6 +239,11 @@
                                placeholder="" maxlength="40" /> *@
                         <InputText class="form-control form-control-sm mb-3" @bind-Value="page.Name" placeholder="e.g. Districts" />
                         <ValidationMessage For="@(() => page.Name)" class="text-danger" />
+                        <label class="form-label small">Slug</label>
+                        @* <input class="form-control form-control-sm mb-3" @bind="newPageName"
+                               placeholder="" maxlength="40" /> *@
+                        <InputText class="form-control form-control-sm mb-3" @bind-Value="page.Slug" placeholder="e.g. Districts" />
+                        <ValidationMessage For="@(() => page.Slug)" class="text-danger" />
                         <label class="form-label small">Actions</label>
                         <div class="input-group input-group-sm mb-2">
                             @* <input class="form-control" @bind="newActionInput"
@@ -391,7 +396,11 @@
                 { PageActionId = kvp.Key, IsGranted = kvp.Value }).ToList()
             : [];
 
-        await RoleService.SavePermissionsAsync(roleId, dto);
+        var result = await RoleService.SavePermissionsAsync(roleId, dto);
+        if (result)
+        {
+            navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
+        }
         saving = false;
     }
 
@@ -426,7 +435,7 @@
         }
 
         page.Id = new Guid();
-        page.Slug = page.Name;
+        // page.Slug = page.Name;
 
         page.PageActions = actionsDTOs;
 
@@ -455,7 +464,7 @@
             return;  // ← missing return, validation fires but method continues
         }
 
-        page.Slug = page.Name;
+        // page.Slug = page.Name;
         page.PageActions = actionsDTOs;
 
         var ok = await RoleService.updatePageAsync(page.Id, page);
@@ -481,6 +490,7 @@
         editMood = true;
         showAddPageModal = true;
         page.Name = dTO.Name;
+        page.Slug = dTO.Slug;
         page.Icon = dTO.Icon;
         page.PageActions = dTO.PageActions;
         page.Id = dTO.Id;

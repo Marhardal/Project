@@ -105,7 +105,7 @@ try
         {
             var customProvider = (AuthStateProvider)AuthStateProvider;
             await customProvider.MarkUserAsAuthenticated(result.Token);
-            navigationManager.NavigateTo("/");
+                navigationManager.NavigateTo("/", forceLoad: true);
         }
         else
         {

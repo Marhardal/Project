@@ -51,8 +51,10 @@ namespace Project.Controllers
                     .ThenInclude(pa => pa.Page)
                 .Select(rp => new PermissionDto
                 {
-                    PageName = rp.PageAction.Page.Slug,
-                    ActionName = rp.PageAction.Slug
+                    PageName = rp.PageAction.Page.Name,
+                    ActionName = rp.PageAction.Slug,
+                    Icon = rp.PageAction.Page.Icon,
+                    Slug = rp.PageAction.Page.Slug
                 })
                 .Distinct()
                 .ToListAsync();

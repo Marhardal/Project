@@ -187,7 +187,7 @@
         <div class="container-fluid ">
             <div class="row" style="min-height: 90%;">
                 <div class="p-0 bg-dark sidebar col-md-3 col-lg-2 d-flex flex-column">
-                    <NavMenu />
+                    <NavMenu Pages="Pages" />
                 </div>
                 <main class="col-md-9 ms-sm-auto col-lg-10 d-flex flex-column bg-body-secondary"
                       style="min-height: 92vh;">
@@ -218,8 +218,16 @@
     </div>
 </div>
 
-        @code {
+@code {
     private DotNetObjectReference<MainLayout>? _objRef;
+
+    public List<PermissionDto>? Pages { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var links = await RoleService.GetUserPages();
+        Pages = links.GroupBy(i => new { i.PageName, i.Icon, i.Slug }).Select(i => new PermissionDto { PageName = i.Key.PageName, Icon = i.Key.Icon, Slug = i.Key.Slug }).ToList();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -227,6 +235,8 @@
         {
             _objRef = DotNetObjectReference.Create(this);
             await JSRuntime.InvokeVoidAsync("Inactivity.start", 30, _objRef);
+            // var links = await RoleService.GetUserPages();
+            // Pages = links.ToList();
         }
     }
 

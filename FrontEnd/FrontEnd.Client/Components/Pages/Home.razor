@@ -1,6 +1,6 @@
-﻿@page "/"
+﻿@* @page "/" *@
 @page "/home"
-@* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
+@inherits PermissionGuardedPage
 
 <PageTitle>Home</PageTitle>
 
@@ -287,7 +287,17 @@ else
     private ApexChartOptions<ProjectCategory> chartOptionsCategories;
     private string MalawiSvg = "";
 
-    protected override async Task OnInitializedAsync()
+    protected override string PageSlug
+    {
+        get
+        {
+            var relativePath = navigationManager.ToBaseRelativePath(navigationManager.Uri);
+            var firstSegment = relativePath.Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+            return (firstSegment ?? string.Empty).ToLowerInvariant();
+        }
+    }
+
+    protected override async Task OnPageInitializedAsync()
     {
         // MalawiSvg = await Http.GetStringAsync("https:localhost:7217/maps/mw.svg");
         await JSRuntime.InvokeVoidAsync("Spinner.show");

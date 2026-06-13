@@ -87,6 +87,12 @@ builder.Services.AddHttpClient<PermissionManagementService>((sp, client) =>
     client.Timeout = TimeSpan.FromSeconds(100);
 }).AddHttpMessageHandler<BearerTokenHandler>();
 
+builder.Services.AddHttpClient<PermissionService>((sp, client) =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
+    client.Timeout = TimeSpan.FromSeconds(100);
+}).AddHttpMessageHandler<BearerTokenHandler>();
+
 builder.Services.AddMudServices();
 builder.Services.AddScoped<AuthStateService>();
 builder.Services.AddScoped<NavigationHistoryService>();

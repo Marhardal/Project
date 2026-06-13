@@ -1,5 +1,5 @@
 ﻿@page "/proponents"
-@* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
+@inherits PermissionGuardedPage
 
 <PageTitle>Proponents</PageTitle>
 
@@ -215,7 +215,18 @@ else
         isEditMode = true;
         Proponent = prop;
     }
-    protected override async Task OnInitializedAsync()
+
+    protected override string PageSlug
+    {
+        get
+        {
+            var relativePath = navigationManager.ToBaseRelativePath(navigationManager.Uri);
+            var firstSegment = relativePath.Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+            return (firstSegment ?? string.Empty).ToLowerInvariant();
+        }
+    }
+
+    protected override async Task OnPageInitializedAsync()
     {
         await JSRuntime.InvokeVoidAsync("Spinner.show");
         try

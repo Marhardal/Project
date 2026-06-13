@@ -1,4 +1,5 @@
 ﻿@page "/Projects"
+@inherits PermissionGuardedPage
 @* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
 
 
@@ -305,6 +306,18 @@ else
     private Guid? selectedStatus = null;
     private int totalPages => (int)Math.Ceiling(filteredProjects .Count / (double)pageSize);
     bool isLoading = false;
+    
+    // protected override string PageSlug => navigationManager.BaseUri.Remove("/");
+
+    protected override string PageSlug
+{
+    get
+    {
+        var relativePath = navigationManager.ToBaseRelativePath(navigationManager.Uri);
+        var firstSegment = relativePath.Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+        return (firstSegment ?? string.Empty).ToLowerInvariant();
+    }
+}
 
     private List<ProjectDTO> filteredProjects => projects?
         .Where(p =>
@@ -337,7 +350,7 @@ else
         StateHasChanged();
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnPageInitializedAsync()
     {
         await JSRuntime.InvokeVoidAsync("Spinner.show");
         try

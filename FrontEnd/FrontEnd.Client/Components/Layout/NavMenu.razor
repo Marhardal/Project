@@ -129,16 +129,27 @@
         </ul>
         <hr class="my-3">
          *@
+        @* <ul class="mt-auto nav flex-column">
+            @foreach (var item in Pages)
+            {
+                <li class="nav-item">
+                    <NavLink class="gap-2 nav-link d-flex align-items-center" href="@($"/{item.Slug}")">
+                        <i class="@(item.Icon)"></i>
+                        <span class="me-2">@item.PageName.Transform(To.SentenceCase)</span>
+                        
+                    </NavLink>
+                </li>
+            }
+        </ul> *@
         <ul class="mt-auto nav flex-column">
             @foreach (var item in Pages)
             {
                 <li class="nav-item">
                     <NavLink class="gap-2 nav-link d-flex align-items-center" href="@($"/{item.Slug}")">
-                        @* <svg class="bi" aria-hidden="true">
-                        <use xlink:href="#gear-wide-connected"></use>
-                    </svg> *@
-                        <i class="@(item.Icon)"></i>
-                        @item.PageName.Transform(To.SentenceCase)
+                        <span class="d-inline-flex justify-content-center" style="flex-shrink:0;">
+                            <i class="@item.Icon"></i>
+                        </span>
+                        <span class="ms-2">@item.PageName.Transform(To.SentenceCase)</span>
                     </NavLink>
                 </li>
             }

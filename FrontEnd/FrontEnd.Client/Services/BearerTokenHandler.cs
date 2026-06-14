@@ -41,7 +41,7 @@ using System.Net.Http.Headers;
             }
             catch (InvalidOperationException) { }
 
-            navigation.NavigateTo("/Account/login", true);
+            navigation.NavigateTo("/Account/login", forceLoad: true);
         }
 
         return response;

@@ -1,6 +1,7 @@
 using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Project.Data;
 using Project.Migrations;
@@ -182,40 +183,59 @@ namespace Project.Controllers
             if (id != pagesModel.Id)
                 return BadRequest();
 
-            // Step 1 — delete old actions and commit
-            var oldActions = await _context.PageActions
-                .Where(a => a.PageID == id)
-                .ToListAsync();
-
-            if (oldActions.Any())
-            {
-                _context.PageActions.RemoveRange(oldActions);
-                await _context.SaveChangesAsync();
-            }
-
-            // Step 2 — fetch the parent fresh (no stale tracking state)
             var existing = await _context.Pages
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (existing is null) return NotFound();
 
-            // Step 3 — update parent scalar properties
+            // Step 1 — update parent scalar properties
             existing.Name = pagesModel.Name.Trim();
             existing.Slug = pagesModel.Slug.Trim().ToLower().Replace(" ", "-");
             existing.Icon = pagesModel.Icon;
             existing.SortOrder = pagesModel.SortOrder;
-
-            // Step 4 — add new actions
-            var newActions = pagesModel.PageActions.Select(a => new Models.PageActions
-            {
-                Id = Guid.NewGuid(),
-                PageID = id,
-                Name = a.Name.Trim(),
-                Slug = a.Name.Trim().ToLower().Replace(" ", "-")
-            }).ToList();
-
-            await _context.PageActions.AddRangeAsync(newActions);
             await _context.SaveChangesAsync();
+
+            // Step 2 — load existing actions from DB
+            var existingActions = await _context.PageActions
+                .Where(a => a.PageID == id)
+                .ToListAsync();
+
+            var incomingNames = pagesModel.PageActions
+                .Select(a => a.Name.Trim().ToLowerInvariant())
+                .ToHashSet();
+
+            var existingNames = existingActions
+                .Select(a => a.Name.Trim().ToLowerInvariant())
+                .ToHashSet();
+
+            // Step 3 — delete only actions that were removed
+            var toDelete = existingActions
+                .Where(a => !incomingNames.Contains(a.Name.Trim().ToLowerInvariant()))
+                .ToList();
+
+            if (toDelete.Any())
+            {
+                _context.PageActions.RemoveRange(toDelete);
+                await _context.SaveChangesAsync();
+            }
+
+            // Step 4 — add only actions that are new
+            var toAdd = pagesModel.PageActions
+                .Where(a => !existingNames.Contains(a.Name.Trim().ToLowerInvariant()))
+                .Select(a => new Models.PageActions
+                {
+                    Id = Guid.NewGuid(),
+                    PageID = id,
+                    Name = a.Name.Trim(),
+                    Slug = a.Name.Trim().ToLower().Replace(" ", "-")
+                })
+                .ToList();
+
+            if (toAdd.Any())
+            {
+                await _context.PageActions.AddRangeAsync(toAdd);
+                await _context.SaveChangesAsync();
+            }
 
             return NoContent();
         }

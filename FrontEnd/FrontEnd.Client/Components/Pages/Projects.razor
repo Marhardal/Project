@@ -3,8 +3,8 @@
 
 <PageTitle>Projects</PageTitle>
 @* 994190633 *@
-<div class="row">
-    <div class="col-md-8">
+<div class="row g-0 align-items-center mb-2">
+    <div class="@GetSearchColClass">
         <h3>Projects</h3>
     </div>
     <div class="col-md-2 col-sm-2 text-md-end">
@@ -21,7 +21,7 @@
         </div>
     </div>
     <div class="col-md-2 col-sm-2 text-md-end">
-        @if (Permissions.Can(PageSlug, "Export"))
+        @if (CanExport)
         {
             <div class="dropdown">
                 <button class="btn btn-secondary border text-white dropdown-toggle" type="button" data-bs-toggle="dropdown"
@@ -121,23 +121,24 @@
                         <StatusItem Name="@status?.Name" Colour="@status?.Color"></StatusItem>
                     </td>
                     <td>@project?.SubmissionDate.ToString("yyyy-MMM, dd")</td>
+                    @if (HasTableActions)
+                {
                     <td class="py-2">
                         <div class="d-flex gap-1 justify-content-end ">
-                            @if (Permissions.Can(PageSlug, "Details"))
+                            @if (CanDetails)
                             {
                                 <NavLink class="rounded btn btn-sm btn-outline-warning" href="@($"Project/View/{project.Id}")">
                                     <i class="bi bi-eye-fill"></i>
                                 </NavLink>
                             }
-                            @* @onclick="() => editProposal(proposal)" *@
-                            @if (Permissions.Can(PageSlug, "Edit"))
+                            @if (CanEdit)
                             {
-                                <button data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-                                        class="rounded btn btn-sm btn-outline-success" @onclick="() => editProject(project)">
+                                <button data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop" @onclick="() => editProject(project)" class="rounded btn btn-sm btn-outline-success">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
                             }
-                            @if (Permissions.Can(PageSlug, "Delete"))
+                            @if (CanDelete)
                             {
                                 <NavLink class="rounded btn btn-sm btn-outline-danger">
                                     <i class="bi bi-trash"></i>
@@ -145,6 +146,7 @@
                             }
                         </div>
                     </td>
+            }
                 </RowTemplate>
             </TableTemplate>
             <div class="justify-content-center d-flex">
@@ -326,6 +328,14 @@ else
         }
     }
 
+    string GetSearchColClass()
+    {
+        return (CanExport) switch
+        {
+            (true) => "col-md-8",   // 8 + 2 + 2     = 12
+            (false) => "col-md-10"
+        };
+    }
     private List<ProjectDTO> filteredProjects => projects?
         .Where(p =>
             (string.IsNullOrWhiteSpace(searchQuery) ||

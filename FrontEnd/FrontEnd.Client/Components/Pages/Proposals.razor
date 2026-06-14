@@ -6,9 +6,10 @@
 @if (proposals != null && proposals.Count > 0)
 {
     <div class="row">
-        <div class="col-md-6">
+        <div class="@GetSearchColClass">
             <h3>Project Briefs</h3>
         </div>
+        
         <div class="col-md-2">
             <div class="mb-3 input-group rounded-pill justify-content-end">
                 <span class="input-group-text" id="basic-addon1">Show</span>
@@ -22,36 +23,42 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-2 text-end">
-            @if (Permissions.Can(PageSlug, "Export"))
-            {
-                <div class="dropdown">
-                    <button class="btn btn-secondary border text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Export
+        @if (CanExport)
+        {
+            <div class="col-md-2 text-end">
+                @if (Permissions.Can(PageSlug, "Export"))
+                {
+                    <div class="dropdown">
+                        <button class="btn btn-secondary border text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Export
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end dropdown-menu-start">
+                            <li>
+                                <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createPDF()">
+                                    <i class="fa-solid fa-file-pdf"></i>PDF
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createExcel()">
+                                    <i class="fa-solid fa-file-excel"></i>Excel
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                }
+            </div>
+        }
+        @if (CanCreate)
+        {
+            <div class="col-md-2 text-end">
+                @if (Permissions.Can(PageSlug, "Add"))
+                {
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        <i class="fa-solid fa-plus me-2"></i>Add
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end dropdown-menu-start">
-                        <li>
-                            <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createPDF()">
-                                <i class="fa-solid fa-file-pdf"></i>PDF
-                            </button>
-                        </li>
-                        <li>
-                            <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createExcel()">
-                                <i class="fa-solid fa-file-excel"></i>Excel
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            }
-        </div>
-        <div class="col-md-2 text-end">
-            @if (Permissions.Can(PageSlug, "Add"))
-            {
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                    <i class="fa-solid fa-plus me-2"></i>Add
-                </button>
-            }
-        </div>
+                }
+            </div>
+        }
     </div>
     <div class="row">
         <div class="col-md-12">
@@ -73,7 +80,10 @@
                 <th scope="col">Location</th>
                 <th scope="col">Status</th>
                 <th scope="col">Created On</th>
+                @if (HasTableActions)
+            {
                 <th scope="col"></th>
+                }
             </TableHeader>
             <RowTemplate Context="proposal">
                 @{
@@ -98,29 +108,32 @@
                     <StatusItem Name="@status?.Name" Colour="@status?.Color"></StatusItem>
                 </td>
                 <td class="py-2">@proposal.createdOn.ToString("yyyy-MMM, dd")</td>
-                <td class="py-2">
-                    <div class="d-flex gap-1 justify-content-end ">
-                        @if (Permissions.Can(PageSlug, "Details"))
-                        {
-                            <NavLink class="rounded btn btn-sm btn-outline-warning" href="@($"Project/View/{proposal.Id}")">
-                                <i class="bi bi-eye-fill"></i>
-                            </NavLink>
-                        }
-                        @if (Permissions.Can(PageSlug, "Edit"))
-                        {
-                            <button data-bs-toggle="modal"
-                            data-bs-target="#staticBackdrop" @onclick="() => editProposal(proposal)" class="rounded btn btn-sm btn-outline-success">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
-                        }
-                        @if (Permissions.Can(PageSlug, "Delete"))
-                        {
-                            <NavLink class="rounded btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i>
-                            </NavLink>
-                        }
-                    </div>
-                </td>
+                    @if (HasTableActions)
+                {
+                    <td class="py-2">
+                        <div class="d-flex gap-1 justify-content-end ">
+                            @if (CanDetails)
+                            {
+                                <NavLink class="rounded btn btn-sm btn-outline-warning" href="@($"Project/View/{proposal.Id}")">
+                                    <i class="bi bi-eye-fill"></i>
+                                </NavLink>
+                            }
+                            @if (CanEdit)
+                            {
+                                <button data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop" @onclick="() => editProposal(proposal)" class="rounded btn btn-sm btn-outline-success">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            }
+                            @if (CanDelete)
+                            {
+                                <NavLink class="rounded btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </NavLink>
+                            }
+                        </div>
+                    </td>
+            }
             </RowTemplate>
         </TableTemplate>
 
@@ -400,6 +413,17 @@ else
             var firstSegment = relativePath.Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
             return (firstSegment ?? string.Empty).ToLowerInvariant();
         }
+    }
+
+    string GetSearchColClass()
+    {
+        return (CanExport, CanCreate) switch
+        {
+            (true, true) => "col-md-6",   // 6 + 2 + 2 + 2 = 12
+            (true, false) => "col-md-8",   // 8 + 2 + 2     = 12
+            (false, true) => "col-md-8",   // 8 + 2 + 2     = 12
+            (false, false) => "col-md-10",  // 10 + 2        = 12
+        };
     }
 
     protected override async Task OnPageInitializedAsync()

@@ -2,8 +2,7 @@
 @inherits PermissionGuardedPage
 
 <PageTitle>Proponents</PageTitle>
-
-<div class="mb-2 row g-0 align-items-center ">
+<div class="mb-2 row g-0 align-items-center">
     <div class="col-md-4">
         <div class="d-flex flex-wrap gap-2">
             <div class="flex-grow-1 flex-md-grow-0">
@@ -23,50 +22,57 @@
                 </div>
             </div>
         </div>
-
     </div>
-    <div class="col-md-5">
-        <div class="input-group">
-            <span class="input-group-text" id="basic-addon1">Search</span>
+
+    <div class="@GetSearchColClass()">
+        <div class="input-group px-2">
+            <span class="input-group-text">Search</span>
             <input type="search" class="form-control" placeholder="Search"
                    value="@searchQuery"
                    @oninput="OnSearchChanged" />
         </div>
     </div>
-
-    <div class="col-md-3 col-12">
-        @if (Permissions.Can(PageSlug, "Export"))
-        {
-            <div class="d-flex flex-wrap gap-2 justify-content-end">
+    @if (CanExport)
+    {
+        <div class="col-md-2 col-12">
+            <div class="d-flex justify-content-end">
                 <div class="dropdown">
-                    <button class="btn btn-secondary border text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-secondary border text-white dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                         Export
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end dropdown-menu-start">
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
                         <li>
                             <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createPDF()">
-                                <i class="fa-solid fa-file-pdf"></i>PDF
+                                <i class="fa-solid fa-file-pdf"></i> PDF
                             </button>
                         </li>
                         <li>
                             <button type="button" class="btn btn-sm dropdown-item" @onclick="() => createExcel()">
-                                <i class="fa-solid fa-file-excel"></i>Excel
+                                <i class="fa-solid fa-file-excel"></i> Excel
                             </button>
                         </li>
                     </ul>
                 </div>
-                <div class="flex-grow-1 flex-md-grow-0">
-                    <!-- Grows to fill space on mobile -->
-                    <button type="button" @onclick="OpenCreateModal" class="btn btn-primary w-100 w-md-auto"
-                    data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                        <i class="fa-solid fa-plus me-2"></i>Add
-                    </button>
-                </div>
             </div>
-        }
+        </div>
+    }
+
+    @if (CanCreate)
+    {
+        <div class="col-md-1 col-12">
+            <div class="d-flex justify-content-end">
+                <button type="button" @onclick="OpenCreateModal"
+                        class="btn btn-primary w-100 w-md-auto"
+                        data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    <i class="fa-solid fa-plus me-2"></i>Add
+                </button>
+            </div>
+        </div>
+    }
+
     </div>
-</div>
-@if (proponents?.Count > 0)
+    @if (proponents?.Count > 0)
 {
     <div class="border rounded bg-body-tertiary">
         <div class="p-2">
@@ -79,7 +85,10 @@
                     <th scope="col">Postal Address</th>
                     <th scope="col">Location</th>
                     <th scope="col">Created On</th>
+                    @if (HasTableActions)
+{
                     <th scope="col"></th>
+}
                 </TableHeader>
                 <RowTemplate Context="proponent">
                     @{
@@ -90,29 +99,33 @@
                     <td>@proponent.Address</td>
                     <td>@proponent.Location</td>
                     <td>@proponent.createdOn.ToString("MMM dd, yyyy")</td>
-                    <td>
-                        <div class="d-flex gap-1 justify-content-center">
-                            @if (Permissions.Can(PageSlug, "Details"))
-                            {
-                                <NavLink class="btn btn-sm btn-outline-primary" href="@($"/Proponent/View/{proponent.ID}")">
-                                    <i class="bi bi-eye"></i>
-                                </NavLink>
-                            }
-                            @if (Permissions.Can(PageSlug, "Edit"))
-                            {
-                                <button class="btn btn-sm btn-outline-warning" @onclick="() => EditProponent(proponent)"
-                                title="Edit" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                            }
-                            @if (Permissions.Can(PageSlug, "Delete"))
-                            {
-                                <button class="btn btn-sm btn-outline-danger" title="Delete">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            }
-                        </div>
-                    </td>
+                    
+                    @if (HasTableActions)
+                    {
+                        <td>
+                            <div class="d-flex gap-1 justify-content-center">
+                                @if (CanDetails)
+                                {
+                                    <NavLink class="btn btn-sm btn-outline-primary" href="@($"/Proponent/View/{proponent.ID}")">
+                                        <i class="bi bi-eye"></i>
+                                    </NavLink>
+                                }
+                                @if (CanEdit)
+                                {
+                                    <button class="btn btn-sm btn-outline-warning" @onclick="() => EditProponent(proponent)"
+                                            title="Edit" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                }
+                                @if (CanDelete)
+                                {
+                                    <button class="btn btn-sm btn-outline-danger" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                }
+                            </div>
+                        </td>
+                    }
                 </RowTemplate>
 
             </TableTemplate>
@@ -199,6 +212,7 @@ else
     private string searchQuery = string.Empty;
     private int pageSize = 10;
     private int currentPage = 1;
+
     // private int totalPages => (int)Math.Ceiling(filteredProponents.Count / (double)pageSize);
 
     private List<ProponentsDTO> filteredProponents =>
@@ -215,6 +229,18 @@ else
             .Skip((currentPage - 1) * pageSize)
             .Take(pageSize)
             .ToList();
+
+    string GetSearchColClass()
+    {
+
+        return (CanExport, CanCreate) switch
+        {
+            (true, true) => "col-md-5",   // 4 + 5 + 2 + 1 = 12
+            (true, false) => "col-md-6",   // 4 + 6 + 2     = 12
+            (false, true) => "col-md-7",   // 4 + 7 + 1     = 12
+            (false, false) => "col-md-8",   // 4 + 8         = 12
+        };
+    }
 
     void OpenCreateModal()
     {

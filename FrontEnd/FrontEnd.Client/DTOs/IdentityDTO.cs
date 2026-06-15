@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FrontEnd.Client.DTOs;
+using System.ComponentModel.DataAnnotations;
 
 public class IdentityDTO
 {
     [Required]
     public string? Email { get; set; }
     [Required]
-    public string? RoleId { get; set; }
+    public List<string>? Roles { get; set; }
     [Required]
     public string? Username { get; set; }
     [Required]
@@ -14,5 +15,18 @@ public class IdentityDTO
     public bool LockoutEnabled { get; set; }
     public bool TwoFactorEnabled { get; set; }
 
-    public PasswordDTO? Password { get; set; } = new();
+    [Required]
+    [DataType(DataType.Password)]
+    [StringLength(100, MinimumLength = 8)]
+    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$",
+    ErrorMessage = "Password must contain uppercase, lowercase, number, and special character.")]
+
+    public string? Password { get; set; }
+    [Required]
+    [DataType(DataType.Password)]
+    [StringLength(100, MinimumLength = 8)]
+    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$",
+    ErrorMessage = "Password must contain uppercase, lowercase, number, and special character.")]
+    [Compare("Password", ErrorMessage = "Passwords do not match.")]
+    public string? ConfirmPassword { get; set; }
 }

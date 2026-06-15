@@ -105,7 +105,7 @@
 
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog  modal-lg modal-dialog-centered">
         <div class="modal-content">
             <EditForm method="post" Model="Identity" OnValidSubmit="HandleSubmission" FormName="create">
                 <div class="modal-header">
@@ -114,33 +114,35 @@
                 </div>
                 <div class="modal-body">
                     <DataAnnotationsValidator />
-                    <div class="mb-2 row g-0 ">
+                    <div class="mb-2 row g-2">
                         <div class="col-md-6 col-sm-12">
-                            <label for="Name" class="form-label">Username</label>
+                            <label for="Username" class="form-label">Username</label>
                             <InputText @bind-Value="Identity.Username" class="form-control" id="Name"
                                        placeholder="Enter User Username."></InputText>
                             <ValidationMessage For="@(() => Identity.Username)" class="text-danger" />
                         </div>
                         <div class="col-md-6 col-sm-12">
-                            <label for="Name" class="form-label">Email</label>
+                            <label for="Email" class="form-label">Email</label>
                             <InputText @bind-Value="Identity.Email" class="form-control" id="Name"
                                        placeholder="Enter User Email."></InputText>
                             <ValidationMessage For="@(() => Identity.Email)" class="text-danger" />
                         </div>
                     </div>
-                    <div class="mb-2 row g-0 ">
-                        <div class="d-flex flex-wrap gap-3">
-                            <InputRadioGroup @bind-Value="Identity.RoleId">
-                                @foreach (var role in roles)
-                                {
-                                    <div class="form-check">
-                                        <InputRadio Value="@role.Id" class="form-check-input" id="@($"role-{role.Id}")" />
-                                        <label class="form-check-label" for="@($"role-{role.Id}")">
-                                            @role.Name
-                                        </label>
-                                    </div>
-                                }
-                            </InputRadioGroup>
+                    <div class="mb-2 row g-2">
+
+                        <label for="Name" class="form-label">Select Roles</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            @foreach (var role in roles)
+                            {
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" value="@role.Name"
+                                           id="@($"role-{role.Name}")"
+                                           @onchange="(e) => ToggleRole(role.Id, (bool)e.Value!)" />
+                                    <label class="form-check-label" for="@($"role-{role.Name}")">
+                                        @role.Name
+                                    </label>
+                                </div>
+                            }
                         </div>
                     </div>
                     @* <div class="mb-3">
@@ -151,21 +153,23 @@
                     </div> *@
                     <div class="mb-3">
                         <label for="Name" class="form-label">Phone</label>
-                        <InputText @bind-Value="Identity.Phone" class="form-control" id="Name"
+                        <InputText type="number" @bind-Value="Identity.Phone" class="form-control" id="Name"
                                    placeholder="Enter User Phone Number."></InputText>
                         <ValidationMessage For="@(() => Identity.Phone)" class="text-danger" />
                     </div>
-                    <div class="mb-3">
-                        <label for="Name" class="form-label">Password</label>
-                        <InputText @bind-Value="Identity.Password.Password" class="form-control" id="Name"
-                                   placeholder="Enter User Password."></InputText>
-                        <ValidationMessage For="@(() => Identity.Password.Password)" class="text-danger" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="Name" class="form-label">Confirm Password</label>
-                        <InputText @bind-Value="Identity.Password.ConfirmPassword" class="form-control" id="Name"
-                                   placeholder="Confirm User Password."></InputText>
-                        <ValidationMessage For="@(() => Identity.Password.ConfirmPassword)" class="text-danger" />
+                    <div class="mb-2 row g-2">
+                        <div class="col-md-6 col-sm-12">
+                            <label for="password" class="form-label">Password</label>
+                            <InputText type="password" @bind-Value="Identity.Password" class="form-control" id="Name"
+                                       placeholder="Enter User Password."></InputText>
+                            <ValidationMessage For="@(() => Identity.Password)" class="text-danger" />
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <label for="ConfirmPassword" class="form-label">Confirm Password</label>
+                            <InputText type="password" @bind-Value="Identity.ConfirmPassword" class="form-control" id="Name"
+                                       placeholder="Confirm User Password."></InputText>
+                            <ValidationMessage For="@(() => Identity.ConfirmPassword)" class="text-danger" />
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -178,6 +182,7 @@
 </div>
 
 @code {
+    [SupplyParameterFromForm]
     private IdentityDTO Identity { get; set; } = new();
     private bool isEditMode = false;
     private List<UserProfileDTO> users = new List<UserProfileDTO>();
@@ -188,7 +193,6 @@
         isEditMode = false;
         // UserProfile = new UserProfileDTO();
     }
-
 
     protected override string PageSlug
     {
@@ -211,20 +215,25 @@
 
     protected override async Task OnPageInitializedAsync()
     {
-        await JSRuntime.InvokeVoidAsync("Spinner.show");
         try
         {
             var userProfiles = await UserProfileService.GetUserProfilesAsync();
             users = userProfiles;
+
             var allRoles = await RoleService.GetRolesAsync();
             roles = allRoles;
         }
         catch (Exception ex)
         {
-
+            Console.WriteLine($"Error: {ex.Message}");
         }
-        finally
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
         {
+            await JSRuntime.InvokeVoidAsync("Spinner.show");
             await Task.Delay(200);
             await JSRuntime.InvokeVoidAsync("Spinner.hide");
         }
@@ -239,4 +248,20 @@
         users = userProfiles;
     }
 
+    private void ToggleRole(string roleId, bool isChecked)
+    {
+        // Guard: Identity or its Roles list is null
+        // Identity ??= new UserDTO();
+        Identity.Roles ??= new List<string>();
+
+        if (isChecked)
+        {
+            if (!Identity.Roles.Contains(roleId))
+                Identity.Roles.Add(roleId);
+        }
+        else
+        {
+            Identity.Roles.Remove(roleId);
+        }
+    }
 }

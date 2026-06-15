@@ -102,7 +102,7 @@ public class UserProfileService
     {
         try
         {
-            return await _http.PostAsJsonAsync("api/Identity", dto);
+            return await _http.PostAsJsonAsync("api/Identity/Register", dto);
         }
         catch (Exception ex)
         {

@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Project.Data;
+using Project.Notifications;
 using Project.Services;
+using QuestPDF.Infrastructure;
 using Scalar.AspNetCore;
 using System.Text;
-using QuestPDF.Infrastructure;
 
 var MyAllowSpecificOrigins = "AllowFrontend";
 
@@ -53,6 +54,12 @@ var jwtIssuer = builder.Configuration["Jwt:Issuer"]
 
 var jwtAudience = builder.Configuration["Jwt:Audience"]
     ?? throw new InvalidOperationException("JWT Audience is not configured");
+
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("App"));
+
+builder.Services.AddScoped<Templates>();
+
+builder.Services.AddScoped<NotificationService>();
 
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 //    .AddJwtBearer(options =>

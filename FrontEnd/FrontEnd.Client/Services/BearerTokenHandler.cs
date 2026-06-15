@@ -37,7 +37,7 @@ using System.Net.Http.Headers;
         {
             try
             {
-                await _js.InvokeVoidAsync("Storage.removeToken");
+                await _js.InvokeVoidAsync("Storage.clearToken");
             }
             catch (InvalidOperationException) { }
 

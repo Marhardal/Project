@@ -1,14 +1,13 @@
-﻿using Humanizer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Project.Data;
 using Project.DTO;
 using Project.Models;
+using Project.Notifications;
 using Project.Services;
-using System.Net;
+using System.Text;
 
 namespace Project.Controllers
 {
@@ -18,18 +17,28 @@ namespace Project.Controllers
     {
         private readonly DBContext dbContext;
         private readonly UserManager<IdentityUser> userManager;
-        private readonly AuthService authService; // ✅ readonly
+        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly AuthService authService;
+        private readonly NotificationService Notification;
+        private readonly IConfiguration configuration;
+        private readonly Templates templates;
 
-        public IdentityController(DBContext _dbContext, UserManager<IdentityUser> _userManager, AuthService _authService)
+
+        public IdentityController(DBContext _dbContext, UserManager<IdentityUser> _userManager, AuthService _authService, RoleManager<IdentityRole> _roleManager, NotificationService notificationService, IConfiguration _configuration, Templates _templates)
         {
             dbContext = _dbContext;
             userManager = _userManager;
             authService = _authService; // ✅ assigned
+            roleManager = _roleManager;
+            Notification = notificationService;
+            configuration = _configuration;
+            templates = _templates;
         }
 
         // POST: api/Identity
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+
+        [HttpPost("Register")]
         [Authorize]
         public async Task<ActionResult<UserModel>> CreateUser(IdentityDTO identity)
         {
@@ -50,16 +59,48 @@ namespace Project.Controllers
                 return BadRequest("Username already exists.");
             }
 
-            var result = await userManager.CreateAsync(new IdentityUser
+            var user = new IdentityUser
             {
                 UserName = identity?.Username,
                 Email = identity?.Email,
                 PhoneNumber = identity?.Phone,
                 TwoFactorEnabled = true,
-            }, identity.Password.Password);
+            };
+
+            var result = await userManager.CreateAsync(user, identity.Password.Password);
 
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
+
+            if (identity.Roles != null && identity.Roles.Count > 0)
+            {
+                var addRolesResult = await userManager.AddToRolesAsync(user, identity.Roles);
+                if (!addRolesResult.Succeeded)
+                    return BadRequest(addRolesResult.Errors);
+            }
+
+            var loginUrl = configuration["App:BaseUrl"] ?? "https://localhost:7217/login";
+            var Company = configuration["App:Company"];
+            var body = templates.WelcomeUser(
+                username: identity.Username,
+                email: identity.Email,
+                password: identity.Password.Password
+            );
+
+            try
+            {
+                await Notification.SendMail(
+                    identity.Email,
+                    subject: $"Welcome to {Company.ToString()} — Your Account Details",
+                    body
+                );
+            }
+            catch (Exception ex)
+            {
+                // Don't fail the whole request if email fails
+                // Log it instead
+                Console.WriteLine($"Email failed: {ex.Message}");
+            }
 
             return Ok();
         }
@@ -84,13 +125,23 @@ namespace Project.Controllers
                     TokenOptions.DefaultEmailProvider
                 );
 
-                // Send token by email here
-                string emailbody = "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n    <style>\r\n        body {\r\n            margin: 0;\r\n            padding: 0;\r\n            background-color: #f4f6f8;\r\n            font-family: Arial, Helvetica, sans-serif;\r\n        }\r\n\r\n        .email-container {\r\n            max-width: 520px;\r\n            margin: 40px auto;\r\n            background-color: #ffffff;\r\n            border-radius: 12px;\r\n            overflow: hidden;\r\n            box-shadow: 0 4px 16px rgba(0,0,0,0.08);\r\n        }\r\n\r\n        .email-header {\r\n            background-color: #0d6efd;\r\n            color: #ffffff;\r\n            padding: 24px;\r\n            text-align: center;\r\n        }\r\n\r\n        .email-header h2 {\r\n            margin: 0;\r\n            font-size: 22px;\r\n        }\r\n\r\n        .email-body {\r\n            padding: 32px 28px;\r\n            color: #333333;\r\n        }\r\n\r\n        .email-body p {\r\n            font-size: 15px;\r\n            line-height: 1.6;\r\n            margin: 0 0 16px;\r\n        }\r\n\r\n        .otp-box {\r\n            margin: 28px 0;\r\n            text-align: center;\r\n        }\r\n\r\n        .otp-code {\r\n            display: inline-block;\r\n            letter-spacing: 8px;\r\n            font-size: 34px;\r\n            font-weight: bold;\r\n            color: #0d6efd;\r\n            background-color: #eef4ff;\r\n            border: 1px dashed #0d6efd;\r\n            border-radius: 10px;\r\n            padding: 16px 24px;\r\n        }\r\n\r\n        .expiry-text {\r\n            text-align: center;\r\n            color: #dc3545;\r\n            font-weight: bold;\r\n            margin-top: 12px;\r\n        }\r\n\r\n        .email-footer {\r\n            background-color: #f1f3f5;\r\n            padding: 18px 24px;\r\n            text-align: center;\r\n            font-size: 13px;\r\n            color: #666666;\r\n        }\r\n\r\n        .small-text {\r\n            font-size: 13px;\r\n            color: #777777;\r\n        }\r\n    </style>\r\n</head>\r\n\r\n<body>\r\n    <div class=\"email-container\">\r\n        <div class=\"email-header\">\r\n            <h2>Account Verification</h2>\r\n        </div>\r\n\r\n        <div class=\"email-body\">\r\n            <p>Hello " + user.UserName + ",</p>\r\n\r\n            <p>Your One-Time Password (OTP) for account verification is:</p>\r\n\r\n            <div class=\"otp-box\">\r\n                <span class=\"otp-code\">" + token + "</span>\r\n                <div class=\"expiry-text\">This code expires in 5 minutes</div>\r\n            </div>\r\n\r\n            <p class=\"small-text\">\r\n                If you did not request this code, please ignore this email.\r\n                Do not share this code with anyone.\r\n            </p>\r\n\r\n            </div>\r\n\r\n        <div class=\"email-footer\">\r\n            &copy; " + DateTime.Now.Year + " Project Tracking Management System. All rights reserved.\r\n        </div>\r\n    </div>\r\n</body>\r\n</html>";
-                EmailUtility.SendMail(
-                    dto.Email,
-                    "PTMS OTP",
-                    emailbody
-                );
+                var body = templates.LoginOTP(username: dto.Email, otp: token);
+
+                var Company = configuration["App:Company"];
+                try
+                {
+                    await Notification.SendMail(
+                        dto.Email,
+                        subject: $"Welcome to {Company.ToString()} — Your Login OTP",
+                        body
+                    );
+                }
+                catch (Exception ex)
+                {
+                    // Don't fail the whole request if email fails
+                    // Log it instead
+                    Console.WriteLine($"Email failed: {ex.Message}");
+                }
 
                 return Ok(new PreAuthResponseDTO
                 {
@@ -143,18 +194,20 @@ namespace Project.Controllers
                 return Ok("If the email exists, a reset link has been sent.");
 
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            var resetLink = $"{configuration["App:BaseUrl"]}/reset-password?email={dto.Email}&token={encodedToken}";
 
-            var encodedToken = WebUtility.UrlEncode(token);
+            var body = templates.ForgotPassword(user.UserName!, resetLink);
+            var Company = configuration["App:Company"];
 
-            var resetLink =
-                $"https://yourfrontend.com/reset-password?email={dto.Email}&token={encodedToken}";
-
-            EmailUtility.SendMail(
-                dto.Email,
-                "Reset your password",
-                $"Click this link to reset your password: {resetLink}"
-
-            );
+            try
+            {
+                await Notification.SendMail(user.Email!, $"{Company} — Password Reset Request", body);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Reset email failed: {ex.Message}");
+            }
 
             return Ok("If the email exists, a reset link has been sent.");
         }
@@ -167,11 +220,8 @@ namespace Project.Controllers
             if (user == null)
                 return BadRequest("Invalid reset request.");
 
-            var result = await userManager.ResetPasswordAsync(
-                user,
-                dto.Token,
-                dto.NewPassword
-            );
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(dto.Token));
+            var result = await userManager.ResetPasswordAsync(user, decodedToken, dto.NewPassword);
 
             if (!result.Succeeded)
                 return BadRequest(result.Errors);

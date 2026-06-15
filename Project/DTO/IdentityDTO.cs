@@ -10,6 +10,8 @@ namespace Project.DTO
         public string? Username { get; set; }
         [Required]
         public string? Phone { get; set; }
+        [Required]
+        public List<string>? Roles { get; set; }
         public int AccessFailedCount { get; set; }
         public bool LockoutEnabled { get; set; }
         public bool TwoFactorEnabled { get; set; }

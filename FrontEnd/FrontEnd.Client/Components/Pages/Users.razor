@@ -3,10 +3,10 @@
 
 <PageTitle>MEPA | Users</PageTitle>
 
-<div class="my-4 row g-0 align-items-center ">
-    <div class="col-md-5 my-2">
+<div class="mb-2 row g-0 align-items-center ">
+    <div class="col-md-4">
         @* <div class="d-flex flex-wrap gap-2"> *@
-            <div class="flex-grow-1 flex-md-grow-0 my-2">
+            <div class="flex-grow-1 flex-md-grow-0">
                 <h3>Users</h3>
             </div>
         @* </div> *@
@@ -14,7 +14,7 @@
     <div class="col-md-2">
 
         @* <div class="flex-grow-1 flex-md-grow-0"> *@
-            <div class="my-2 input-group rounded-pill small">
+            <div class="input-group rounded-pill small">
                 <span class="input-group-text" id="basic-addon1">Show</span>
                 <select class="form-control-sm" aria-label="Username" aria-describedby="basic-addon1">
                     <option>10</option>
@@ -26,7 +26,7 @@
             </div>
         @* </div> *@
     </div>
-    <div class="col-md-4">
+    <div class="@GetSearchColClass()">
         <div class="px-2 input-group">
             <span class="input-group-text" id="basic-addon1">Search</span>
             <input type="text" class="form-control" placeholder="Search" aria-label="Username"
@@ -43,28 +43,7 @@
             </button>
         </div>
     }
-  @*   <div class="col-md-3 col-12">
-        <div class="d-flex flex-wrap gap-2 justify-content-end">
-            <div class="dropdown-center small flex-grow-1 flex-md-grow-0">
-                <!-- Grows to fill space on mobile -->
-                <button class="btn btn-secondary dropdown-toggle w-100 w-md-auto" type="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                    Export
-                </button>
-                <ul class="dropdown-menu dropdown-menu-sm">
-                    <li><a class="dropdown-item" href="#">PDF</a></li>
-                    <li><a class="dropdown-item" href="#">Excel</a></li>
-                </ul>
-            </div>
-            <div class="flex-grow-1 flex-md-grow-0">
-                <!-- Grows to fill space on mobile -->
-                <button type="button" @onclick="OpenCreateModal" class="btn btn-primary w-100 w-md-auto"
-                        data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                    <i class="fa-solid fa-plus me-2"></i>Add
-                </button>
-            </div>
-        </div>
-    </div> *@
+  
 </div>
 
 <div class="border rounded bg-body-tertiary">
@@ -135,18 +114,41 @@
                 </div>
                 <div class="modal-body">
                     <DataAnnotationsValidator />
-                    <div class="mb-3">
+                    <div class="mb-2 row g-0 ">
+                        <div class="col-md-6 col-sm-12">
+                            <label for="Name" class="form-label">Username</label>
+                            <InputText @bind-Value="Identity.Username" class="form-control" id="Name"
+                                       placeholder="Enter User Username."></InputText>
+                            <ValidationMessage For="@(() => Identity.Username)" class="text-danger" />
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <label for="Name" class="form-label">Email</label>
+                            <InputText @bind-Value="Identity.Email" class="form-control" id="Name"
+                                       placeholder="Enter User Email."></InputText>
+                            <ValidationMessage For="@(() => Identity.Email)" class="text-danger" />
+                        </div>
+                    </div>
+                    <div class="mb-2 row g-0 ">
+                        <div class="d-flex flex-wrap gap-3">
+                            <InputRadioGroup @bind-Value="Identity.RoleId">
+                                @foreach (var role in roles)
+                                {
+                                    <div class="form-check">
+                                        <InputRadio Value="@role.Id" class="form-check-input" id="@($"role-{role.Id}")" />
+                                        <label class="form-check-label" for="@($"role-{role.Id}")">
+                                            @role.Name
+                                        </label>
+                                    </div>
+                                }
+                            </InputRadioGroup>
+                        </div>
+                    </div>
+                    @* <div class="mb-3">
                         <label for="Name" class="form-label">Username</label>
                         <InputText @bind-Value="Identity.Username" class="form-control" id="Name"
                                    placeholder="Enter User Username."></InputText>
                         <ValidationMessage For="@(() => Identity.Username)" class="text-danger" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="Name" class="form-label">Email</label>
-                        <InputText @bind-Value="Identity.Email" class="form-control" id="Name"
-                                   placeholder="Enter User Email."></InputText>
-                        <ValidationMessage For="@(() => Identity.Email)" class="text-danger" />
-                    </div>
+                    </div> *@
                     <div class="mb-3">
                         <label for="Name" class="form-label">Phone</label>
                         <InputText @bind-Value="Identity.Phone" class="form-control" id="Name"
@@ -176,10 +178,10 @@
 </div>
 
 @code {
-    [SupplyParameterFromForm]
-    private IdentityDTO? Identity { get; set; } = new IdentityDTO();
+    private IdentityDTO Identity { get; set; } = new();
     private bool isEditMode = false;
     private List<UserProfileDTO> users = new List<UserProfileDTO>();
+    private List<RolesDTO> roles = new();
 
     void OpenCreateModal()
     {
@@ -187,7 +189,7 @@
         // UserProfile = new UserProfileDTO();
     }
 
-    
+
     protected override string PageSlug
     {
         get
@@ -214,6 +216,8 @@
         {
             var userProfiles = await UserProfileService.GetUserProfilesAsync();
             users = userProfiles;
+            var allRoles = await RoleService.GetRolesAsync();
+            roles = allRoles;
         }
         catch (Exception ex)
         {

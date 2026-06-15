@@ -6,7 +6,7 @@
 @if (proposals != null && proposals.Count > 0)
 {
     <div class="row">
-        <div class="@GetSearchColClass">
+        <div class="@GetSearchColClass()">
             <h3>Project Briefs</h3>
         </div>
         
@@ -26,8 +26,6 @@
         @if (CanExport)
         {
             <div class="col-md-2 text-end">
-                @if (Permissions.Can(PageSlug, "Export"))
-                {
                     <div class="dropdown">
                         <button class="btn btn-secondary border text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Export
@@ -45,18 +43,15 @@
                             </li>
                         </ul>
                     </div>
-                }
             </div>
         }
         @if (CanCreate)
         {
             <div class="col-md-2 text-end">
-                @if (Permissions.Can(PageSlug, "Add"))
-                {
+               
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                         <i class="fa-solid fa-plus me-2"></i>Add
                     </button>
-                }
             </div>
         }
     </div>

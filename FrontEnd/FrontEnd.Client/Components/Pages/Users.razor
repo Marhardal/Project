@@ -117,13 +117,13 @@
                     <div class="mb-2 row g-2">
                         <div class="col-md-6 col-sm-12">
                             <label for="Username" class="form-label">Username</label>
-                            <InputText @bind-Value="Identity.Username" class="form-control" id="Name"
+                            <InputText @bind-Value="Identity.Username" class="form-control" id="Username"
                                        placeholder="Enter User Username."></InputText>
                             <ValidationMessage For="@(() => Identity.Username)" class="text-danger" />
                         </div>
                         <div class="col-md-6 col-sm-12">
                             <label for="Email" class="form-label">Email</label>
-                            <InputText @bind-Value="Identity.Email" class="form-control" id="Name"
+                            <InputText @bind-Value="Identity.Email" class="form-control" id="Email"
                                        placeholder="Enter User Email."></InputText>
                             <ValidationMessage For="@(() => Identity.Email)" class="text-danger" />
                         </div>
@@ -152,21 +152,20 @@
                         <ValidationMessage For="@(() => Identity.Username)" class="text-danger" />
                     </div> *@
                     <div class="mb-3">
-                        <label for="Name" class="form-label">Phone</label>
-                        <InputText type="number" @bind-Value="Identity.Phone" class="form-control" id="Name"
+                        <label for="Phone" class="form-label">Phone</label>
+                        <InputText type="number" @bind-Value="Identity.Phone" class="form-control" id="Phone"
                                    placeholder="Enter User Phone Number."></InputText>
                         <ValidationMessage For="@(() => Identity.Phone)" class="text-danger" />
                     </div>
                     <div class="mb-2 row g-2">
                         <div class="col-md-6 col-sm-12">
                             <label for="password" class="form-label">Password</label>
-                            <InputText type="password" @bind-Value="Identity.Password" class="form-control" id="Name"
-                                       placeholder="Enter User Password."></InputText>
+                            <InputText type="password" @bind-Value="Identity.Password" class="form-control" id="password" placeholder="Enter User Password."></InputText>
                             <ValidationMessage For="@(() => Identity.Password)" class="text-danger" />
                         </div>
                         <div class="col-md-6 col-sm-12">
                             <label for="ConfirmPassword" class="form-label">Confirm Password</label>
-                            <InputText type="password" @bind-Value="Identity.ConfirmPassword" class="form-control" id="Name"
+                            <InputText type="password" @bind-Value="Identity.ConfirmPassword" class="form-control" id="ConfirmPassword"
                                        placeholder="Confirm User Password."></InputText>
                             <ValidationMessage For="@(() => Identity.ConfirmPassword)" class="text-danger" />
                         </div>
@@ -182,7 +181,7 @@
 </div>
 
 @code {
-    [SupplyParameterFromForm]
+    // [SupplyParameterFromForm]
     private IdentityDTO Identity { get; set; } = new();
     private bool isEditMode = false;
     private List<UserProfileDTO> users = new List<UserProfileDTO>();

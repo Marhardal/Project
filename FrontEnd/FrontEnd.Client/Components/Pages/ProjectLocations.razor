@@ -1,0 +1,156 @@
+﻿@page "/project-locations"
+@inherits PermissionGuardedPage
+
+<div class="my-4 row">
+    <div class="@GetSearchColClass()">
+        <h3>Project by Locations</h3>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3 input-group">
+            <span class="input-group-text" id="basic-addon1">From</span>
+            <input type="date" class="form-control"
+                   value="@StartDate?.ToString("yyyy-MM-dd")"
+                   @onchange="OnStartDateChanged" />
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="mb-3 input-group">
+            <span class="input-group-text" id="basic-addon1">To</span>
+            <input type="date" class="form-control"
+                   value="@EndDate?.ToString("yyyy-MM-dd")"
+                   @onchange="OnEndDateChanged" />
+        </div>
+    </div>
+    <div class="col-md-2 justify-content-end">
+    @if (CanExport)
+            {
+                <div class="dropdown">
+                    <button class="btn btn-secondary border text-white dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        Export
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end dropdown-menu-start">
+                        <li>
+                            <button type="button" class="btn btn-sm dropdown-item">
+                                <i class="fa-solid fa-file-pdf"></i>PDF
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn btn-sm dropdown-item">
+                                <i class="fa-solid fa-file-excel"></i>Excel
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            }
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="border rounded bg-body-tertiary">
+            <p class="mb-2 p-2">Total Project Count from @StartDate?.ToString("MMMM, yyyy") to @EndDate?.ToString("MMMM, yyyy") were @Distributions.Count()</p>
+        </div>
+        <div class="border rounded bg-body-tertiary">
+            <TableTemplate Items="Distributions" Context="distribution">
+                    <TableHeader>
+                        <th scope="col">#</th>
+                        <th scope="col">District</th>
+                        <th scope="col">Total</th>
+                    </TableHeader>
+                <RowTemplate Context="distribution">
+                    @{
+                        int index = Distributions.IndexOf(distribution) + 1;
+                    }
+                    <td>@index</td>
+                    <td>@distribution.District</td>
+                    <td>@distribution.Total</td>
+</RowTemplate>
+                        </TableTemplate>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="card-title">Project by Location</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <MalawiProjectMap StartDate="StartDate" EndDate="EndDate" Distributions="Distributions" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] 
+    public required DateTime? StartDate { get; set; }
+
+    [Parameter] 
+    public required DateTime? EndDate { get; set; }
+
+    [Parameter] 
+    public required List<DistrictDistribution>? Distributions { get; set; }
+
+    protected override string PageSlug
+    {
+        get
+        {
+            var relativePath = navigationManager.ToBaseRelativePath(navigationManager.Uri);
+            var firstSegment = relativePath.Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+            return (firstSegment ?? string.Empty).ToLowerInvariant();
+        }
+    }
+        
+    string GetSearchColClass()
+    {
+        return (CanExport) switch
+        {
+            (true) => "col-md-4",   // 8 + 2 + 2     = 12
+            (false) => "col-md-6"
+        };
+    }
+
+    protected override async Task OnPageInitializedAsync()
+    {
+        StartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+        EndDate = DateTime.Today;
+        await loadData();
+    }
+
+    async Task loadData()
+    {
+        Distributions = await HomeService.GetDistrictDistribution(StartDate, EndDate) ?? new List<DistrictDistribution>();
+    }
+
+    async Task OnStartDateChanged(ChangeEventArgs e)
+    {
+        if (DateTime.TryParse(e?.Value?.ToString(), out var dt))
+        {
+            StartDate = dt;
+            await loadData();
+        }
+        else
+        {
+            StartDate = null;
+            await loadData();
+        }
+    }
+
+    async Task OnEndDateChanged(ChangeEventArgs e)
+    {
+        if (DateTime.TryParse(e?.Value?.ToString(), out var dt))
+        {
+            EndDate = dt;
+            await loadData();
+        }
+        else
+        {
+            EndDate = null;
+            await loadData();
+        }
+    }
+}

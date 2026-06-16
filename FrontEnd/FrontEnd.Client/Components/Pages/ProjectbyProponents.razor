@@ -1,4 +1,5 @@
-﻿@page "/Proponent/Projects"
+﻿@page "/proponents-projects"
+@inherits PermissionGuardedPage
 
 <div class="my-4 row">
     <div class="col-md-4">
@@ -109,4 +110,18 @@
 
 @code {
 
+    protected override string PageSlug
+    {
+        get
+        {
+            var relativePath = navigationManager.ToBaseRelativePath(navigationManager.Uri);
+            var firstSegment = relativePath.Split('/', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+            return (firstSegment ?? string.Empty).ToLowerInvariant();
+        }
+    }
+
+    protected override async Task OnPageInitializedAsync()
+    {
+        
+    }
 }

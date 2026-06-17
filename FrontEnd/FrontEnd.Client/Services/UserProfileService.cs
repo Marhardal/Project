@@ -136,6 +136,27 @@ public class UserProfileService
         }
     }
 
+    public async Task<RefreshResponse?> RefreshAsync(string refreshToken)
+    {
+        try
+        {
+            var result = await _http.PostAsJsonAsync("api/Identity/refresh", refreshToken);
+
+            if (result.IsSuccessStatusCode)
+            {
+                return await result.Content.ReadFromJsonAsync<RefreshResponse>();
+            }
+
+            _logger.LogWarning("Login failed with status {StatusCode}", result.StatusCode);
+            return null;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to login via POST {Endpoint}", "api/Identity/refresh");
+            return null; // let the caller handle the failure
+        }
+    }
+
     public async Task<AuthDTO?> VerifyOtpAsync(Login2FADTO dto)
     {
         try

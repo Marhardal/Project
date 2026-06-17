@@ -13,7 +13,7 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
 
-builder.Services.AddTransient<BearerTokenHandler>();
+builder.Services.AddScoped<BearerTokenHandler>();
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 // Register a named HttpClient and typed clients that use the BearerTokenHandler

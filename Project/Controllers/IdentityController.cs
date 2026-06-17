@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Project.Data;
 using Project.DTO;
+using Project.Migrations;
 using Project.Models;
 using Project.Notifications;
 using Project.Services;
@@ -165,6 +167,8 @@ namespace Project.Controllers
             if (user == null)
                 return Unauthorized();
 
+            var roles = await userManager.GetRolesAsync(user);
+
             var valid = await userManager.VerifyTwoFactorTokenAsync(
                 user,
                 TokenOptions.DefaultEmailProvider,
@@ -176,11 +180,15 @@ namespace Project.Controllers
 
             // create JWT / login normally here
             //var roles = await userManager.GetRolesAsync(user);
-            var token = authService.GenerateJwtToken(user);
+            var Token = authService.GenerateAccessToken(user, roles: roles);
+            var refresh = await  authService.GenerateRefreshTokenAsync(dto.userID);
+
             return Ok(new AuthDTO
             {
-                Token = token,
-                UserID = dto.userID
+                Token = Token,
+                TokenExpiry = DateTime.UtcNow.AddMinutes(15),
+                RefreshToken = refresh.Token,
+                RefreshTokenExpiry = refresh.ExpiresAt
             });
         }
 

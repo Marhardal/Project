@@ -37,6 +37,7 @@ namespace Project.Data
         public DbSet<Models.PageActions> PageActions { get; set; }
 
         public DbSet<PermissionModel> Permissions { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -122,6 +123,11 @@ namespace Project.Data
                 .WithMany(p => p.PageActions)
                 .HasForeignKey(pa => pa.PageID)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // In OnModelCreating
+            modelBuilder.Entity<RefreshToken>()
+                .HasIndex(r => r.Token)
+                .IsUnique();
 
             // modelBuilder.Entity<ProjectModel>()
             //.HasIndex(p => p.LocationID)

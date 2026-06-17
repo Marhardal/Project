@@ -2,17 +2,20 @@
 using Microsoft.JSInterop;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
     public class BearerTokenHandler : DelegatingHandler
     {
-        private readonly IJSRuntime _js;
-    private readonly NavigationManager navigation;
+    private readonly IJSRuntime _js;
+    private readonly NavigationManager _navigation;
+    private readonly IHttpClientFactory _httpClientFactory;
 
-        public BearerTokenHandler(IJSRuntime js, NavigationManager navigationManager)
-        {
-            _js = js;
-            navigation = navigationManager;
-        }
+    public BearerTokenHandler(IJSRuntime js, NavigationManager navigation, IHttpClientFactory httpClientFactory)
+    {
+        _js = js;
+        _navigation = navigation;
+        _httpClientFactory = httpClientFactory;
+    }
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         string? token = null;
@@ -21,30 +24,76 @@ using System.Net.Http.Headers;
         {
             token = await _js.InvokeAsync<string>("Storage.getToken");
         }
-        catch (InvalidOperationException)
-        {
-            // JS interop not available yet (prerendering) — proceed without token
-        }
+        catch (InvalidOperationException) { }
 
         if (!string.IsNullOrWhiteSpace(token))
-        {
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        }
 
         var response = await base.SendAsync(request, cancellationToken);
 
         if (response.StatusCode == HttpStatusCode.Unauthorized)
         {
-            try
+            var newToken = await TryRefreshAsync();
+            if (newToken != null)
             {
-                await _js.InvokeVoidAsync("Storage.clearToken");
+                var retry = await CloneRequestAsync(request);
+                retry.Headers.Authorization = new AuthenticationHeaderValue("Bearer", newToken);
+                response = await base.SendAsync(retry, cancellationToken);
             }
-            catch (InvalidOperationException) { }
 
-            navigation.NavigateTo("/Account/login", forceLoad: true);
+            // Only redirect if refresh also failed
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                try { await _js.InvokeVoidAsync("Storage.clearToken"); }
+                catch (InvalidOperationException) { }
+
+                _navigation.NavigateTo("/Account/login", forceLoad: true);
+            }
         }
 
         return response;
     }
+
+    private async Task<string?> TryRefreshAsync()
+    {
+        string? refreshToken = null;
+        try { refreshToken = await _js.InvokeAsync<string>("Storage.getRefreshToken"); }
+        catch (InvalidOperationException) { return null; }
+
+        if (string.IsNullOrWhiteSpace(refreshToken)) return null;
+
+        try
+        {
+            // Use a plain client — NOT the named "API" client (that would re-enter this handler)
+            var client = _httpClientFactory.CreateClient("NoAuth");
+            var resp = await client.PostAsJsonAsync("api/auth/refresh", new { refreshToken });
+            if (!resp.IsSuccessStatusCode) return null;
+
+            var result = await resp.Content.ReadFromJsonAsync<RefreshResponse>();
+            if (result == null) return null;
+
+            await _js.InvokeVoidAsync("Storage.setTokens", result.AccessToken, result.RefreshToken);
+            return result.AccessToken;
+        }
+        catch { return null; }
+    }
+    private static async Task<HttpRequestMessage> CloneRequestAsync(HttpRequestMessage req)
+    {
+        var clone = new HttpRequestMessage(req.Method, req.RequestUri);
+        foreach (var h in req.Headers)
+            clone.Headers.TryAddWithoutValidation(h.Key, h.Value);
+
+        if (req.Content != null)
+        {
+            var bytes = await req.Content.ReadAsByteArrayAsync();
+            clone.Content = new ByteArrayContent(bytes);
+            foreach (var h in req.Content.Headers)
+                clone.Content.Headers.TryAddWithoutValidation(h.Key, h.Value);
+        }
+
+        return clone;
+    }
+
+    private record RefreshResponse(string AccessToken, string RefreshToken);
 }
 

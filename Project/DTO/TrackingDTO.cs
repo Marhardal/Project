@@ -1,23 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Project.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Project.Models
+namespace Project.DTO
 {
-
-    public class ProjectModel
+    public class TrackingDTO
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         [Required]
         public Guid ProponentID { get; set; }
         [Required]
         public Guid CategoryID { get; set; }
-        public Guid ContactPersonID { get; set; }
-        
-        [Required, NotMapped]
+        [Required]
         public Guid StatusID { get; set; }
         [Required]
         public string? Name { get; set; }
-        
+
         [Required]
         public string? Description { get; set; }
         [Required]
@@ -25,7 +23,7 @@ namespace Project.Models
         public DateTime assignedDate { get; set; }
         public DateTime? closingDate { get; set; }
         public DateTime SubmissionDate { get; set; } = DateTime.Now;
-        public DateTime createdOn { get; set; } 
+        public DateTime createdOn { get; set; }
         public DateTime updatedOn { get; set; }
         //public ICollection<Proponent>? Proponents { get; set; }
         public Proponent? Proponent { get; set; }
@@ -35,23 +33,7 @@ namespace Project.Models
         //public TrackingModel? Tracking { get; set; }
         //public LocationModel? Location { get; set; }
         [NotMapped]
-        public HashSet<Guid> SelectedLocationIds { get; set; } = new();
-        public ContactPerson? contact { get; set; }
-    }
+        public HashSet<string> SelectedLocationIds { get; set; } = new();
 
-    public enum ProjectType
-    {
-        Brief,
-        ESMP,
-        Audit,
-        ESIA
     }
-
-    //public enum Proposal
-    //{
-    //    NotStarted,
-    //    Submitted,
-    //    Approved,
-    //    Rejected
-    //}
 }

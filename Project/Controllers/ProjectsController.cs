@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using Project.Data;
+using Project.DTO;
 using Project.Models;
 using QuestPDF.Fluent;
 using System.Drawing;
@@ -116,6 +117,7 @@ namespace Project.Controllers
                     p.Description,
                     p.createdOn,
                     p.CategoryID,
+                    p.ContactPersonID,
                     Category = p.Category == null ? null : new CategoryModel
                     {
                         ID = p.Category.ID, 
@@ -274,12 +276,12 @@ namespace Project.Controllers
             if (projectModel.SelectedLocationIds.Any())
             {
                     _context.ProjectLocations.Where(pl => pl.ProjectID == projectModel.Id).ExecuteDelete();
-                foreach (var locationID in projectModel.SelectedLocationIds)
+                foreach (Guid locationID in projectModel.SelectedLocationIds)
                 {
                     _context.ProjectLocations.Add(new ProjectLocation
                     {
                         ProjectID = projectModel.Id,
-                        LocationID = Guid.Parse(locationID)
+                        LocationID = locationID
                     });
                 }
             }
@@ -287,7 +289,7 @@ namespace Project.Controllers
             _context.Entry(projectModel).State = EntityState.Modified;
             TrackingModel tracking = new TrackingModel()
             {
-                StatusID = projectModel.Tracking.StatusID,
+                StatusID = projectModel.StatusID,
                 ProjectID = projectModel.Id,
                 userID = userId,
                 assignedDate = DateTime.UtcNow,
@@ -354,31 +356,44 @@ namespace Project.Controllers
             if (userId is null)
                 return Unauthorized();
 
-            if (!projectModel.SelectedLocationIds.Any())
-            {
-                return StatusCode(422, new { StatusMessage = "Please add a Location." });
-            }
+            //ProjectModel projectModel = new ProjectModel
+            //{
+            //    ProponentID = projectdto.ProponentID ?? Guid.Empty,
+            //    CategoryID = projectdto.CategoryID ?? Guid.Empty,
+            //    Name = projectdto.Name,
+            //    Description = projectdto.Description,
+            //    ProjectType = projectdto.ProjectType,
+            //    assignedDate = projectdto.assignedDate,
+            //    closingDate = projectdto.closingDate,
+            //    SubmissionDate = projectdto.SubmissionDate,
+            //    SelectedLocationIds = projectdto.SelectedLocationIds
+            //};
 
-            // Set timestamps
+            if (!projectModel.SelectedLocationIds.Any())
+                return StatusCode(422, new { StatusMessage = "Please add a Location." });
+
+            // Verify user exists in UserProfiles
+            var userExists = await _context.UserProfiles.AnyAsync(u => u.UserID == userId);
+            if (!userExists)
+                return BadRequest("User profile not found.");
+
             projectModel.createdOn = DateTime.UtcNow;
             projectModel.updatedOn = DateTime.UtcNow;
 
+            // 1. Save project first to get its real Id
             _context.Projects.Add(projectModel);
+            await _context.SaveChangesAsync();
 
-            // Add one ProjectLocation per selected location
-            if (projectModel.SelectedLocationIds.Any())
+            // 2. Now projectModel.Id is populated — use it safely
+            foreach (Guid locationID in projectModel.SelectedLocationIds)
             {
-                foreach (var locationID in projectModel.SelectedLocationIds)
+                _context.ProjectLocations.Add(new ProjectLocation
                 {
-                    _context.ProjectLocations.Add(new ProjectLocation
-                    {
-                        ProjectID = projectModel.Id,
-                        LocationID = Guid.Parse(locationID)
-                    });
-                }
+                    ProjectID = projectModel.Id,
+                    LocationID = locationID
+                });
             }
 
-            // Add initial tracking status
             var firstStatus = await _context.Statuses
                 .OrderBy(s => s.SortOrder)
                 .FirstOrDefaultAsync();
@@ -389,7 +404,7 @@ namespace Project.Controllers
             _context.Trackings.Add(new TrackingModel
             {
                 StatusID = firstStatus.ID,
-                ProjectID = projectModel.Id,
+                ProjectID = projectModel.Id,   // real Id now
                 userID = userId,
                 assignedDate = DateTime.UtcNow,
                 createdOn = DateTime.UtcNow,
@@ -397,6 +412,8 @@ namespace Project.Controllers
             });
 
             await _context.SaveChangesAsync();
+
+            //await _context.SaveChangesAsync();
 
             return StatusCode(201, new { StatusMessage = "Project added successfully." });
         }

@@ -57,7 +57,7 @@ using System.Net.Http.Json;
     private async Task<string?> TryRefreshAsync()
     {
         string? refreshToken = null;
-        try { refreshToken = await _js.InvokeAsync<string>("Storage.getRefreshToken"); }
+        try { refreshToken = await _js.InvokeAsync<string>("Storage.getToken"); }
         catch (InvalidOperationException) { return null; }
 
         if (string.IsNullOrWhiteSpace(refreshToken)) return null;
@@ -66,7 +66,7 @@ using System.Net.Http.Json;
         {
             // Use a plain client — NOT the named "API" client (that would re-enter this handler)
             var client = _httpClientFactory.CreateClient("NoAuth");
-            var resp = await client.PostAsJsonAsync("api/auth/refresh", new { refreshToken });
+            var resp = await client.PostAsJsonAsync("api/identity/refresh", new { refreshToken });
             if (!resp.IsSuccessStatusCode) return null;
 
             var result = await resp.Content.ReadFromJsonAsync<RefreshResponse>();

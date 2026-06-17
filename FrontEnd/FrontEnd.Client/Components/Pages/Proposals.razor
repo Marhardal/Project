@@ -272,7 +272,7 @@ else
                                 @* To this *@
                                 @if (Proposal.Tracking != null)
                                 {
-                                <InputSelect @bind-Value="Proposal.Tracking.StatusID"
+                                <InputSelect @bind-Value="Proposal.statusID"
                                              id="Status"
                                              class="form-select">
                                     <option value="">-- Select Status --</option>
@@ -281,28 +281,28 @@ else
                                         <option value="@status.ID">@status.Name</option>
                                     }
                                 </InputSelect>
-                                }
-                                @if (Proposal?.Tracking != null)
-                                {
-                                    <ValidationMessage For="@(() => Proposal.Tracking.StatusID)" class="text-danger" />
+                                @* } *@
+                                @* @if (Proposal?.Tracking != null)
+                                { *@
+                                    <ValidationMessage For="@(() => Proposal.statusID)" class="text-danger" />
                                 }
                             </div>
                         </div>
                         </div>
                     @{
-                        var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
+                        var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.statusID) ?? new StatusDTO();
                         var isApproved = selectedStatus?.Name == "Collected";
                         var countstatus = statuses.Count();
                         var lastStatus = statuses.Last().SortOrder == selectedStatus.SortOrder;
                     }
-                    @if (isEditMode && Proposal?.Tracking != null && lastStatus && contacts.Any())
+                    @if (isEditMode && lastStatus && contacts.Any())
 {
     <div class="row">
         <div class="col-md-6">
             <div class="mb-3">
                 <label for="Status" class="form-label">Collected By</label>
 
-                <InputSelect @bind-Value="Proposal.Tracking.StatusID"
+              @*   <InputSelect @bind-Value="Proposal.Tracking.StatusID"
                              id="Status"
                              class="form-select">
                     <option value="">-- Select Status --</option>
@@ -310,9 +310,18 @@ else
                     {
                         <option value="@status.Id">@status.FullName</option>
                     }
-                </InputSelect>
+                </InputSelect> *@
 
-                <ValidationMessage For="@(() => Proposal.Tracking.StatusID)" class="text-danger" />
+                                    <InputSelect @bind-Value="Proposal.ContactPersonID" id="ContactPersonID"
+                                                 class="form-select">
+                                        <option value="">-- Select Contact Person --</option>
+                                        @foreach (var contact in contacts)
+                                        {
+                                            <option value="@contact.Id">@contact.FullName</option>
+                                        }
+                                    </InputSelect>
+
+                                    <ValidationMessage For="@(() => Proposal.ContactPersonID)" class="text-danger" />
             </div>
         </div>
 
@@ -367,6 +376,7 @@ else
     private List<StatusDTO> statuses = new();
     private List<LocationDTO> locations = new();
     private List<CategoryDTO> categories = new();
+    private List<ContactPersonDTO> contacts = new();
     private List<ProjectType> projectTypes;
     [SupplyParameterFromForm]
     private ProjectDTO Proposal { get; set; } = new()
@@ -443,6 +453,9 @@ else
             var categoriesResult = await CategoryService.GetCategories();
             categories = categoriesResult ?? new List<CategoryDTO>();
 
+            // var people = await ContactPersonService.GetContactPersonsAsync(Proposal.ProponentID);
+            // contacts = people ?? new List<ContactPersonDTO>();
+
             isloaded = true;
         }
         catch (Exception ex)
@@ -501,47 +514,52 @@ else
 
     }
 
-    async Task HandleUpdate(){
-
-        isSubmitting = true;
+    async Task HandleUpdate()
+    {
+         isSubmitting = true;
         submitMessage = null;
+
+
+
         try
         {
-            var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
+            if (Proposal is null) return;
+
+            var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal.statusID);
 
             if (selectedStatus?.Name == "Collected" && Proposal.ProjectType == ProjectType.Brief)
             {
                 submitMessage = "Approved a Project Brief must be assigned a valid project type.";
                 return;
             }
-            Proposal.SelectedLocationIds.ToList();
-            // EditPerson.ProponentID = ;
-            // Proponent!.ProponentID = Guid.Parse(PropID);
-            Proposal.updatedOn = DateTime.Now;
+
+            if (selectedStatus?.Name == "Collected" && Proposal.ContactPersonID == null)
+            {
+                submitMessage = "Approved a Project Brief must have a Contact Person.";
+                return;
+            }
+
+            Proposal.updatedOn = DateTime.UtcNow;
+
+            // Update the latest tracking's status
+            var latestTracking = Proposal.Trackings?
+                .OrderByDescending(t => t.createdOn)
+                .FirstOrDefault();
+
             var response = await ProjectService.UpdateProjectAsync(Proposal.Id, Proposal);
+
             if (response.IsSuccessStatusCode)
             {
-                // Refresh list
                 proposals = await ProjectService.GetProjectAsync(true);
-
-                // Reset form
                 Proposal = new();
-
-                // await JSRuntime.InvokeVoidAsync("closeModal", "staticBackdrop");
-                // Close modal
-                // await JSRuntime.InvokeVoidAsync("bootstrap.Modal.getInstance", modalElement).AsTask();
                 isEditMode = false;
-                // submitMessage = "Proposal updated successfully!"; 
-                // await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
+
                 await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
-
                 await JSRuntime.InvokeVoidAsync("SwalService.success", "Project Brief updated successfully!");
-
             }
             else
             {
                 submitMessage = $"Error {response.StatusCode}: {await response.Content.ReadAsStringAsync()}";
-                return;
             }
         }
         catch (Exception ex)
@@ -550,13 +568,13 @@ else
         }
         finally
         {
-            // submitMessage = null;
             isSubmitting = false;
             StateHasChanged();
         }
     }
-    // add this field with other fields
-    private List<ContactPersonDTO> contacts = new();
+
+     // add this field with other fields
+    // private List<ContactPersonDTO> contacts = new();
 
     // update editProposal method
     async Task editProposal(ProjectDTO project)
@@ -584,6 +602,8 @@ else
             SubmissionDate = project.SubmissionDate,
             createdOn = project.createdOn,
             CategoryID = project.CategoryID,
+            statusID = tracking?.StatusID ?? defaultStatusId,
+            ContactPersonID = project.ContactPersonID,
             Tracking = new TrackingDTO()
             {
                 StatusID = tracking?.StatusID ?? defaultStatusId

@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
+﻿using Project.Models;
+using System.ComponentModel.DataAnnotations;
 
-namespace FrontEnd.Client.DTOs
+namespace Project.DTO
 {
     public class ProjectDTO
     {
@@ -10,9 +10,7 @@ namespace FrontEnd.Client.DTOs
         public Guid? ProponentID { get; set; }
         [Required]
         public Guid? CategoryID { get; set; }
-        [Required]
-        public Guid? statusID { get; set; }
-        public Guid? ContactPersonID { get; set; }
+        public Guid? StatusID { get; set; }
         [Required]
         public string? Name { get; set; }
         [Required]
@@ -24,15 +22,12 @@ namespace FrontEnd.Client.DTOs
         public DateTime SubmissionDate { get; set; } = DateTime.Now;
         public DateTime createdOn { get; set; }
         public DateTime updatedOn { get; set; }
-        //public ICollection<Proponent>? Proponents { get; set; }
-        public ProponentsDTO? Proponent { get; set; }
-        public CategoryDTO? Category { get; set; }
-        // Initialize Trackings to an empty collection to avoid null reference or empty-sequence issues in the UI
         public ICollection<TrackingDTO> Trackings { get; set; } = new List<TrackingDTO>();
 
         public ICollection<ProjectLocation>? ProjectLocations { get; set; }
         public TrackingDTO? Tracking { get; set; }
-        public List<Guid> SelectedLocationIds { get; set; } = new List<Guid>();
+        public HashSet<Guid> SelectedLocationIds { get; set; } = new();
 
     }
+
 }

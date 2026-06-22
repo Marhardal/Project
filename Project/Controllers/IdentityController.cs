@@ -50,11 +50,11 @@ namespace Project.Controllers
             }
 
             var existingUser = await userManager.FindByEmailAsync(identity.Email);
+            await userManager.DeleteAsync(existingUser);
             if (existingUser != null)
             {
                 return BadRequest("Email already exists.");
             }
-
             var existingUsername = await userManager.FindByNameAsync(identity.Username);
             if (existingUsername != null)
             {
@@ -69,7 +69,7 @@ namespace Project.Controllers
                 TwoFactorEnabled = true,
             };
 
-            var result = await userManager.CreateAsync(user, identity.Password.Password);
+            var result = await userManager.CreateAsync(user, identity.Password);
 
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
@@ -86,7 +86,7 @@ namespace Project.Controllers
             var body = templates.WelcomeUser(
                 username: identity.Username,
                 email: identity.Email,
-                password: identity.Password.Password
+                password: identity.Password
             );
 
             try

@@ -32,11 +32,14 @@ namespace Project.Models
         public CategoryModel? Category { get; set; }
         public ICollection<ProjectLocation>? ProjectLocations { get; set; }
         public ICollection<TrackingModel>? Trackings { get; set; }
+
+        public ICollection<TasksModel>? Tasks { get; set; }
+
         //public TrackingModel? Tracking { get; set; }
         //public LocationModel? Location { get; set; }
         [NotMapped]
         public HashSet<Guid> SelectedLocationIds { get; set; } = new();
-        public ContactPerson? contact { get; set; }
+        public ContactPerson? Contact { get; set; }
     }
 
     public enum ProjectType

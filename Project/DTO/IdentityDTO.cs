@@ -15,6 +15,6 @@ namespace Project.DTO
         public int AccessFailedCount { get; set; }
         public bool LockoutEnabled { get; set; }
         public bool TwoFactorEnabled { get; set; }
-        public PasswordDTO? Password { get; set; }
+        public string? Password { get; set; }
     }
 }

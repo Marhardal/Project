@@ -15,5 +15,6 @@
         public DateTime onUpdate { get; set; } = new DateTime(2000, 1, 1);
         public Proponent? Proponent { get; set; }
         public ICollection<Proponent>? Proponents { get; set; }
+        public ICollection<ProjectModel>? Projects { get; set; }
     }
 }

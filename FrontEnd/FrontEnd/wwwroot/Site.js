@@ -81,32 +81,73 @@ window.Spinner = {
     hide: () => document.getElementById('global-spinner').style.display = 'none',
 }
 
+// window.Storage = {
+//     setToken: (token) => {
+//         const payload = {
+//             token: token,
+//             expiry: new Date().getTime() + (30 * 60 * 1000) 30 min from now
+//         };
+//         localStorage.setItem('authToken', JSON.stringify(payload));
+//     },
+
+//     getToken: () => {
+//         const item = localStorage.getItem('authToken');
+//         if (!item) return null;
+
+//         const payload = JSON.parse(item);
+//         if (new Date().getTime() > payload.expiry) {
+//             localStorage.removeItem('authToken');
+//             return null; token expired
+//         }
+
+//         return payload.token;
+//     },
+
+//     clearToken: () => {
+//         localStorage.removeItem('authToken');
+//     }
+// }
+
 window.Storage = {
+    // Keep for backward compatibility or remove if unused
     setToken: (token) => {
+        const existing = JSON.parse(localStorage.getItem('authToken') || '{}');
+        existing.token = token;
+        existing.expiry = new Date().getTime() + (15 * 60 * 1000); // 15 min
+        localStorage.setItem('authToken', JSON.stringify(existing));
+    },
+
+    // Called after login and after token refresh
+    setTokens: (accessToken, refreshToken) => {
         const payload = {
-            token: token,
-            expiry: new Date().getTime() + (30 * 60 * 1000) // 30 min from now
+            token: accessToken,
+            expiry: new Date().getTime() + (15 * 60 * 1000),       // 15 min
+            refreshToken: refreshToken,
+            refreshExpiry: new Date().getTime() + (7 * 24 * 60 * 60 * 1000) // 7 days
         };
         localStorage.setItem('authToken', JSON.stringify(payload));
     },
 
     getToken: () => {
-        const item = localStorage.getItem('authToken');
-        if (!item) return null;
-
-        const payload = JSON.parse(item);
-        if (new Date().getTime() > payload.expiry) {
-            localStorage.removeItem('authToken');
-            return null; // token expired
-        }
-
-        return payload.token;
+        const raw = localStorage.getItem('authToken');
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed?.token) return null;
+        if (new Date().getTime() > parsed.expiry) return null; // expired
+        return parsed.token;
     },
 
-    clearToken: () => {
-        localStorage.removeItem('authToken');
-    }
-}
+    getRefreshToken: () => {
+        const raw = localStorage.getItem('authToken');
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed?.refreshToken) return null;
+        if (new Date().getTime() > parsed.refreshExpiry) return null; // expired
+        return parsed.refreshToken;
+    },
+
+    clearToken: () => localStorage.removeItem('authToken')
+};
 
 window.Inactivity = {
     _timer: null,

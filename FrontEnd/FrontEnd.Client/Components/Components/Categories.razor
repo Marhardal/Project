@@ -54,6 +54,8 @@ else
 }
 
 
+
+
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -101,7 +103,6 @@ else
                             control = isEditMode ? "Update" : "Create";
                             <span>@control</span>
                         }
-                        @* @control *@
                     </button>
 
                 </div>
@@ -109,8 +110,7 @@ else
         </div>
     </div>
 </div>
-
-                
+       
 @code {
     private List<CategoryDTO> allCategories = new();
 

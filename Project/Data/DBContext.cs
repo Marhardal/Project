@@ -37,7 +37,12 @@ namespace Project.Data
         public DbSet<Models.PageActions> PageActions { get; set; }
 
         public DbSet<PermissionModel> Permissions { get; set; }
+
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+        public DbSet<TasksModel> Tasks { get; set; }
+
+        public DbSet<TaskAssigneesModel> TaskAssignees { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -64,8 +69,19 @@ namespace Project.Data
                 .WithOne(t => t.Project)
                 .HasForeignKey(t => t.ProjectID);
 
-            // Status → Trackings
-            modelBuilder.Entity<Status>()
+            modelBuilder.Entity<ProjectModel>()
+                .HasOne(p => p.Contact)
+                .WithMany(c => c.Projects)
+                .HasForeignKey(p => p.ContactPersonID)
+                .OnDelete(DeleteBehavior.Restrict);  // ← was Cascade
+
+modelBuilder.Entity<ProjectModel>()
+                .HasMany(t => t.Tasks)
+                .WithOne(p => p.Project)
+                .HasForeignKey(t => t.ProjectID);
+        
+        // Status → Trackings
+        modelBuilder.Entity<Status>()
                 .HasMany(s => s.Trackings)
                 .WithOne(t => t.Status)
                 .HasForeignKey(t => t.StatusID);
@@ -132,6 +148,21 @@ namespace Project.Data
             // modelBuilder.Entity<ProjectModel>()
             //.HasIndex(p => p.LocationID)
             //.IsUnique(false);
+
+
+            modelBuilder.Entity<TaskAssigneesModel>()
+                .HasKey(us => new { us.TaskID, us.UserID }); // composite key
+
+            modelBuilder.Entity<TaskAssigneesModel>()
+                .HasOne(ta => ta.Task)
+                .WithMany(u => u.TaskAssignees)
+                .HasForeignKey(ta => ta.TaskID);
+
+            modelBuilder.Entity<TaskAssigneesModel>()
+                .HasOne(ta => ta.User)
+                .WithMany()
+                .HasForeignKey(ta => ta.UserID);
+
 
             modelBuilder.Entity<Status>().HasData(
                 new Status

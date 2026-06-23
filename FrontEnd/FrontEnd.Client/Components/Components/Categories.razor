@@ -113,7 +113,7 @@ else
        
 @code {
     private List<CategoryDTO> allCategories = new();
-
+    [SupplyParameterFromForm]
     private CategoryDTO? category { get; set; } = new();
     public bool isEditMode = false;
     string submitMessage = string.Empty;

@@ -234,7 +234,7 @@ else
                                 <div class="mb-3">
                                     <label for="Status" class="form-label">Status</label>
 
-                                    <InputSelect @bind-Value="Proposal.Tracking.StatusID" id="Status" class="form-select">
+                                    <InputSelect @bind-Value="Proposal.statusID" id="Status" class="form-select">
                                         <option value="">-- Select Status --</option>
                                         @foreach (var status in statuses)
                                         {
@@ -380,8 +380,8 @@ else
             var proponentResult = await ProponentService.GetProponentsAsync();
             proponents = proponentResult ?? new List<ProponentsDTO>();
 
-            var statusResult = await StatusService.GetStatusAsync();
-            statuses = (statusResult ?? new List<StatusDTO>()).Where(s => s.SortOrder >= 3).ToList();
+            var statusResult = await StatusService.GetStatusAsync(Category.Project);
+            statuses = statusResult ?? new List<StatusDTO>();
         }
         catch (Exception ex)
         {
@@ -401,7 +401,11 @@ else
         var tracking = project.Trackings?
             .OrderByDescending(t => t.createdOn)
             .FirstOrDefault();
-        var selectedStatus = statuses.FirstOrDefault(s => s.ID == Proposal?.Tracking?.StatusID);
+
+        var defaultStatusId = statuses.FirstOrDefault()?.ID ?? Guid.Empty;
+
+        var statusID = tracking?.StatusID ?? defaultStatusId;
+        var selectedStatus = statuses.FirstOrDefault(s => s.ID == statusID);
 
         if (selectedStatus?.Name == "Approved" && project.ProjectType == ProjectType.Brief)
         {
@@ -409,7 +413,6 @@ else
             return;
         }
 
-        var defaultStatusId = statuses.FirstOrDefault()?.ID ?? Guid.Empty;
 
         Proposal = new ProjectDTO()
         {
@@ -421,6 +424,7 @@ else
             Description = project.Description,
             SubmissionDate = project.SubmissionDate,
             createdOn = project.createdOn,
+            statusID =selectedStatus.ID,
             Tracking = new TrackingDTO()
             {
                 StatusID = tracking?.StatusID ?? defaultStatusId

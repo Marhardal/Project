@@ -1,0 +1,99 @@
+﻿<div class="container py-2">
+    <div class="row ">
+        <div class="col-md-4">
+            <h5 class="fw-semibold mb-2">Project Tasks</h5>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3 input-group">
+                <span class="input-group-text" id="basic-addon1">Search</span>
+                <input type="search" class="form-control" placeholder="Search"
+                       value="@searchQuery"
+                       @oninput="OnSearchChanged" />
+            </div>
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                <i class="bi bi-plus-square me-2"></i>Add
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <EditForm method="post" Model="Task" OnValidSubmit="CreateTask" FormName="create2">
+                <DataAnnotationsValidator/>
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Task</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Name</label>
+                        <InputText id="Name" @bind-Value="Task.Name" class="form-control" placeholder="Enter Task Name." />
+                        <ValidationMessage For="@(() => Task.Name)" class="text-danger" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Priority</label>
+                        <InputSelect id="Priority" @bind-Value="Task.Priority" class="form-select">
+                            @foreach(var item in Enum.GetValues<Priority>())
+                            {
+                                <option value="@item">@EnumHelper.GetDisplayName(item)</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => Task.Priority)" class="text-danger" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="StatusID" class="form-label">Status</label>
+                        <InputSelect id="StatusID" @bind-Value="Task.StatusID" class="form-select">
+                            @foreach(var item in statuses)
+                            {
+                                <option value="@item.ID">@item.Name</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => Task.Priority)" class="text-danger" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="DueDate" class="form-label">Due Date</label>
+                        <InputDate id="DueDate" @bind-Value="Task.DueDate" class="form-control" placeholder="Enter Task Name." />
+                        <ValidationMessage For="@(() => Task.DueDate)" class="text-danger" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Description</label>
+                        <InputText id="Description" @bind-Value="Task.Description" class="form-control" placeholder="Enter Task Description." />
+                        <ValidationMessage For="@(() => Task.Description)" class="text-danger" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [SupplyParameterFromForm]
+    public TasksDTO Task { get; set; } = new();
+    private string searchQuery = string.Empty;
+    private List<StatusDTO> statuses = new();
+    private List<UserProfileDTO> users = new();
+
+
+
+    async Task CreateTask()
+    {
+        statuses = await StatusService.GetStatusAsync(Category.Task);
+    }
+
+
+    private void OnSearchChanged(ChangeEventArgs e)
+    {
+        
+    }
+    }

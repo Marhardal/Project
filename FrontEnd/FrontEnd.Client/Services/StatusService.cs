@@ -17,11 +17,11 @@ namespace FrontEnd.Client.Services
         }
 
         // Get all proponents
-        public async Task<List<StatusDTO>> GetStatusAsync()
+        public async Task<List<StatusDTO>> GetStatusAsync(Category category = Category.Brief)
         {
             try
             {
-                var result = await _http.GetFromJsonAsync<List<StatusDTO>>("api/Status");
+                var result = await _http.GetFromJsonAsync<List<StatusDTO>>($"api/Status/category/{category}");
                 return result ?? new List<StatusDTO>();
             }
             catch (Exception ex)

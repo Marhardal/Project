@@ -23,10 +23,15 @@ namespace Project.Controllers
         }
 
         // GET: api/Status
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Status>>> GetStatuses()
+        [HttpGet("category/{Category}")]
+        public async Task<ActionResult<IEnumerable<Status>>> GetStatuses(Category category)
         {
-            return await _context.Statuses.OrderBy(s => s.SortOrder).ToListAsync();
+            var statuses = await _context.Statuses
+                .Where(s => s.Category == category)
+                .OrderBy(s => s.SortOrder)
+                .ToListAsync();
+
+            return statuses.Any() ? Ok(statuses) : NoContent();
         }
 
         // GET: api/Status/5

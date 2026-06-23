@@ -100,6 +100,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXFRhYmxlVGVtcGxhdGUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd.Client/Components/Components/Tasks.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXFRhc2tzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Martin/source/repos/Project/FrontEnd/FrontEnd.Client/Components/Components/User.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDb21wb25lbnRzXFVzZXIucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 

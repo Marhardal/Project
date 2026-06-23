@@ -45,7 +45,9 @@ namespace FrontEnd.Client.DTOs
         [Display(Name = "Brief")]
         Brief,
         [Display(Name = "Project")]
-        Project
+        Project,
+        [Display(Name = "Task")]
+        Task
     }
 
     public enum Proposal

@@ -142,17 +142,21 @@
             }
         </ul> *@
         <ul class="mt-auto nav flex-column">
-            @foreach (var item in Pages)
+            @if (Pages.Any())
             {
-                <li class="nav-item">
-                    <NavLink class="gap-2 nav-link d-flex align-items-center" href="@($"/{item.Slug}")">
-                        <span class="d-inline-flex justify-content-center" style="flex-shrink:0;">
-                            <i class="@item.Icon"></i>
-                        </span>
-                        <span class="ms-2">@item.PageName.Transform(To.SentenceCase)</span>
-                    </NavLink>
-                </li>
-            }
+                @foreach (var item in Pages)
+                {
+                    <li class="nav-item">
+                        <NavLink class="gap-2 nav-link d-flex align-items-center" href="@($"/{item.Slug}")">
+                            <span class="d-inline-flex justify-content-center" style="flex-shrink:0;">
+                                <i class="@item.Icon"></i>
+                            </span>
+                            <span class="ms-2">@item.PageName.Transform(To.SentenceCase)</span>
+                        </NavLink>
+                    </li>
+                }
+
+            }    
         </ul>
         <ul class="mt-auto nav flex-column">
             <li class="nav-item">
@@ -182,7 +186,7 @@
     private string? currentUrl;
   
     [Parameter]
-    public List<PermissionDto> Pages { get; set; } = [];
+    public List<PermissionDto> Pages { get; set; } = new();
     
     protected override void OnInitialized()
     {

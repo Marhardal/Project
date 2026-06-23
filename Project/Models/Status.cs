@@ -26,5 +26,6 @@ using System.ComponentModel.DataAnnotations;
 public enum Category
 {
     Brief,
-    Project
+    Project,
+    Task
 }

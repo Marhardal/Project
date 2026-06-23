@@ -240,12 +240,12 @@
         }
     }
 
-    [JSInvokable]
-    public async Task OnInactive()
-    {
-        await JSRuntime.InvokeVoidAsync("Storage.clearToken");
-        navigationManager.NavigateTo("/Account/login", forceLoad: true);
-    }
+    // [JSInvokable]
+    // public async Task OnInactive()
+    // {
+    //     await JSRuntime.InvokeVoidAsync("Storage.clearToken");
+    //     navigationManager.NavigateTo("/Account/login", forceLoad: true);
+    // }
 
     public void Dispose()
     {

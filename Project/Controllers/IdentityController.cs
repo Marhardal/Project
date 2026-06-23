@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Project.Data;
 using Project.DTO;
 using Project.Migrations;
 using Project.Models;
 using Project.Notifications;
 using Project.Services;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Project.Controllers
@@ -236,5 +238,54 @@ namespace Project.Controllers
 
             return Ok("Password has been reset successfully.");
         }
+
+        [HttpPost("refresh")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshToken dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Token))
+                return BadRequest("Refresh token is required.");
+
+            // Find the token in DB
+            var stored = await dbContext.RefreshTokens
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.Token == dto.Token);
+
+            if (stored is null)
+                return Unauthorized("Invalid refresh token.");
+
+            if (stored.IsRevoked)
+                return Unauthorized("Refresh token has been revoked.");
+
+            if (stored.ExpiresAt < DateTime.UtcNow)
+                return Unauthorized("Refresh token has expired.");
+
+            // Get user roles
+            var roles = await userManager.GetRolesAsync(stored.User);
+
+            // Generate new access token
+            var newAccessToken = authService.GenerateAccessToken(stored.User, roles);
+
+            // Rotate refresh token — revoke old, issue new
+            stored.IsRevoked = true;
+
+            var newRefreshToken = new RefreshToken
+            {
+                UserID = stored.UserID,
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                ExpiresAt = DateTime.UtcNow.AddDays(7),
+                CreatedAt = DateTime.UtcNow
+            };
+
+            dbContext.RefreshTokens.Add(newRefreshToken);
+            await dbContext.SaveChangesAsync();
+
+            return Ok(new
+            {
+                accessToken = newAccessToken,
+                refreshToken = newRefreshToken.Token
+            });
+        }
+
     }
 }

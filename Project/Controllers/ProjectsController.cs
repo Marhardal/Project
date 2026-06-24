@@ -112,10 +112,7 @@ namespace Project.Controllers
                     p.ProjectType,
                     p.ProponentID,
                     p.SubmissionDate,
-                    p.closingDate,
-                    p.assignedDate,
                     p.Description,
-                    p.createdOn,
                     p.CategoryID,
                     p.ContactPersonID,
                     Category = p.Category == null ? null : new CategoryModel
@@ -129,7 +126,6 @@ namespace Project.Controllers
                         Name = p.Proponent.Name,
                         Address = p.Proponent.Address,
                         Location = p.Proponent.Location,
-                        createdOn = p.createdOn,
                     },
                     ProjectLocations = p.ProjectLocations
                         .Select(pl => new ProjectLocation
@@ -150,7 +146,6 @@ namespace Project.Controllers
                         {
                             Id = t.Id,
                             userID = t.userID,
-                            createdOn = t.createdOn,
                             StatusID = t.StatusID,
 
                             Status = t.Status == null ? null : new Status
@@ -165,11 +160,11 @@ namespace Project.Controllers
                             {
                                 ID = t.Review.ID,
                                 Remarks = t.Review.Remarks,
-                                createdOn = t.Review.createdOn
                             }
                         })
                         .ToList()
                 })
+                .Take(10)
                 .ToListAsync();
 
 

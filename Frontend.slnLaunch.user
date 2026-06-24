@@ -7,7 +7,7 @@
         "Action": "Start"
       },
       {
-        "Path": "Project\\Project.csproj",
+        "Path": "Project\\BackEnd.csproj",
         "Action": "Start"
       }
     ]

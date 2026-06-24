@@ -48,6 +48,21 @@ namespace Project.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<ProjectModel>()
+                .HasIndex(p => p.ProjectType)
+                .HasDatabaseName("IX_Projects_ProjectType");
+
+            // Trackings - composite index
+            modelBuilder.Entity<TrackingModel>()
+                .HasIndex(t => new { t.ProjectID, t.createdOn })
+                .IsDescending(false, true) // createdOn DESC
+                .HasDatabaseName("IX_Trackings_ProjectID_CreatedOn");
+
+            // ProjectLocations
+            modelBuilder.Entity<ProjectLocation>()
+                .HasIndex(pl => pl.ProjectID)
+                .HasDatabaseName("IX_ProjectLocations_ProjectID");
+
             modelBuilder.Entity<Proponent>()
                 .HasMany(c => c.Contacts)
                 .WithOne(c => c.Proponent)

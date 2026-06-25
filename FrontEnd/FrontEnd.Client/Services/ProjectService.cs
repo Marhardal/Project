@@ -19,12 +19,12 @@ namespace FrontEnd.Client.Services
             _logger = logger;
         }
 
-        public async Task<List<ProjectDTO>> GetProjectAsync(bool isProposal)
+        public async Task<PagedResult<ProjectDTO>> GetProjectAsync(bool isProposal, int Page = 1, int pageSize = 10)
         {
             try
             {
-                var result = await _http.GetFromJsonAsync<List<ProjectDTO>>($"api/Projects/filter/{isProposal}");
-                return result ?? new List<ProjectDTO>();
+                var result = await _http.GetFromJsonAsync<PagedResult<ProjectDTO>>($"api/Projects/filter/{isProposal}?Page={Page}&pageSize={pageSize}");
+                return result ?? new PagedResult<ProjectDTO>();
             }
             catch (Exception ex)
             {
@@ -40,7 +40,7 @@ namespace FrontEnd.Client.Services
                 }
 
                 // Return empty list to avoid bubbling exceptions to the UI lifecycle.
-                return new List<ProjectDTO>();
+                return new PagedResult<ProjectDTO>();
             }
         }
 

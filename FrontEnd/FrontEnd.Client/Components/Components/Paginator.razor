@@ -1,42 +1,33 @@
-﻿<nav aria-label="Pagination">
+﻿
+<nav aria-label="Pagination">
     <ul class="pagination">
-        <li class="page-item @(CurrentPage == 1 ? "disabled" : "")">
-            <a class="page-link" @onclick="() => GoToPage(CurrentPage - 1)">Previous</a>
+        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+            <a class="page-link" @onclick="() => OnPageChanged.InvokeAsync(currentPage - 1)"
+               disabled="@(currentPage <= 1)">
+                Previous
+            </a>
         </li>
 
-        @for (int p = 1; p <= totalPages; p++)
-        {
-            int pg = p;
-            <li class="page-item @(CurrentPage == pg ? "active" : "")">
-                <a class="page-link" @onclick="() => GoToPage(pg)">@pg</a>
+@for (int i = 1; i <= totalPages; i++)
+{
+    var p = i;
+         <li class="page-item @(currentPage == p ? "active" : "")">
+                <a class="page-link" @onclick="() => OnPageChanged.InvokeAsync(p)">@p</a>
             </li>
-        }
-
-        <li class="page-item @(CurrentPage == totalPages ? "disabled" : "")">
-            <a class="page-link" @onclick="() => GoToPage(CurrentPage + 1)">Next</a>
-        </li>
+}
+        <li class="page-item @(currentPage == totalPages ? "disabled" : "")" @onclick="() => OnPageChanged.InvokeAsync(currentPage + 1)"
+            disabled="@(currentPage >= totalPages)">
+            <a class="page-link">
+    Next
+</a>
+</li>
     </ul>
 </nav>
-
 @code {
-    [Parameter] 
-    public int PageSize { get; set; }
+    [Parameter] public int currentPage { get; set; }
+    [Parameter] public int pageSize { get; set; }
+    [Parameter] public int totalItems { get; set; }
+    [Parameter] public EventCallback<int> OnPageChanged { get; set; }
 
-    [Parameter] 
-    public int CurrentPage { get; set; }
-
-    [Parameter] 
-    public int TotalItems { get; set; }
-
-    [Parameter] 
-    public EventCallback<int> OnPageChanged { get; set; }
-
-    private int totalPages => PageSize > 0 ? (int)Math.Ceiling(TotalItems / (double)PageSize) : 0;
-
-    private async Task GoToPage(int page)
-    {
-        if (PageSize <= 0) return;
-        if (page < 1 || page > totalPages) return;
-        await OnPageChanged.InvokeAsync(page);
-    }
+    private int totalPages => (int)Math.Ceiling((double)totalItems / pageSize);
 }

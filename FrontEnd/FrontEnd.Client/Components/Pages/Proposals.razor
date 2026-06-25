@@ -67,7 +67,7 @@
     </div>
 
     <div class="border rounded bg-body-tertiary">
-        <TableTemplate Items="pagedProposals" Context="proposal">
+        <TableTemplate Items="proposals" Context="proposal">
             <TableHeader>
                 <th scope="col">#</th>
                 <th scope="col">Name</th>
@@ -82,7 +82,7 @@
             </TableHeader>
             <RowTemplate Context="proposal">
                 @{
-                    int index = (currentPage - 1) * pageSize + pagedProposals.IndexOf(proposal) + 1;
+                    int index = (currentPage - 1) * pageSize + proposals.IndexOf(proposal) + 1;
                 }
                 <td>@index</td>
                 <td>
@@ -96,7 +96,7 @@
                         : "—")
                 </td>
                 @{
-                    var status = proposal?.Trackings.OrderByDescending(p => p.createdOn).FirstOrDefault()?.Status;
+                    var status = proposal?.Tracking?.Status;
                 }
 
                 <td class="py-2">
@@ -133,7 +133,7 @@
         </TableTemplate>
 
         <div class="justify-content-center d-flex">
-            <Paginator pageSize="pageSize" currentPage="currentPage" totalItems="filteredProposals.Count" OnPageChanged="Pages => currentPage = Pages" />
+            <Paginator pageSize="pageSize" currentPage="currentPage" totalItems="TotalItems" OnPageChanged="Pages => currentPage = Pages" />
         </div>
     </div>    
 }
@@ -385,11 +385,14 @@ else
         SelectedLocationIds = new List<Guid>()
     };
     private int pageSize = 10;
+    private int TotalItems = 0;
     private int currentPage = 1;
     private string searchQuery = string.Empty;
     private HashSet<string> SelectedLocationIds { get; set; } = new();
 
-    private int totalPages => (int)Math.Ceiling(filteredProposals.Count / (double)pageSize);
+    private int totalPages = 1;
+
+    private PagedResult<ProjectDTO> Paged = new();
 
     private List<ProjectDTO> filteredProposals => proposals?
     .Where(p =>
@@ -398,16 +401,22 @@ else
     .ToList() ?? new();
 
 
-    private List<ProjectDTO> pagedProposals =>
-        filteredProposals
-            .Skip((currentPage - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
-
-    private void OnPageSizeChanged()
+    // private List<ProjectDTO> pagedProposals =>
+    //     filteredProposals
+    //         .Skip((currentPage - 1) * pageSize)
+    //         .Take(pageSize)
+    //         .ToList();
+    private async Task OnPageSizeChanged()
     {
         currentPage = 1;
-        StateHasChanged();
+        await LoadData();
+    }
+
+
+    async Task OnPageChanged(int newPage)
+    {
+        currentPage = newPage;
+        await LoadData();
     }
 
     protected override string PageSlug
@@ -442,8 +451,8 @@ else
 
             // Fetch projects and proponents with null-checks to prevent null assignments
             var projectResult = await ProjectService.GetProjectAsync(true);
-            proposals = projectResult ?? new List<ProjectDTO>();
-
+            // proposals = projectResult ?? new List<ProjectDTO>();
+            await LoadData();
             var proponentResult = await ProponentService.GetProponentsAsync();
             proponents = proponentResult ?? new List<ProponentsDTO>();
 
@@ -468,6 +477,15 @@ else
             await JSRuntime.InvokeVoidAsync("Spinner.hide");
         }
 
+    }
+
+    async Task LoadData()
+    {
+        var pagedResult = await ProjectService.GetProjectAsync(true, currentPage, pageSize);
+        Paged = pagedResult ?? new();
+        proposals = (List<ProjectDTO>)Paged.Data ?? [];
+        totalPages = Paged.TotalPages;
+        TotalItems = Paged.Total;
     }
 
     async Task HandleSubmission()
@@ -505,7 +523,7 @@ else
         {
             isSubmitting = false;
             var projectResult = await ProjectService.GetProjectAsync(true);
-            proposals = projectResult ?? new List<ProjectDTO>();
+            await LoadData();
 
             var proponentResult = await ProponentService.GetProponentsAsync();
             proponents = proponentResult ?? new List<ProponentsDTO>();
@@ -550,7 +568,7 @@ else
 
             if (response.IsSuccessStatusCode)
             {
-                proposals = await ProjectService.GetProjectAsync(true);
+                await LoadData();
                 Proposal = new();
                 isEditMode = false;
 

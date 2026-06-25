@@ -85,7 +85,7 @@
     </div>
 
     <div class="border rounded bg-body-tertiary">
-        <TableTemplate Items="pagedProjects" Context="project">
+        <TableTemplate Items="projects" Context="project">
             <TableHeader>
                 <th scope="col">#</th>
                 <th scope="col">Name</th>
@@ -99,7 +99,7 @@
 
             <RowTemplate Context="project">
                 @{
-                    int index = (currentPage - 1) * pageSize + pagedProjects.IndexOf(project) + 1;
+                    int index = (currentPage - 1) * pageSize + projects.IndexOf(project) + 1;
                 }
                 <td>@index</td>
                 @* <td>@project.Name</td> *@
@@ -114,7 +114,7 @@
 
                     <td>@project?.ProjectType.ToString()</td>
                     @{
-                        var status = project?.Trackings.OrderByDescending(p => p.createdOn).FirstOrDefault()?.Status;
+                        var status = project?.Tracking.Status;
                     }
 
                     <td class="py-2">
@@ -150,8 +150,10 @@
                 </RowTemplate>
             </TableTemplate>
             <div class="justify-content-center d-flex">
-                <Paginator pageSize="pageSize" currentPage="currentPage" totalItems="filteredProjects.Count"
-                           OnPageChanged="Pages => currentPage = Pages" />
+            <Paginator pageSize="pageSize"
+                       currentPage="currentPage"
+                       totalItems="totalItems"
+                       OnPageChanged="OnPageChanged" />
             </div>
         </div>
     }
@@ -160,7 +162,8 @@ else
         <p>Please enter some projects via Project Briefs.</p>
     }
 
-
+    @if (Proposal is not null)
+{
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -242,7 +245,7 @@ else
                                         }
                                     </InputSelect>
 
-                                    <ValidationMessage For="@(() => Proposal.Tracking.StatusID)" class="text-danger" />
+                                    <ValidationMessage For="@(() => Proposal.statusID)" class="text-danger" />
                                 </div>
                             </div>
 
@@ -296,6 +299,7 @@ else
             </div>
         </div>
     </div>
+}
 
 @code {
 
@@ -306,6 +310,7 @@ else
     private List<ProjectType> projectTypes;
     private List<ProponentsDTO> proponents = new();
 
+    private PagedResult<ProjectDTO> Paged = new();
     private List<ProjectDTO> proposals = new();
     private string submitMessage = string.Empty;
     private int pageSize = 10;
@@ -313,7 +318,8 @@ else
     private string searchQuery = string.Empty;
     private ProjectType? selectedType = null;
     private Guid? selectedStatus = null;
-    private int totalPages => (int)Math.Ceiling(filteredProjects.Count / (double)pageSize);
+    private int totalPages = 1;
+    private int totalItems = 1;
     bool isLoading = false;
 
     // protected override string PageSlug => navigationManager.BaseUri.Remove("/");
@@ -355,10 +361,16 @@ else
             .Take(pageSize)
             .ToList();
 
-    private void OnPageSizeChanged()
+    private async Task OnPageSizeChanged()
     {
         currentPage = 1;
-        StateHasChanged();
+        await LoadData();
+    }
+
+    private async Task OnPageChanged(int newPage)
+    {
+        currentPage = newPage;
+        await LoadData();
     }
 
     private void OnFilterChanged()
@@ -373,8 +385,8 @@ else
         try
         {
             // Fetch projects and proponents with null-checks to prevent null assignments
-            var projectResult = await ProjectService.GetProjectAsync(false);
-            projects = projectResult ?? new List<ProjectDTO>();
+            await LoadData();
+
             // projects = await ProjectService.GetProjectAsync(false) ?? new List<ProjectDTO>();
 
             var proponentResult = await ProponentService.GetProponentsAsync();
@@ -394,6 +406,17 @@ else
             await JSRuntime.InvokeVoidAsync("Spinner.hide");
         }
     }
+
+    async Task LoadData()
+    {
+        var pagedResult = await ProjectService.GetProjectAsync(false, currentPage, pageSize);
+        Paged = pagedResult ?? new();
+        projects = Paged.Data.ToList() ?? [];
+        totalPages = Paged.TotalPages;
+        totalItems = Paged.Total;
+        currentPage = Paged.Page;
+    }
+
 
     async Task editProject(ProjectDTO project)
     {
@@ -484,7 +507,7 @@ else
         finally
         {
             isLoading = false;
-            projects = await ProjectService.GetProjectAsync(false);
+            await LoadData();
             StateHasChanged();
         }
         // submitMessage = null;

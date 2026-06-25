@@ -1,5 +1,5 @@
 <Solution>
   <Project Path="FrontEnd/FrontEnd.Client/FrontEnd.Client.csproj" />
   <Project Path="FrontEnd/FrontEnd/FrontEnd.csproj" />
-  <Project Path="Project/Project.csproj" />
+  <Project Path="Project/BackEnd.csproj" />
 </Solution>

@@ -11,6 +11,8 @@ namespace Project.DTO
         [Required]
         public Guid? CategoryID { get; set; }
         public Guid? StatusID { get; set; }
+        public Guid? ContactPersonID { get; set; }
+        
         [Required]
         public string? Name { get; set; }
         [Required]
@@ -22,10 +24,12 @@ namespace Project.DTO
         public DateTime SubmissionDate { get; set; } = DateTime.Now;
         public DateTime createdOn { get; set; }
         public DateTime updatedOn { get; set; }
-        public ICollection<TrackingDTO> Trackings { get; set; } = new List<TrackingDTO>();
+        //public ICollection<TrackingDTO> Trackings { get; set; } = new List<TrackingDTO>();
 
         public ICollection<ProjectLocation>? ProjectLocations { get; set; }
-        public TrackingDTO? Tracking { get; set; }
+        public TrackingModel? Tracking { get; set; }
+        public CategoryModel? Category { get; set; }
+        public Proponent? Proponent { get; set; }
         public HashSet<Guid> SelectedLocationIds { get; set; } = new();
 
     }

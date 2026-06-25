@@ -7,6 +7,7 @@ using Project.Data;
 using Project.DTO;
 using Project.Models;
 using QuestPDF.Fluent;
+using System.Collections;
 using System.Drawing;
 using System.Security.Claims;
 
@@ -97,37 +98,41 @@ namespace Project.Controllers
         //}
 
         [HttpGet("filter/{isProposal:bool}")]
-        public async Task<ActionResult<IEnumerable<ProjectModel>>> GetProjects(bool isProposal = true)
+        public async Task<ActionResult<PagedResult<List<ProjectDTO>>>> GetProjects(bool isProposal = true, int Page = 1, int pageSize = 10)
         {
-           
-            var projects = await _context.Projects
+
+            var query = _context.Projects
                 .AsNoTracking()
                 .Where(p => isProposal
         ? p.ProjectType == ProjectType.Brief
-        : p.ProjectType != ProjectType.Brief)
-                .Select(p => new
+        : p.ProjectType != ProjectType.Brief);
+                
+            int total = await query.CountAsync();
+
+            var projects = await query
+                .Select(p => new ProjectDTO
+            {
+                Id = p.Id,
+                Name = p.Name,
+                ProjectType = p.ProjectType,
+                ProponentID = p.ProponentID,
+                SubmissionDate = p.SubmissionDate,
+                Description = p.Description,
+                CategoryID = p.CategoryID,
+                ContactPersonID = p.ContactPersonID,
+                Category = p.Category == null ? null : new CategoryModel
                 {
-                    p.Id,
-                    p.Name,
-                    p.ProjectType,
-                    p.ProponentID,
-                    p.SubmissionDate,
-                    p.Description,
-                    p.CategoryID,
-                    p.ContactPersonID,
-                    Category = p.Category == null ? null : new CategoryModel
-                    {
-                        ID = p.Category.ID, 
-                        Name = p.Category.Name
-                    },
-                    Proponent = p.Proponent == null ? null : new Proponent
-                    {
-                        ID = p.Proponent.ID,
-                        Name = p.Proponent.Name,
-                        Address = p.Proponent.Address,
-                        Location = p.Proponent.Location,
-                    },
-                    ProjectLocations = p.ProjectLocations
+                    ID = p.Category.ID,
+                    Name = p.Category.Name
+                },
+                Proponent = p.Proponent == null ? null : new Proponent
+                {
+                    ID = p.Proponent.ID,
+                    Name = p.Proponent.Name,
+                    Address = p.Proponent.Address,
+                    Location = p.Proponent.Location,
+                },
+                ProjectLocations = p.ProjectLocations
                         .Select(pl => new ProjectLocation
                         {
                             ID = pl.ID,
@@ -140,12 +145,12 @@ namespace Project.Controllers
                         })
                         .ToList(),
 
-                    Trackings = p.Trackings
+                Tracking = p.Trackings
                         .OrderByDescending(t => t.createdOn)
                         .Select(t => new TrackingModel
                         {
-                            Id = t.Id,
-                            userID = t.userID,
+                            //Id = t.Id,
+                            //userID = t.userID,
                             StatusID = t.StatusID,
 
                             Status = t.Status == null ? null : new Status
@@ -156,19 +161,27 @@ namespace Project.Controllers
                                 SortOrder = t.Status.SortOrder
                             },
 
-                            Review = t.Review == null ? null : new ReviewModel
-                            {
-                                ID = t.Review.ID,
-                                Remarks = t.Review.Remarks,
-                            }
+                            //Review = t.Review == null ? null : new ReviewModel
+                            //{
+                            //    ID = t.Review.ID,
+                            //    Remarks = t.Review.Remarks,
+                            //}
                         })
-                        .ToList()
-                })
-                .Take(10)
+                        .FirstOrDefault()
+            })
+                .Skip((Page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
 
+           //var result = ;
 
-            return Ok(projects);
+            return Ok(new PagedResult<ProjectDTO>()
+            {
+                Total = total,
+                Page = Page,
+                PageSize = pageSize,
+                Data = projects
+            }); 
         }
 
         [HttpGet("{id:guid}")]

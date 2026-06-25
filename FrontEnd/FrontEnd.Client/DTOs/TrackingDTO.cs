@@ -8,7 +8,7 @@ namespace FrontEnd.Client.DTOs
     public class TrackingDTO
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-        public Guid userID { get; set; }
+        public string? userID { get; set; }
         public Guid ProjectID { get; set; }
         public Guid StatusID { get; set; }
         public DateTime assignedDate { get; set; }

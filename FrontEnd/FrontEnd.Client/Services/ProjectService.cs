@@ -19,11 +19,14 @@ namespace FrontEnd.Client.Services
             _logger = logger;
         }
 
-        public async Task<PagedResult<ProjectDTO>> GetProjectAsync(bool isProposal, int Page = 1, int pageSize = 10)
+        public async Task<PagedResult<ProjectDTO>> GetProjectAsync(bool isProposal, int Page = 1, int pageSize = 10, string search = null)
         {
             try
             {
-                var result = await _http.GetFromJsonAsync<PagedResult<ProjectDTO>>($"api/Projects/filter/{isProposal}?Page={Page}&pageSize={pageSize}");
+                string url = $"api/Projects/filter/{isProposal}?Page={Page}&pageSize={pageSize}";
+                if (!string.IsNullOrWhiteSpace(search))
+                    url += $"&search={Uri.EscapeDataString(search)}";
+                var result = await _http.GetFromJsonAsync<PagedResult<ProjectDTO>>(url);
                 return result ?? new PagedResult<ProjectDTO>();
             }
             catch (Exception ex)

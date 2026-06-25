@@ -98,7 +98,7 @@ namespace Project.Controllers
         //}
 
         [HttpGet("filter/{isProposal:bool}")]
-        public async Task<ActionResult<PagedResult<List<ProjectDTO>>>> GetProjects(bool isProposal = true, int Page = 1, int pageSize = 10)
+        public async Task<ActionResult<PagedResult<List<ProjectDTO>>>> GetProjects(bool isProposal = true, int Page = 1, int pageSize = 10, string? search = null)
         {
 
             var query = _context.Projects
@@ -106,7 +106,15 @@ namespace Project.Controllers
                 .Where(p => isProposal
         ? p.ProjectType == ProjectType.Brief
         : p.ProjectType != ProjectType.Brief);
-                
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(p =>
+                    p.Name.Contains(search) ||
+                    p.Proponent.Name.Contains(search) ||
+                    p.Description.Contains(search));
+            }
+
             int total = await query.CountAsync();
 
             var projects = await query

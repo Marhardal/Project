@@ -394,11 +394,6 @@ else
 
     private PagedResult<ProjectDTO> Paged = new();
 
-    private List<ProjectDTO> filteredProposals => proposals?
-    .Where(p =>
-        string.IsNullOrWhiteSpace(searchQuery) ||
-        p.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-    .ToList() ?? new();
 
 
     // private List<ProjectDTO> pagedProposals =>
@@ -641,14 +636,23 @@ else
 
         await JSRuntime.InvokeVoidAsync("showModal", "staticBackdrop");
     }
-    private Timer? _debounce;
+
+    private System.Timers.Timer? _debounce;
 
     private void OnSearchChanged(ChangeEventArgs e)
     {
+
         searchQuery = e.Value?.ToString() ?? string.Empty;
-        currentPage = 1; // reset to first page on new search
         _debounce?.Dispose();
-        _debounce = new Timer(_ => InvokeAsync(StateHasChanged), null, 400, Timeout.Infinite);
+        _debounce = new System.Timers.Timer(400);
+        _debounce.Elapsed += async (s, e) =>
+        {
+            _debounce?.Dispose();
+            currentPage = 1;  // reset to page 1 on new search
+            await InvokeAsync(LoadData);
+        };
+        _debounce.AutoReset = false;
+        _debounce.Start();
     }
 
     async Task createExcel()

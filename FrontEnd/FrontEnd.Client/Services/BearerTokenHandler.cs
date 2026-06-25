@@ -22,7 +22,7 @@ using System.Net.Http.Json;
 
         try
         {
-            token = await _js.InvokeAsync<string>("Storage.getToken");
+            token = await GetValidTokenAsync();
         }
         catch (InvalidOperationException) { }
 
@@ -57,7 +57,7 @@ using System.Net.Http.Json;
     private async Task<string?> TryRefreshAsync()
     {
         string? refreshToken = null;
-        try { refreshToken = await _js.InvokeAsync<string>("Storage.getToken"); }
+        try { refreshToken = await GetValidTokenAsync(); }
         catch (InvalidOperationException) { return null; }
 
         if (string.IsNullOrWhiteSpace(refreshToken)) return null;
@@ -77,6 +77,7 @@ using System.Net.Http.Json;
         }
         catch { return null; }
     }
+   
     private static async Task<HttpRequestMessage> CloneRequestAsync(HttpRequestMessage req)
     {
         var clone = new HttpRequestMessage(req.Method, req.RequestUri);
@@ -92,6 +93,43 @@ using System.Net.Http.Json;
         }
 
         return clone;
+    }
+   
+    private async Task<string?> GetValidTokenAsync()
+    {
+        string? token = null;
+        try { token = await _js.InvokeAsync<string>("Storage.getToken"); }
+        catch (InvalidOperationException) { return null; }
+
+        if (string.IsNullOrWhiteSpace(token)) return null;
+
+        // Check if token expires within the next 60 seconds
+        if (IsTokenExpiringSoon(token, bufferSeconds: 60))
+            return await TryRefreshAsync();
+
+        return token;
+    }
+
+    private bool IsTokenExpiringSoon(string token, int bufferSeconds)
+    {
+        try
+        {
+            // JWT is base64 header.payload.signature
+            var parts = token.Split('.');
+            if (parts.Length != 3) return true;
+
+            var payload = parts[1];
+            // Fix base64 padding
+            payload = payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '=');
+            var json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(payload));
+            var doc = System.Text.Json.JsonDocument.Parse(json);
+
+            if (!doc.RootElement.TryGetProperty("exp", out var expProp)) return true;
+
+            var exp = DateTimeOffset.FromUnixTimeSeconds(expProp.GetInt64());
+            return exp <= DateTimeOffset.UtcNow.AddSeconds(bufferSeconds);
+        }
+        catch { return true; }
     }
 
     private record RefreshResponse(string AccessToken, string RefreshToken);

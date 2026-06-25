@@ -2,7 +2,6 @@
 @inherits PermissionGuardedPage
 
 <PageTitle>Projects</PageTitle>
-@* 994190633 *@
 <div class="row g-0 align-items-center mb-2">
     <div class="@GetSearchColClass()">
         <h3>Projects</h3>
@@ -43,10 +42,6 @@
             </div>
         }
     </div>
-    @* <div class="col-md-2 col-sm-2 text-md-end">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i
-            class="bi bi-plus-square me-2"></i>Add</button>
-    </div> *@
 </div>
 @if (projects != null)
 {
@@ -342,24 +337,6 @@ else
             (false) => "col-md-10"
         };
     }
-    private List<ProjectDTO> filteredProjects => projects?
-        .Where(p =>
-            (string.IsNullOrWhiteSpace(searchQuery) ||
-            p.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
-            &&
-            (selectedType == null || p.ProjectType == selectedType)
-            &&
-            (selectedStatus == null || p.Trackings
-                .OrderByDescending(t => t.createdOn)
-                .FirstOrDefault()?.StatusID == selectedStatus))
-        .ToList() ?? new();
-
-
-    private List<ProjectDTO> pagedProjects =>
-        filteredProjects
-            .Skip((currentPage - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
 
     private async Task OnPageSizeChanged()
     {
@@ -409,14 +386,13 @@ else
 
     async Task LoadData()
     {
-        var pagedResult = await ProjectService.GetProjectAsync(false, currentPage, pageSize);
+        var pagedResult = await ProjectService.GetProjectAsync(false, currentPage, pageSize, searchQuery);
         Paged = pagedResult ?? new();
         projects = Paged.Data.ToList() ?? [];
         totalPages = Paged.TotalPages;
         totalItems = Paged.Total;
         currentPage = Paged.Page;
     }
-
 
     async Task editProject(ProjectDTO project)
     {
@@ -513,14 +489,21 @@ else
         // submitMessage = null;
     }
 
-    private Timer? _debounce;
+    private System.Timers.Timer? _debounce;
 
     private void OnSearchChanged(ChangeEventArgs e)
     {
         searchQuery = e.Value?.ToString() ?? string.Empty;
-        currentPage = 1; // reset to first page on new search
         _debounce?.Dispose();
-        _debounce = new Timer(_ => InvokeAsync(StateHasChanged), null, 400, Timeout.Infinite);
+        _debounce = new System.Timers.Timer(400);
+        _debounce.Elapsed += async (s, e) =>
+        {
+            _debounce?.Dispose();
+            currentPage = 1;  // reset to page 1 on new search
+            await InvokeAsync(LoadData);
+        };
+        _debounce.AutoReset = false;
+        _debounce.Start();
     }
 
     async Task createExcel()

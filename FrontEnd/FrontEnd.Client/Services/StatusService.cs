@@ -17,6 +17,29 @@ namespace FrontEnd.Client.Services
         }
 
         // Get all proponents
+        public async Task<List<StatusDTO>> GetAllStatusAsync()
+        {
+            try
+            {
+                var result = await _http.GetFromJsonAsync<List<StatusDTO>>($"api/Status/");
+                return result ?? new List<StatusDTO>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to GET proponents from {BaseAddress}{Endpoint}", _http.BaseAddress, "api/proponents");
+                if (ex is TaskCanceledException)
+                {
+                    _logger.LogWarning("Request was canceled - possible timeout or abort.");
+                }
+                if (ex.InnerException != null)
+                {
+                    _logger.LogError("Inner exception: {Inner}", ex.InnerException.Message);
+                }
+                return new List<StatusDTO>();
+            }
+        }
+        
+        // Get all proponents
         public async Task<List<StatusDTO>> GetStatusAsync(Category category = Category.Brief)
         {
             try

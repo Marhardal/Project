@@ -12,6 +12,7 @@ namespace FrontEnd.Client.DTOs
         [Required]
         public string? Color { get; set; }
         [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Value must be greater than 0.")]
         public int SortOrder { get; set; }
         [Required]
         public Category Category { get; set; }

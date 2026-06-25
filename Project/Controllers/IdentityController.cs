@@ -188,7 +188,7 @@ namespace Project.Controllers
             return Ok(new AuthDTO
             {
                 Token = Token,
-                TokenExpiry = DateTime.UtcNow.AddMinutes(15),
+                TokenExpiry = DateTime.UtcNow.AddMinutes(60),
                 RefreshToken = refresh.Token,
                 RefreshTokenExpiry = refresh.ExpiresAt
             });

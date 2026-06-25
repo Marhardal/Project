@@ -118,6 +118,7 @@ namespace Project.Controllers
             int total = await query.CountAsync();
 
             var projects = await query
+                .OrderByDescending(p => p.createdOn)
                 .Select(p => new ProjectDTO
             {
                 Id = p.Id,

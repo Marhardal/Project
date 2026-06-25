@@ -5,7 +5,8 @@
 </select>
 
 @code {
-    [Parameter] public required List<LocationDTO> Locations { get; set; }
+    [Parameter] 
+    public required List<LocationDTO> Locations { get; set; }
     [Parameter] public required List<Guid> SelectedLocationIds { get; set; }
     [Parameter] public EventCallback<List<Guid>> SelectedLocationIdsChanged { get; set; }
         private DotNetObjectReference<MultiSelect>? _dotNetRef;

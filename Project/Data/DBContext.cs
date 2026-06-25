@@ -235,6 +235,38 @@ modelBuilder.Entity<ProjectModel>()
                     Color = "#157347",
                     SortOrder = 7,
                     Category = Category.Project
+                },
+                new Status
+                {
+                    ID = Guid.Parse("f7b9d3f2-22e4-4c1a-8b5f-9e6d3c2a1f71"),
+                    Name = "TO DO",
+                    Color = "#b3adad",
+                    SortOrder = 1,
+                    Category = Category.Task
+                },
+                new Status
+                {
+                    ID = Guid.Parse("f7b9d3f2-22e4-4c1a-8b5f-9e6d3c2a1f72"),
+                    Name = "In Progress",
+                    Color = "#2473db",
+                    SortOrder = 2,
+                    Category = Category.Task
+                },
+                new Status
+                {
+                    ID = Guid.Parse("f7b9d3f2-22e4-4c1a-8b5f-9e6d3c2a1f73"),
+                    Name = "Review",
+                    Color = "#8d51e6",
+                    SortOrder = 3,
+                    Category = Category.Task
+                },
+                new Status
+                {
+                    ID = Guid.Parse("f7b9d3f2-22e4-4c1a-8b5f-9e6d3c2a1f74"),
+                    Name = "Completed",
+                    Color = "#46beb0",
+                    SortOrder = 4,
+                    Category = Category.Task
                 }
             );
 

@@ -366,25 +366,41 @@ namespace Project.Controllers
         //    return StatusCode(201, new { StatusMessage = "Added Contact Person." });
         //}
         [HttpPost]
-        public async Task<ActionResult<ProjectModel>> PostProjectModel(ProjectModel projectModel)
+        public async Task<ActionResult<ProjectModel>> PostProjectModel(ProjectDTO projectDTO)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            //ProjectModel projectModel = new ProjectModel()
+            //{
+            //    ProponentID = projectDTO.ProponentID,
+            //    StatusID = projectDTO.StatusID,
+            //    CategoryID = projectDTO.CategoryID,
+            //    Name = projectDTO.Name,
+            //    Description = projectDTO.Description,
+            //    ProjectType = projectDTO.ProjectType,
+            //    SubmissionDate = projectDTO.SubmissionDate,
+            //    assignedDate = projectDTO.assignedDate,
+            //    closingDate = projectDTO.closingDate,
+            //    SelectedLocationIds = projectDTO.SelectedLocationIds,
+            //    createdOn = projectDTO.createdOn,
+
+            //};
 
             if (userId is null)
                 return Unauthorized();
 
-            //ProjectModel projectModel = new ProjectModel
-            //{
-            //    ProponentID = projectdto.ProponentID ?? Guid.Empty,
-            //    CategoryID = projectdto.CategoryID ?? Guid.Empty,
-            //    Name = projectdto.Name,
-            //    Description = projectdto.Description,
-            //    ProjectType = projectdto.ProjectType,
-            //    assignedDate = projectdto.assignedDate,
-            //    closingDate = projectdto.closingDate,
-            //    SubmissionDate = projectdto.SubmissionDate,
-            //    SelectedLocationIds = projectdto.SelectedLocationIds
-            //};
+            ProjectModel projectModel = new ProjectModel
+            {
+                ProponentID = projectDTO.ProponentID,
+                CategoryID = projectDTO.CategoryID,
+                Name = projectDTO.Name,
+                Description = projectDTO.Description,
+                ProjectType = projectDTO.ProjectType,
+                assignedDate = projectDTO.assignedDate,
+                closingDate = projectDTO.closingDate,
+                SubmissionDate = projectDTO.SubmissionDate,
+                SelectedLocationIds = projectDTO.SelectedLocationIds
+            };
 
             if (!projectModel.SelectedLocationIds.Any())
                 return StatusCode(422, new { StatusMessage = "Please add a Location." });

@@ -7,11 +7,11 @@ namespace Project.DTO
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         [Required]
-        public Guid? ProponentID { get; set; }
+        public Guid ProponentID { get; set; }
         [Required]
-        public Guid? CategoryID { get; set; }
-        public Guid? StatusID { get; set; }
-        public Guid? ContactPersonID { get; set; }
+        public Guid CategoryID { get; set; }
+        public Guid StatusID { get; set; }
+        public Guid ContactPersonID { get; set; }
         
         [Required]
         public string? Name { get; set; }

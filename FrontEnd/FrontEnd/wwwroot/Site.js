@@ -113,7 +113,7 @@ window.Storage = {
     setToken: (token) => {
         const existing = JSON.parse(localStorage.getItem('authToken') || '{}');
         existing.token = token;
-        existing.expiry = new Date().getTime() + (15 * 60 * 1000); // 15 min
+        existing.expiry = new Date().getTime() + (55 * 60 * 1000); // 55 min
         localStorage.setItem('authToken', JSON.stringify(existing));
     },
 
@@ -121,7 +121,7 @@ window.Storage = {
     setTokens: (accessToken, refreshToken) => {
         const payload = {
             token: accessToken,
-            expiry: new Date().getTime() + (15 * 60 * 1000),       // 15 min
+            expiry: new Date().getTime() + (55 * 60 * 1000),       // 55 min
             refreshToken: refreshToken,
             refreshExpiry: new Date().getTime() + (7 * 24 * 60 * 60 * 1000) // 7 days
         };
@@ -233,49 +233,41 @@ window.mapHelper = {
         };
     }
 };
+
 window.choicesHelper = {
     _instances: {},
     _listeners: {},
-
-    initMulti: function (elementId, items, selectedValues, dotNetRef) {
+    initMulti: function (elementId, items, selected, dotNetRef) {
         const el = document.getElementById(elementId);
-        if (!el) return;
-
-        // Remove stale listener
-        if (this._listeners[elementId]) {
-            el.removeEventListener('change', this._listeners[elementId]);
-            delete this._listeners[elementId];
-        }
-
-        // Destroy existing instance
-        if (this._instances[elementId]) {
-            this._instances[elementId].destroy();
-            delete this._instances[elementId];
-        }
-
         const choices = new Choices(el, {
-            removeItemButton: true,
-            searchEnabled: true,
-            searchPlaceholderValue: 'Search...',
-            placeholderValue: 'Select...',
-            shouldSort: false,
             choices: items.map(i => ({
                 value: i.value,
                 label: i.label,
-                selected: selectedValues.includes(i.value)
+                selected: selected.includes(i.value)
             }))
         });
 
+        // Use Choices.js own events instead of native 'change'
+        el.addEventListener('choice', () => {
+            const selectedValues = choices.getValue(true);
+            console.log('Choices selected:', selectedValues); // check browser console
+
+            dotNetRef.invokeMethodAsync('OnSelectionChanged', selectedValues);
+        });
+
+        el.addEventListener('removeItem', () => {
+            const selectedValues = choices.getValue(true);
+            dotNetRef.invokeMethodAsync('OnSelectionChanged', selectedValues);
+        });
+
+        this._instances = this._instances || {};
         this._instances[elementId] = choices;
-
-        const handler = () => {
-            // getValue(true) returns objects — extract .value
-            const selected = choices.getValue(true).map(item => item.value ?? item);
-            dotNetRef.invokeMethodAsync('OnSelectionChanged', selected);
-        };
-
-        el.addEventListener('change', handler);
-        this._listeners[elementId] = handler;
+    },
+    destroy: function (elementId) {
+        if (this._instances?.[elementId]) {
+            this._instances[elementId].destroy();
+            delete this._instances[elementId];
+        }
     },
 
     initSingle: function (elementId, items, selectedValue, dotNetRef) {

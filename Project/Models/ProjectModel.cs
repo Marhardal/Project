@@ -11,6 +11,7 @@ namespace Project.Models
         public Guid ProponentID { get; set; }
         [Required]
         public Guid CategoryID { get; set; }
+
         public Guid ContactPersonID { get; set; }
         
         [Required, NotMapped]
@@ -35,7 +36,7 @@ namespace Project.Models
 
         public ICollection<TasksModel>? Tasks { get; set; }
 
-        //public TrackingModel? Tracking { get; set; }
+        public TrackingModel? Tracking { get; set; }
         //public LocationModel? Location { get; set; }
         [NotMapped]
         public HashSet<Guid> SelectedLocationIds { get; set; } = new();

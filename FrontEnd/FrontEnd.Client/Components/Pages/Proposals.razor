@@ -253,10 +253,16 @@ else
                                 </InputSelect> *@
                                 @if (locations.Any())
                                 {
-
-                                    <MultiSelect Locations="locations"
+                                    @* <MultiSelect Locations="locations"
                                                  SelectedLocationIds="Proposal.SelectedLocationIds"
-                                                 SelectedLocationIdsChanged="@(ids => Proposal.SelectedLocationIds = ids)"></MultiSelect>
+                                                 SelectedLocationIdsChanged="@(ids => Proposal.SelectedLocationIds = ids)"></MultiSelect> *@
+
+                                    <MultiSelect TValue="LocationDTO"
+                                                 Items="locations"
+                                                 ValueSelector="l => l.ID.ToString()"
+                                                 LabelSelector="l => l.Location"
+                                                 SelectedValues="Proposal.SelectedLocationIds.Select(id => id.ToString()).ToList()"
+                                                 SelectedValuesChanged="ids => Proposal.SelectedLocationIds = ids.Select(Guid.Parse).ToList()" />
                                 }
                                 @* <ValidationMessage For="@(() => Proposal.LocationID)" class="text-danger" /> *@
                                 @if (!Proposal.SelectedLocationIds.Any() && isSubmitting)
@@ -388,7 +394,7 @@ else
     private int TotalItems = 0;
     private int currentPage = 1;
     private string searchQuery = string.Empty;
-    private HashSet<string> SelectedLocationIds { get; set; } = new();
+    private List<Guid> SelectedLocationIds { get; set; } = new();
 
     private int totalPages = 1;
 
@@ -490,6 +496,7 @@ else
         {
             if (!Proposal.SelectedLocationIds.Any())
             {
+                submitMessage = "Please make sure you have entered a Location.";
                 return; // stop if nothing selected
             }
 
@@ -507,6 +514,10 @@ else
                 await JSRuntime.InvokeVoidAsync("SwalService.success", "Added a Brief Successfull.");
 
                 Proposal = new ProjectDTO();
+            }
+            else
+            {
+                submitMessage = await response.Content.ReadAsStringAsync();
             }
             // await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
         }

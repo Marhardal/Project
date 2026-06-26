@@ -18,6 +18,8 @@
         [ForeignKey("ProjectID")]
         public ProjectModel? Project { get; set; }
         public Status? Status { get; set; }
+
+        [NotMapped]
         public ReviewModel? Review { get; set; }
         //public IdentityUser? Identity { get; set; }
         public UserModel? User { get; set; }

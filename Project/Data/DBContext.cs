@@ -101,11 +101,15 @@ modelBuilder.Entity<ProjectModel>()
                 .WithOne(t => t.Status)
                 .HasForeignKey(t => t.StatusID);
 
-            // Tracking → Review (1:1)
+            //// Tracking → Review (1:1)
             modelBuilder.Entity<TrackingModel>()
                 .HasOne(t => t.Review)
                 .WithOne(r => r.Tracking)
                 .HasForeignKey<ReviewModel>(r => r.TrackingID);
+
+            //modelBuilder.Entity<ReviewModel>()
+            //    .HasOne(t => t.Tracking)
+            //    .WithOne(r => r.Review);
 
             // User → Trackings
             modelBuilder.Entity<TrackingModel>()

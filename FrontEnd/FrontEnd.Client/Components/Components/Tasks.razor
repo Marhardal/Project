@@ -17,6 +17,38 @@
             </button>
         </div>
     </div>
+    
+    <div class="border rounded bg-body-tertiary">
+        <TableTemplate Items="tasks" Context="task">
+            <TableHeader>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Assignee</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Status</th>
+                <th scope="col">DueDate</th>
+                <th scope="col"></th>
+                </TableHeader>
+                <RowTemplate Context="task">
+                    <td></td>
+                    <td>@task.Name</td>
+                    <td>@task.Name</td>
+                    <td>@task.Priority</td>
+                    <td>@task.StatusID</td>
+                    <td>@task.DueDate</td>
+                    <td>
+                        <div class="d-flex gap-1 justify-content-end ">
+                    <button data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop2" class="rounded btn btn-sm btn-outline-success">
+                        <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <button class="rounded btn btn-sm btn-outline-danger">
+                        <i class="bi bi-pencil-square"></i>
+                    </button>
+                    </div>
+                    </td>
+                </RowTemplate>
+                </TableTemplate>
 </div>
 
 
@@ -24,26 +56,34 @@
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <EditForm method="post" Model="Task" OnInvalidSubmit="CreateTask" FormName="create2">
+                <EditForm method="post" Model="task" OnValidSubmit="CreateTask" FormName="create2">
                 <DataAnnotationsValidator/>
+                    
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Task</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                        @if (!string.IsNullOrEmpty(Message))
+                        {
+                            <div class="alert alert-danger my-2" role="alert">
+                                @Message
+                            </div>
+                            @* <div id="liveAlertPlaceholder"></div> *@
+                        }
                     <div class="row">
                         <div class="col-md-6 col-sm-12">
                             <div class="mb-3">
                                 <label for="Name" class="form-label">Name</label>
-                                <InputText id="Name" @bind-Value="Task.Name" class="form-control" placeholder="Enter Task Name." />
-                                <ValidationMessage For="@(() => Task.Name)" class="text-danger" />
+                                    <InputText id="Name" @bind-Value="task.Name" class="form-control" placeholder="Enter Task Name." />
+                                    <ValidationMessage For="@(() => task.Name)" class="text-danger" />
                             </div>
                         </div>
                         <div class="col-md-6 col-sm-12">
                             <div class="mb-3">
                                 <label for="DueDate" class="form-label">Due Date</label>
-                                <InputDate id="DueDate" @bind-Value="Task.DueDate" class="form-control" placeholder="Enter Task Name." />
-                                <ValidationMessage For="@(() => Task.DueDate)" class="text-danger" />
+                                    <InputDate id="DueDate" @bind-Value="task.DueDate" class="form-control" placeholder="Enter Task Name." />
+                                    <ValidationMessage For="@(() => task.DueDate)" class="text-danger" />
                             </div>
                         </div>
                     </div>
@@ -51,25 +91,25 @@
                         <div class="col-md-6 col-sm-12">
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">Priority</label>
-                                <InputSelect id="Priority" @bind-Value="Task.Priority" class="form-select">
+                                    <InputSelect id="Priority" @bind-Value="task.Priority" class="form-select">
                                     @foreach (var item in Enum.GetValues<Priority>())
                                     {
                                         <option value="@item">@EnumHelper.GetDisplayName(item)</option>
                                     }
                                 </InputSelect>
-                                <ValidationMessage For="@(() => Task.Priority)" class="text-danger" />
+                                    <ValidationMessage For="@(() => task.Priority)" class="text-danger" />
                             </div>
                         </div>
                         <div class="col-md-6 col-sm-12">
                             <div class="mb-3">
                                 <label for="StatusID" class="form-label">Status</label>
-                                <InputSelect id="StatusID" @bind-Value="Task.StatusID" class="form-select">
+                                    <InputSelect id="StatusID" @bind-Value="task.StatusID" class="form-select">
                                     @foreach (var item in statuses)
                                     {
                                         <option value="@item.ID">@item.Name</option>
                                     }
                                 </InputSelect>
-                                <ValidationMessage For="@(() => Task.Priority)" class="text-danger" />
+                                    <ValidationMessage For="@(() => task.Priority)" class="text-danger" />
                             </div>
                         </div>
                     </div>
@@ -79,8 +119,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">Description</label>
-                        <InputTextArea id="Description" @bind-Value="Task.Description" class="form-control" placeholder="Enter Task Description." />
-                        <ValidationMessage For="@(() => Task.Description)" class="text-danger" />
+                            <InputTextArea id="Description" @bind-Value="task.Description" class="form-control" placeholder="Enter Task Description." />
+                            <ValidationMessage For="@(() => task.Description)" class="text-danger" />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -91,25 +131,78 @@
         </div>
     </div>
 </div>
-
+</div>
 
 @code {
     [SupplyParameterFromForm]
-    public TasksDTO Task { get; set; } = new();
+    public TasksDTO task { get; set; } = new();
     private string searchQuery = string.Empty;
-    private List<StatusDTO> statuses = new();
-    private List<UserProfileDTO> users = new();
+    public List<TasksDTO> tasks { get; set; } = new();
+    public List<StatusDTO> statuses { get; set; } = new();
+
+    [Parameter]
+    public string ProjectID { get; set; }
+
+    public string Message { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
+        task.DueDate = DateTime.Now;
         statuses = await StatusService.GetStatusAsync(Category.Task);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Guid guid;
+        if (string.IsNullOrWhiteSpace(ProjectID) && Guid.TryParse(ProjectID, out guid))
+        {
+            tasks = await TasksService.GetProjectTasks(guid);
+        }
     }
 
     async Task CreateTask()
     {
-        
+        try
+        {
+            task.ProjectID = Guid.Parse(ProjectID);
+            task.createdOn = DateTime.Now;
+            var result = await TasksService.CreateTaskAsync(task);
+            if (result.IsSuccessStatusCode)
+            {
+                await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
+
+                await JSRuntime.InvokeVoidAsync("SwalService.success", "Added a Task Successfull.");
+
+                task = new();
+            }
+        }
+        catch (Exception ex)
+        {
+            Message = ex.Message;
+        }
     }
 
+    async Task UpdateTask()
+    {
+        try
+        {
+            task.ProjectID = Guid.Parse(ProjectID);
+            task.createdOn = DateTime.Now;
+            var result = await TasksService.UpdateTaskAsync(task.ID, task);
+            if (result.IsSuccessStatusCode)
+            {
+                await JSRuntime.InvokeVoidAsync("hideModal", "staticBackdrop");
+
+                await JSRuntime.InvokeVoidAsync("SwalService.success", "Added a Task Successfull.");
+
+                task = new();
+            }
+        }
+        catch (Exception ex)
+        {
+            Message = ex.Message;
+        }
+    }
 
     private void OnSearchChanged(ChangeEventArgs e)
     {

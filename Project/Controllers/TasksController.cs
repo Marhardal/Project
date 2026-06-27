@@ -16,15 +16,42 @@ public class TasksController : ControllerBase
     }
 
     // GET: api/TasksModel
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<TasksModel>>> GetTasksModel()
+    [HttpGet("{ProjectID}")]
+    public async Task<ActionResult<IEnumerable<TasksModel>>> GetTasksModel(Guid ProjectID)
     {
+        var tasks = _context.Tasks.Where(t => t.ProjectID == ProjectID).AsNoTracking().
+            Select(t => new TasksModel
+            {
+                ID = t.ID,
+                Name = t.Name,
+                StatusID = t.StatusID,
+                DueDate = t.DueDate,
+                Priority = t.Priority,
+                Description = t.Description,
+                Status = t.Status == null ? null : new Status
+                {
+                    ID = t.ID,
+                    Name = t.Status.Name
+                },
+                TaskAssignees = t.TaskAssignees.Select(ta => new TaskAssigneesModel
+                {
+                    ID = ta.ID,
+                    User = ta.User == null ? null : new UserModel
+                    {
+                        FirstName =ta.User.FirstName,
+                        Surname = ta.User.Surname
+                    }
+                    
+                }).ToList()
+            })
+            .ToList();
+
         return await _context.Tasks.ToListAsync();
     }
 
     // GET: api/TasksModel/5
-    [HttpGet("{id}")]
-    public async Task<ActionResult<TasksModel>> GetTasksModel(System.Guid id)
+    [HttpGet("{projectId}/{id}")]
+    public async Task<ActionResult<TasksModel>> GetTasksModel(Guid projectId, Guid id)
     {
         var tasksmodel = await _context.Tasks.FindAsync(id);
 

@@ -24,6 +24,8 @@
 
         public ICollection<TaskAssigneesModel>? TaskAssignees { get; set; }
 
+        public Status? Status { get; set; }
+
     }
 
     public enum Priority

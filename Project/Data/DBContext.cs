@@ -179,7 +179,7 @@ modelBuilder.Entity<ProjectModel>()
 
             modelBuilder.Entity<TaskAssigneesModel>()
                 .HasOne(ta => ta.User)
-                .WithMany()
+                .WithMany(u => u.TaskAssignees)
                 .HasForeignKey(ta => ta.UserID);
 
 

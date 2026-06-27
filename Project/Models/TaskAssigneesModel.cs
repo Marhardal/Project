@@ -9,7 +9,7 @@ namespace Project.Models
         public Guid TaskID { get; set; }
         public TasksModel? Task { get; set; }
 
-        public string? UserID { get; set; } = default!;
-        public IdentityUser? User { get; set; }
+        public Guid UserID { get; set; } = default!;
+        public UserModel? User { get; set; }
     }
 }

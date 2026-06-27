@@ -154,7 +154,7 @@
     protected override async Task OnParametersSetAsync()
     {
         Guid guid;
-        if (string.IsNullOrWhiteSpace(ProjectID) && Guid.TryParse(ProjectID, out guid))
+        if (!string.IsNullOrWhiteSpace(ProjectID) && Guid.TryParse(ProjectID, out guid))
         {
             tasks = await TasksService.GetProjectTasks(guid);
         }

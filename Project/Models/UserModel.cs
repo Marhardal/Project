@@ -23,6 +23,8 @@ namespace Project.Models
         public DateTime UpdateOn { get; set; } = DateTime.Now;
 
         public ICollection<TrackingModel>? Trackings { get; set; }
+
+        public ICollection<TaskAssigneesModel>? TaskAssignees { get; set; }
     }
     
     public enum Title

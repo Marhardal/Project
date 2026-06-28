@@ -39,7 +39,7 @@
                     <td>
                         <div class="d-flex gap-1 justify-content-end ">
                     <button data-bs-toggle="modal"
-                            data-bs-target="#staticBackdrop2" class="rounded btn btn-sm btn-outline-success">
+                                data-bs-target="#staticStatusBackdrop" class="rounded btn btn-sm btn-outline-success" @onclick="() => editMood(task)">
                         <i class="bi bi-pencil-square"></i>
                     </button>
                     <button class="rounded btn btn-sm btn-outline-danger">
@@ -145,6 +145,8 @@
 
     public string Message { get; set; } = string.Empty;
 
+    bool edit = false;
+
     protected override async Task OnInitializedAsync()
     {
         task.DueDate = DateTime.Now;
@@ -202,6 +204,16 @@
         {
             Message = ex.Message;
         }
+    }
+
+    async Task editMood(TasksDTO dTO)
+    {
+        edit = true;
+        task.ID = dTO.ID;
+        task.Name = dTO.Name;
+        task.Priority = dTO.Priority;
+        task.StatusID = dTO.StatusID;
+        task.Description = dTO.Description;
     }
 
     private void OnSearchChanged(ChangeEventArgs e)

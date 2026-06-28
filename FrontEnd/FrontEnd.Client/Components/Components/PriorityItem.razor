@@ -1,0 +1,38 @@
+
+<div class="w-auto text-center d-flex align-items-center">
+    <div class="d-inline-flex rounded">
+        @* <span class="rounded d-inline-block"
+              style="width: 18px; height: 18px;
+            background-color: @(string.IsNullOrWhiteSpace(Colour) ? "#6c757d" :
+                                                  (Colour.StartsWith("#") ? Colour : $"#{Colour}"));">
+        </span> *@
+        <i class="fa-solid fa-flag @Colour"></i>
+    </div>
+    <span class="ms-2">@Name</span>
+</div>
+
+@code {
+    [Parameter]
+    public string Name { get; set; } = "";
+
+    public string Colour = "#6c757d";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrEmpty(Name))
+        {
+            if (Name == "Normal")
+            {
+                Colour = "text-primary";
+            }
+            else if (Name == "Medium")
+            {
+                Colour = "text-warning";
+            }
+            else
+            {
+                Colour = "text-danger";
+            }
+        }
+    }
+}

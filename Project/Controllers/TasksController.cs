@@ -19,7 +19,7 @@ public class TasksController : ControllerBase
     [HttpGet("{ProjectID}")]
     public async Task<ActionResult<IEnumerable<TasksModel>>> GetTasksModel(Guid ProjectID)
     {
-        var tasks = _context.Tasks.Where(t => t.ProjectID == ProjectID).AsNoTracking().
+        var tasks = await _context.Tasks.Where(t => t.ProjectID == ProjectID).AsNoTracking().
             Select(t => new TasksModel
             {
                 ID = t.ID,
@@ -44,9 +44,14 @@ public class TasksController : ControllerBase
                     
                 }).ToList()
             })
-            .ToList();
+            .ToListAsync();
 
-        return await _context.Tasks.ToListAsync();
+        if (!tasks.Any())
+        {
+            return NoContent();
+        }
+
+        return tasks;
     }
 
     // GET: api/TasksModel/5

@@ -24,6 +24,7 @@ namespace FrontEnd.Client.DTOs
         public DateTime updatedOn { get; set; } = DateTime.Now;
 
         public ProjectDTO? Project { get; set; }
+        public StatusDTO? Status { get; set; }
 
         //public ICollection<TaskAssigneesModel>? TaskAssignees { get; set; }
 

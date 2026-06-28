@@ -121,7 +121,7 @@ window.Storage = {
     setTokens: (accessToken, refreshToken) => {
         const payload = {
             token: accessToken,
-            expiry: new Date().getTime() + (55 * 60 * 1000),       // 55 min
+            expiry: new Date().getTime() + (15 * 60 * 1000),       // 55 min
             refreshToken: refreshToken,
             refreshExpiry: new Date().getTime() + (7 * 24 * 60 * 60 * 1000) // 7 days
         };
@@ -236,10 +236,10 @@ window.mapHelper = {
 
 window.choicesHelper = {
     _instances: {},
-    _listeners: {},
-    initMulti: function (elementId, items, selected, dotNetRef) {
+    _listeners: {}, initMulti: function (elementId, items, selected, dotNetRef) {
         const el = document.getElementById(elementId);
         const choices = new Choices(el, {
+            removeItemButton: true,   // 👈 adds the × button
             choices: items.map(i => ({
                 value: i.value,
                 label: i.label,
@@ -247,16 +247,13 @@ window.choicesHelper = {
             }))
         });
 
-        // Use Choices.js own events instead of native 'change'
         el.addEventListener('choice', () => {
-            const selectedValues = choices.getValue(true);
-            console.log('Choices selected:', selectedValues); // check browser console
-
+            const selectedValues = choices.getValue(true).map(i => i.value);
             dotNetRef.invokeMethodAsync('OnSelectionChanged', selectedValues);
         });
 
         el.addEventListener('removeItem', () => {
-            const selectedValues = choices.getValue(true);
+            const selectedValues = choices.getValue(true).map(i => i.value);
             dotNetRef.invokeMethodAsync('OnSelectionChanged', selectedValues);
         });
 

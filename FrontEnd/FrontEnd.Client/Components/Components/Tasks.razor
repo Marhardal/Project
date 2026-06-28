@@ -56,7 +56,7 @@
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-                <EditForm method="post" Model="task" OnValidSubmit="edit ? UpdateTask : CreateTask" FormName="create2">
+                <EditForm method="post" Model="task" OnValidSubmit="edit ? UpdateTask : CreateTask" FormName="create3">
                 <DataAnnotationsValidator/>
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">@(edit ? "Edit" : "Create") Task</h1>
@@ -81,7 +81,17 @@
                         <div class="col-md-6 col-sm-12">
                             <div class="mb-3">
                                 <label for="DueDate" class="form-label">Due Date</label>
-                                    <InputDate id="DueDate" @bind-Value="task.DueDate" class="form-control" placeholder="Enter Task Name." />
+                                    @* <InputDate id="DueDate" @bind-Value="task.DueDate" class="form-control" placeholder="Enter Task Name." />
+                                    <InputDate Type="InputDateType.Time" id="DueDate" @bind-Value="task.DueDate" class="form-control" placeholder="Enter Task Name." />
+                                    <ValidationMessage For="@(() => task.DueDate)" class="text-danger" /> *@
+                                    <div class="row">
+                                        <div class="col-md-7">
+                                            <InputDate id="DueDate" @bind-Value="DueDatePart" class="form-control" />
+                                        </div>
+                                        <div class="col-md-5">
+                                            <InputDate Type="InputDateType.Time" id="DueTime" @bind-Value="DueTimePart" class="form-control" />
+                                        </div>
+                                    </div>
                                     <ValidationMessage For="@(() => task.DueDate)" class="text-danger" />
                             </div>
                         </div>
@@ -112,10 +122,18 @@
                             </div>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="exampleFormControlInput1" class="form-label">Description</label>
-                        @* <MultiSelect/> *@
-                    </div>
+                    @if (Users.Any())
+                        {
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">Assignee</label>
+                                <MultiSelect TValue="LocationDTO"
+                                             Items="Users"
+                                             ValueSelector="l => l.ID.ToString()"
+                                             LabelSelector="l => l.Location"
+                                             SelectedValues="task.SelectedUserIDs.Select(id => id.ToString()).ToList()"
+                                             SelectedValuesChanged="ids => task.SelectedUserIDs = ids.Select(Guid.Parse).ToList()" />
+                            </div>
+                        }
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">Description</label>
                             <InputTextArea id="Description" @bind-Value="task.Description" class="form-control" placeholder="Enter Task Description." />
@@ -138,6 +156,7 @@
     private string searchQuery = string.Empty;
     public List<TasksDTO> tasks { get; set; } = new();
     public List<StatusDTO> statuses { get; set; } = new();
+    public List<LocationDTO> Users { get; set; } = new();
 
     [Parameter]
     public string ProjectID { get; set; }
@@ -145,11 +164,40 @@
     public string Message { get; set; } = string.Empty;
 
     bool edit = false;
+    // Backing fields
+    private DateOnly _dueDate = DateOnly.FromDateTime(DateTime.Now);
+    private TimeOnly _dueTime = TimeOnly.MinValue;
 
+    // Merge into the real model property whenever either changes
+    private DateOnly DueDatePart
+    {
+        get => _dueDate;
+        set
+        {
+            _dueDate = value;
+            task.DueDate = _dueDate.ToDateTime(_dueTime);
+        }
+    }
+
+    private TimeOnly DueTimePart
+    {
+        get => _dueTime;
+        set
+        {
+            _dueTime = value;
+            task.DueDate = _dueDate.ToDateTime(_dueTime);
+        }
+    }
     protected override async Task OnInitializedAsync()
     {
         task.DueDate = DateTime.Now;
         statuses = await StatusService.GetStatusAsync(Category.Task);
+        var query = await UserProfileService.GetUserProfilesAsync();
+        Users = query.Select(u => new LocationDTO
+        {
+            ID = u.UserID,
+            Location = $"{u.FirstName} {u.Surname}"
+        }).ToList();
     }
 
     protected override async Task OnParametersSetAsync()

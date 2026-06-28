@@ -1,3 +1,4 @@
+using ApexCharts;
 using FrontEnd;
 using FrontEnd.Client.DTOs;
 using FrontEnd.Client.Services;
@@ -29,6 +30,7 @@ builder.Services.AddCors(options =>
 // Keep authorization for the server endpoints/middleware only
 builder.Services.AddAuthorization();
 
+builder.Services.AddApexCharts();
 // Register CORS and a named policy used by the middleware later in the pipeline.
 //builder.Services.AddCors(options =>
 //{
@@ -65,9 +67,9 @@ else
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
 
-app.UseAntiforgery();
-
 app.MapStaticAssets();
+
+app.UseAntiforgery();
 
 // Ensure CORS middleware runs before mapping endpoints so the policy is applied
 //app.UseCors("AllowBlazor");

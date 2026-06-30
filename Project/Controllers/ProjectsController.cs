@@ -389,6 +389,11 @@ namespace Project.Controllers
             if (userId is null)
                 return Unauthorized();
 
+            if (projectDTO.ContactPersonID == Guid.Empty)
+            {
+                projectDTO.ContactPersonID = null;
+            }
+
             ProjectModel projectModel = new ProjectModel
             {
                 ProponentID = projectDTO.ProponentID,
@@ -399,7 +404,8 @@ namespace Project.Controllers
                 assignedDate = projectDTO.assignedDate,
                 closingDate = projectDTO.closingDate,
                 SubmissionDate = projectDTO.SubmissionDate,
-                SelectedLocationIds = projectDTO.SelectedLocationIds
+                SelectedLocationIds = projectDTO.SelectedLocationIds,
+                ContactPersonID = projectDTO.ContactPersonID
             };
 
             if (!projectModel.SelectedLocationIds.Any())

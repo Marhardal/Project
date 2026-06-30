@@ -11,7 +11,7 @@ namespace Project.DTO
         [Required]
         public Guid CategoryID { get; set; }
         public Guid StatusID { get; set; }
-        public Guid ContactPersonID { get; set; }
+        public Guid? ContactPersonID { get; set; }
         
         [Required]
         public string? Name { get; set; }

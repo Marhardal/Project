@@ -88,7 +88,7 @@ namespace Project.Data
                 .HasOne(p => p.Contact)
                 .WithMany(c => c.Projects)
                 .HasForeignKey(p => p.ContactPersonID)
-                .OnDelete(DeleteBehavior.Restrict);  // ← was Cascade
+                .OnDelete(DeleteBehavior.NoAction);  // ← was Cascade
 
 modelBuilder.Entity<ProjectModel>()
                 .HasMany(t => t.Tasks)

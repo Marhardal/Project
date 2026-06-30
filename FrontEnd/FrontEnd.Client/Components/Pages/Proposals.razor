@@ -315,15 +315,14 @@ else
                         <option value="@status.Id">@status.FullName</option>
                     }
                 </InputSelect> *@
-
-                                    <InputSelect @bind-Value="Proposal.ContactPersonID" id="ContactPersonID"
-                                                 class="form-select">
+                                    <InputSelect @bind-Value="ContactPersonIDProxy" id="ContactPersonID" class="form-select">
                                         <option value="">-- Select Contact Person --</option>
                                         @foreach (var contact in contacts)
                                         {
                                             <option value="@contact.Id">@contact.FullName</option>
                                         }
                                     </InputSelect>
+                                    <ValidationMessage For="@(() => Proposal.ContactPersonID)" class="text-danger" />
 
                                     <ValidationMessage For="@(() => Proposal.ContactPersonID)" class="text-danger" />
             </div>
@@ -507,6 +506,7 @@ else
             Proposal.ProjectType = ProjectType.Brief;
             Proposal.closingDate = DateTime.Now;
             Proposal.assignedDate = DateTime.Now;
+            Proposal.ContactPersonID = Guid.Empty;
             var response = await ProjectService.CreateProjectAsync(Proposal);
             if (response.IsSuccessStatusCode)
             {
@@ -684,5 +684,12 @@ else
             bytes);
     }
 
-
+    // In your component's @code block
+    private string? ContactPersonIDProxy
+    {
+        get => Proposal.ContactPersonID?.ToString();
+        set => Proposal.ContactPersonID = string.IsNullOrWhiteSpace(value)
+            ? null
+            : Guid.Parse(value);
+    }
 }

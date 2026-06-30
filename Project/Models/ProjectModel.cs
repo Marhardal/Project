@@ -12,7 +12,7 @@ namespace Project.Models
         [Required]
         public Guid CategoryID { get; set; }
 
-        public Guid ContactPersonID { get; set; }
+        public Guid? ContactPersonID { get; set; }
         
         [Required, NotMapped]
         public Guid StatusID { get; set; }

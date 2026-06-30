@@ -237,38 +237,15 @@ window.mapHelper = {
 window.choicesHelper = {
     _instances: {},
     _listeners: {}, 
-    initMulti: function (elementId, items, selected, dotNetRef) {
-    // const el = document.getElementById(elementId);
-    // const choices = new Choices(el, {
-    //     removeItemButton: true,
-    //     choices: items.map(i => ({
-    //         value: i.value,
-    //         label: i.label,
-    //         selected: selected.includes(i.value)
-    //     }))
-    // });
-
-    // const notify = () => {
-    //     const selectedValues = choices.getValue(true).map(i => i.value);
-    //     dotNetRef.invokeMethodAsync('OnSelectionChanged', selectedValues);
-    // };
-
-    // ✅ Choices events fire on passedElement, not the raw <select>
-    // choices.passedElement.element.addEventListener('choice', notify);
-    // choices.passedElement.element.addEventListener('removeItem', notify);
-
-    // this._instances = this._instances || {};
-        // this._instances[elementId] = choices;
+    initMulti: function (elementId, items, selectedValues, dotNetRef) {
+        const safeSelected = selectedValues ?? [];   // ✅ guard
         const el = document.getElementById(elementId);
         if (!el) return;
 
-        // Remove stale listener
         if (this._listeners[elementId]) {
             el.removeEventListener('change', this._listeners[elementId]);
             delete this._listeners[elementId];
         }
-
-        // Destroy existing instance
         if (this._instances[elementId]) {
             this._instances[elementId].destroy();
             delete this._instances[elementId];
@@ -283,21 +260,26 @@ window.choicesHelper = {
             choices: items.map(i => ({
                 value: i.value,
                 label: i.label,
-                selected: selectedValues.includes(i.value)
+                selected: safeSelected.includes(i.value)   // ✅ use safeSelected
             }))
         });
-
         this._instances[elementId] = choices;
 
         const handler = () => {
-            // getValue(true) returns objects — extract .value
-            const selected = choices.getValue(true).map(item => item.value ?? item);
+            const selected = choices.getValue(true)
+                .map(item => item.value ?? item)
+                .filter(v => v != null && v !== '');
             dotNetRef.invokeMethodAsync('OnSelectionChanged', selected);
         };
 
+        choices.passedElement.element.addEventListener('addItem', handler);
+        choices.passedElement.element.addEventListener('removeItem', handler);
+
+        this._listeners[elementId] = handler; // store once, remove both on cleanup
+
         el.addEventListener('change', handler);
         this._listeners[elementId] = handler;
-},
+    },
 destroy: function (elementId) {
         if (this._instances?.[elementId]) {
             this._instances[elementId].destroy();

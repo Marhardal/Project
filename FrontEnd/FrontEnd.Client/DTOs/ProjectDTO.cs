@@ -12,7 +12,7 @@ namespace FrontEnd.Client.DTOs
         public Guid? CategoryID { get; set; }
         [Required]
         public Guid? statusID { get; set; }
-        public Guid? ContactPersonID { get; set; } = null;
+        public Guid? ContactPersonID { get; set; }
         [Required]
         public string? Name { get; set; }
         [Required]

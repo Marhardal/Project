@@ -80,6 +80,15 @@ public class TasksController : ControllerBase
 
         _context.Entry(tasksmodel).State = EntityState.Modified;
 
+        foreach (var item in tasksmodel.SelectedUserIDs)
+        {
+            _context.TaskAssignees.Add(new TaskAssigneesModel
+            {
+                ID = new Guid(),
+                TaskID = tasksmodel.ID,
+                UserID = item,
+            });
+        }
         try
         {
             await _context.SaveChangesAsync();
@@ -104,7 +113,22 @@ public class TasksController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<TasksModel>> PostTasksModel(TasksModel tasksmodel)
     {
+        if (!tasksmodel.SelectedUserIDs.Any())
+        {
+            return BadRequest("Please add a User.");
+        }
+
         _context.Tasks.Add(tasksmodel);
+
+        foreach (var item in tasksmodel.SelectedUserIDs)
+        {
+            _context.TaskAssignees.Add(new TaskAssigneesModel
+            {
+                ID = new Guid(),
+                TaskID = tasksmodel.ID,
+                UserID = item,
+            });
+        }
         await _context.SaveChangesAsync();
 
         return CreatedAtAction("GetTasksModel", new { id = tasksmodel.ID }, tasksmodel);

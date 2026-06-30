@@ -30,7 +30,10 @@
                 <th scope="col"></th>
                 </TableHeader>
                 <RowTemplate Context="task">
-                    <td></td>
+                    @{
+                    int index = tasks.IndexOf(task) + 1;
+                }
+                    <td>@index</td>
                     <td>@task.Name</td>
                     <td>@task.Name</td>
                 <td><PriorityItem Name="@task.Priority.ToString()" /></td>
@@ -131,7 +134,8 @@
                                              ValueSelector="l => l.ID.ToString()"
                                              LabelSelector="l => l.Location"
                                              SelectedValues="task.SelectedUserIDs.Select(id => id.ToString()).ToList()"
-                                             SelectedValuesChanged="ids => task.SelectedUserIDs = ids.Select(Guid.Parse).ToList()" />
+                                             SelectedValuesChanged="ids => task.SelectedUserIDs = ids.Where(id => !string.IsNullOrEmpty(id)).Select(Guid.Parse)
+    .ToList()" />
                             </div>
                         }
                     <div class="mb-3">
@@ -157,6 +161,7 @@
     public List<TasksDTO> tasks { get; set; } = new();
     public List<StatusDTO> statuses { get; set; } = new();
     public List<LocationDTO> Users { get; set; } = new();
+    private List<Guid> SelectedUserIds { get; set; } = new();
 
     [Parameter]
     public string ProjectID { get; set; }
@@ -188,6 +193,7 @@
             task.DueDate = _dueDate.ToDateTime(_dueTime);
         }
     }
+
     protected override async Task OnInitializedAsync()
     {
         task.DueDate = DateTime.Now;
@@ -214,6 +220,12 @@
         try
         {
             task.ProjectID = Guid.Parse(ProjectID);
+            if (!task.SelectedUserIDs.Any())
+            {
+                Message = "Please make sure you have entered user.";
+                return; // stop if nothing selected
+            }
+            task.SelectedUserIDs.ToList();
             task.createdOn = DateTime.Now;
             var result = await TasksService.CreateTaskAsync(task);
             if (result.IsSuccessStatusCode)

@@ -1,4 +1,6 @@
-﻿namespace Project.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Project.Models
 {
     public class TasksModel
     {
@@ -26,6 +28,8 @@
 
         public Status? Status { get; set; }
 
+        [NotMapped]
+        public List<Guid> SelectedUserIDs { get; set; } = new();
     }
 
     public enum Priority

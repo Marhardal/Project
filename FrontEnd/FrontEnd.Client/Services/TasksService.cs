@@ -50,7 +50,7 @@ namespace FrontEnd.Client.Services
         {
             try
             {
-                return await _http.PostAsJsonAsync($"api/Tasks/{id}", dto);
+                return await _http.PutAsJsonAsync($"api/Tasks/{id}", dto);
             }
             catch (Exception ex)
             {

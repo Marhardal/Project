@@ -256,13 +256,11 @@ else
                                     @* <MultiSelect Locations="locations"
                                                  SelectedLocationIds="Proposal.SelectedLocationIds"
                                                  SelectedLocationIdsChanged="@(ids => Proposal.SelectedLocationIds = ids)"></MultiSelect> *@
-
                                     <MultiSelect TValue="LocationDTO"
                                                  Items="locations"
                                                  ValueSelector="l => l.ID.ToString()"
                                                  LabelSelector="l => l.Location"
-                                                 SelectedValues="Proposal.SelectedLocationIds.Select(id => id.ToString()).ToList()"
-                                                 SelectedValuesChanged="ids => Proposal.SelectedLocationIds = ids.Select(Guid.Parse).ToList()" />
+                                                 SelectedValuesChanged="ids => Proposal.SelectedLocationIds = ParseGuids(ids)" />
                                 }
                                 @* <ValidationMessage For="@(() => Proposal.LocationID)" class="text-danger" /> *@
                                 @if (!Proposal.SelectedLocationIds.Any() && isSubmitting)
@@ -400,7 +398,11 @@ else
 
     private PagedResult<ProjectDTO> Paged = new();
 
-
+    // In a static helper class or at the top of your component
+    private static List<Guid> ParseGuids(List<string> ids) =>
+        ids.Where(id => !string.IsNullOrWhiteSpace(id))
+           .Select(Guid.Parse)
+           .ToList();
 
     // private List<ProjectDTO> pagedProposals =>
     //     filteredProposals

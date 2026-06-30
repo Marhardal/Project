@@ -62,7 +62,6 @@ namespace FrontEnd.Client.Services
             }
         }
 
-
         public async Task<HttpResponseMessage> CreateStatusAsync(StatusDTO dto)
         {
             try

@@ -4,7 +4,7 @@ namespace Project.Models
 {
     public class TaskAssigneesModel
     {
-        public Guid ID { get; set; }
+        public Guid ID { get; set; } = Guid.NewGuid();
 
         public Guid TaskID { get; set; }
         public TasksModel? Task { get; set; }

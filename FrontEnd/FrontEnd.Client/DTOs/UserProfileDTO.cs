@@ -5,7 +5,7 @@ public class UserProfileDTO
 {
     public Guid ID { get; set; }
     [Required]
-    public Guid UserID { get; set; } = default!;
+    public string UserID { get; set; }
     [Required]
     public string? FirstName { get; set; }
     [Required]

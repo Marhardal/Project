@@ -35,7 +35,15 @@
                 }
                     <td>@index</td>
                     <td>@task.Name</td>
-                    <td>@task.Name</td>
+                <td>
+                    @if (task.TaskAssignees is not null)
+                    {
+                        foreach (var item in task.TaskAssignees)
+                        {
+                            <span>@(item.User.FirstName + " " + item.User.Surname)</span>
+                        }
+                    }
+                </td>
                 <td><PriorityItem Name="@task.Priority.ToString()" /></td>
                     <td><StatusItem Colour="@task.Status.Color" Name="@task.Status.Name"/></td>
                     <td>@task.DueDate</td>
@@ -201,7 +209,7 @@
         var query = await UserProfileService.GetUserProfilesAsync();
         Users = query.Select(u => new LocationDTO
         {
-            ID = u.UserID,
+            ID = u.ID,
             Location = $"{u.FirstName} {u.Surname}"
         }).ToList();
     }
@@ -273,6 +281,10 @@
         task.Priority = dTO.Priority;
         task.StatusID = dTO.StatusID;
         task.Description = dTO.Description;
+        task.SelectedUserIDs = dTO.TaskAssignees
+        .Where(t => t.User is not null)
+        .Select(t => t.User.ID)   // ✅ UserModel.ID, not User.UserID (Identity FK)
+        .ToList();
     }
 
     private void OnSearchChanged(ChangeEventArgs e)

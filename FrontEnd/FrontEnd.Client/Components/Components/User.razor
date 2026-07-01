@@ -93,7 +93,7 @@
         {
             userProfile = new UserProfileDTO
             {
-                UserID = Profile.UserID,
+                UserID = Profile.UserID.ToString(),
                 FirstName = Profile.FirstName,
                 Surname = Profile.Surname,
                 DOB = DateOnly.FromDateTime(DateTime.Now),
@@ -113,7 +113,7 @@
             userProfile.createdOn = DateTime.Now;
             var id = await JSRuntime.InvokeAsync<string?>("localStorage.getItem", "UserId");
             var userId = Guid.Parse(id);
-            userProfile.UserID = userId;
+            userProfile.UserID = userId.ToString();
             userProfile.ID = Guid.NewGuid();
             var response = await UserProfileService.CreateProfileAsync(userProfile);
             if (response.IsSuccessStatusCode)

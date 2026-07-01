@@ -73,6 +73,11 @@ namespace Project.Data
                 .WithOne(p => p.Proponent)
                 .HasForeignKey(p => p.ProponentID);
 
+            modelBuilder.Entity<ProjectModel>()
+                .HasMany(p => p.Tasks)
+                .WithOne(p => p.Project)
+                .HasForeignKey(p => p.ProjectID);
+
             modelBuilder.Entity<CategoryModel>()
                 .HasMany(p => p.Projects)
                 .WithOne(p => p.Category)
@@ -89,18 +94,13 @@ namespace Project.Data
                 .WithMany(c => c.Projects)
                 .HasForeignKey(p => p.ContactPersonID)
                 .OnDelete(DeleteBehavior.NoAction);  // ← was Cascade
-
-modelBuilder.Entity<ProjectModel>()
-                .HasMany(t => t.Tasks)
-                .WithOne(p => p.Project)
-                .HasForeignKey(t => t.ProjectID);
-        
+                                
         // Status → Trackings
         modelBuilder.Entity<Status>()
                 .HasMany(s => s.Trackings)
                 .WithOne(t => t.Status)
                 .HasForeignKey(t => t.StatusID);
-
+        
             //// Tracking → Review (1:1)
             modelBuilder.Entity<TrackingModel>()
                 .HasOne(t => t.Review)
@@ -123,7 +123,6 @@ modelBuilder.Entity<ProjectModel>()
                 .WithOne()
                 .HasForeignKey<UserModel>(u => u.UserID)
                 .OnDelete(DeleteBehavior.Cascade);
-
 
             modelBuilder.Entity<ProjectLocation>()
                 .HasKey(pl => new { pl.ProjectID, pl.LocationID }); // composite key
@@ -182,6 +181,15 @@ modelBuilder.Entity<ProjectModel>()
                 .WithMany(u => u.TaskAssignees)
                 .HasForeignKey(ta => ta.UserID);
 
+            modelBuilder.Entity<Status>()
+                .HasMany(s => s.Tasks)
+                .WithOne(t => t.Status)
+                .HasForeignKey(t => t.StatusID);
+
+            modelBuilder.Entity<ProjectModel>()
+                            .HasMany(t => t.Tasks)
+                            .WithOne(p => p.Project)
+                            .HasForeignKey(t => t.ProjectID);
 
             modelBuilder.Entity<Status>().HasData(
                 new Status

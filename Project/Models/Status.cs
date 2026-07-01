@@ -22,6 +22,8 @@ using System.ComponentModel.DataAnnotations;
             //public TrackingModel? Tracking { get; set; }
             public ICollection<TrackingModel>? Trackings { get; set; }
 
+            public ICollection<TasksModel>? Tasks { get; set; }
+
         }
 public enum Category
 {

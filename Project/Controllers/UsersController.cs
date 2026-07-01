@@ -31,6 +31,7 @@ namespace Project.Controllers
                 .Select(
                     u => new
                     {
+                        u.ID,
                         u.UserID,
                         u.FirstName,
                         u.Surname,

@@ -27,6 +27,8 @@ namespace FrontEnd.Client.DTOs
 
         public StatusDTO? Status { get; set; }
 
+        public ICollection<TaskAssigneesDTO>? TaskAssignees { get; set; }
+
         public List<Guid> SelectedUserIDs { get; set; } = new();
 
         //public ICollection<TaskAssigneesModel>? TaskAssignees { get; set; }

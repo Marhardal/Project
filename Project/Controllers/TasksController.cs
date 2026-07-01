@@ -36,8 +36,10 @@ public class TasksController : ControllerBase
                 TaskAssignees = t.TaskAssignees.Select(ta => new TaskAssigneesModel
                 {
                     ID = ta.ID,
+                    UserID = ta.UserID,
                     User = ta.User == null ? null : new UserModel
                     {
+                        ID = ta.User.ID,
                         FirstName =ta.User.FirstName,
                         Surname = ta.User.Surname
                     }
@@ -84,7 +86,6 @@ public class TasksController : ControllerBase
         {
             _context.TaskAssignees.Add(new TaskAssigneesModel
             {
-                ID = new Guid(),
                 TaskID = tasksmodel.ID,
                 UserID = item,
             });
@@ -117,14 +118,18 @@ public class TasksController : ControllerBase
         {
             return BadRequest("Please add a User.");
         }
-
+        if (tasksmodel.StatusID == Guid.Empty ||
+    !await _context.Statuses.AnyAsync(s => s.ID == tasksmodel.StatusID))
+        {
+            return BadRequest("Invalid or missing StatusID.");
+        }
         _context.Tasks.Add(tasksmodel);
+        await _context.SaveChangesAsync();
 
         foreach (var item in tasksmodel.SelectedUserIDs)
         {
             _context.TaskAssignees.Add(new TaskAssigneesModel
             {
-                ID = new Guid(),
                 TaskID = tasksmodel.ID,
                 UserID = item,
             });
